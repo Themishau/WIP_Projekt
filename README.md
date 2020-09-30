@@ -3,4 +3,4 @@ Kleines Spiel in Javascript/HTML
 
 
 Mitglieder: 
-Markus Zajkowski
+Markus 
