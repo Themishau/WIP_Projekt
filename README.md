@@ -12,4 +12,4 @@ Kleines Spiel in Javascript/HTML
 
 ## Mitglieder
 Mitglieder: 
-Markus 
+- Markus 
