@@ -2,9 +2,8 @@
 Kleines Spiel in Javascript/HTML 
 
 ## Termine
-- 11.10.2020 Aufteilung der Aufgaben
-- 18.10.2020 Erste Struktur 
-- 25.10.2020
+- 20.10.2020 Teamzusammensetzung und erste Besprechungen
+- 25.10.2020 Stand der ersten Tests und Möglichkeiten für die Programmierung zusammenfassen Spielkonzept und Kernumfang bestimmen
 
 
 ## Zusammenfassung
