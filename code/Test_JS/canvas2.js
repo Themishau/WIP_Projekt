@@ -14,5 +14,3 @@ imga.onload = function ()
     canvasContext2.drawImage(imga, 0, 0, canvas2.width, canvas2.height);
 };
 
-
-
