@@ -73,7 +73,7 @@ const paddel =  {
                     y      : canvas.height - paddel_height/0.3,
                     width  : paddel_width,
                     height : paddel_height,
-                    dx     : 10 // speed of movement right and left 
+                    dx     : 3 // speed of movement right and left 
                 };
 /* background */
 const bgImg = new Image();
@@ -138,8 +138,9 @@ function drawLoop()
     drawRect(100, 300);
     */
    // drawbackground(bgImg);
-    drawpaddel();
+    
     paddelmovement();
+
     updatescreen();
     
     requestAnimationFrame(drawLoop);
@@ -153,9 +154,11 @@ var BILD = new Image();
 BILD.scr = 'FHDW_Logo.jpg';
 */
 
+// window.onload = drawLoop;
 
-
-drawLoop();
-
-
+function main()
+{
+    document.addEventListener("DOMContentLoaded", drawLoop);
+}
+main();
 
