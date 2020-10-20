@@ -5,6 +5,10 @@ let kspace = false;
 let kleftA = false;
 let krightA = false;
 
+/* background */
+const img = new Image();
+img.src = "../img_folder/background_pattern1.jpg";
+
 /* keyboard listener */
 document.addEventListener("keydown", function(event)
 {
@@ -75,11 +79,33 @@ const paddel =  {
                     height : paddel_height,
                     dx     : 3 // speed of movement right and left 
                 };
-/* background */
-const bgImg = new Image();
 
-bgImg.src = "FHDW_Logo.jpg";
+/* ball */
+const ball_width = 120;
+const ball_height = 20;
+const ball_margin_bottom = 20; 
+const ball =  {
+    x      : paddel.x - 10,
+    y      : paddel.y - 10,
+    radius  : 10,
+    height : paddel_height,
+    dx     : 3 // speed of movement right and left 
+};
 
+function draw()
+{   
+    drawBall();
+    drawpaddel();
+}
+
+function drawBall()
+{   
+
+    canvasContext.fillStyle = "blue";
+    canvasContext.arc(ball.x, ball.y, ball.radius, 0, Math*2);   
+    canvasContext.strokeStyle = "green";
+    canvasContext.strokeRect(ball.x, ball.y, ball.width, ball.height);
+}
 
 // draws paddel
 function drawpaddel()
@@ -92,8 +118,10 @@ function drawpaddel()
 
 function updatescreen()
 {
-    clearCanvasRect();
-    drawpaddel();
+    clearCanvasObject(paddel);
+    draw();
+    canvasContext.clearRect();
+    
 }
 
 function drawRect(x, y)
@@ -103,9 +131,9 @@ function drawRect(x, y)
 }
 
 // playing around with canvas
-function clearCanvasRect()
+function clearCanvasObject(object)
 {
-    canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+    canvasContext.clearRect(object.x, object.y, object.width, object.height);
 }
 
 function drawbackground(img)
@@ -130,34 +158,16 @@ function paddelmovement()
 
 function drawLoop()
 {
-
-    /*
-    playing around with canvas
-    drawRect(100, 200);
-    drawRect(100, 250);
-    drawRect(100, 300);
-    */
-   // drawbackground(bgImg);
-    
+    drawbackground(img);
+    drawBall();
     paddelmovement();
-
     updatescreen();
-    
     requestAnimationFrame(drawLoop);
 }
 
-// choose method properties
-
-// seltsamerweise muss eine Variable vom Typ Image img im Variablennamen haben 
-/*
-var BILD = new Image();
-BILD.scr = 'FHDW_Logo.jpg';
-*/
-
-// window.onload = drawLoop;
-
 function main()
 {
+
     document.addEventListener("DOMContentLoaded", drawLoop);
 }
 main();
