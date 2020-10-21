@@ -3,12 +3,19 @@
 var canvas, canvasContext;
 canvas = document.getElementById("ArkanoidCanvas");
 canvasContext = canvas.getContext("2d");
+/* keys */
 let kspace = false;
 let kleftA = false;
 let krightA = false;
 var int = 1;
+
 /* background */
 var bg_img;
+
+var levelBricket;
+var bricketnumber = 11;
+levelBricket = [bricketnumber];
+const bricketwidth = 75;
 
 /* keyboard listener */
 document.addEventListener("keydown", function(event)
@@ -65,9 +72,10 @@ document.addEventListener("keyup", function(event)
     }
     if(characterCode == 32)
     {
-        kspace = true;
+        kspace = false;
     } 
 });
+
 
 /* Paddel_Info */
 const paddel_width = 120;
@@ -83,11 +91,42 @@ var paddel =  {
                     dx     : 6 // speed of movement right and left 
                 };
 
+/* bricket */
+var bricket = class {
+    constructor(id, x, y, width, height)
+    {
+        this.id          = id,
+        this.identifier  = "bricket",
+        this.x           = x,
+        this.y           = y,
+        this.width       = 75,
+        this.height      = 20
+    }
+};
+
+function getRandomIntInclusive(min, max) 
+{
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min +1)) + min; 
+} 
+function loadLevel ()
+{
+    loadBrickets()
+}
+function loadBrickets()
+{
+
+    for (let index = 1; index < bricketnumber; index++) 
+    { 
+       var bricketindex = new bricket(index, getRandomIntInclusive (0, canvas.width), getRandomIntInclusive (0, paddel.y - 50) )
+       levelBricket.push(bricketindex);
+       
+    }
+    console.log(levelBricket);
+}
 
 /* ball */
-
-
-
 var ball = class {
     constructor(id, identifier, x, y, radius, dx, dy)
     {
@@ -103,25 +142,21 @@ var ball = class {
 
 const RESET_BALL = new ball(-1,
                             "reset_ball",
-                            345 ,
-                            345,
+                            paddel.x + ( paddel.width / 2),
+                            paddel.y - 5,
                             10,
-                            5, // speed of movement right and left 
-                            -7 // speed of movement right and left
+                            0, // speed of movement right and left 
+                            0 // speed of movement right and left
                            );
                            
-var player_ball = new ball(1,
+var player_ball = new ball( 1,
                             "player_ball",
-                            345,
-                            345,
+                            paddel.x + ( paddel.width / 2),
+                            paddel.y - 5,
                             10,
                             5, // speed of movement right and left 
                             -7 // speed of movement right and left
-                           );
-
-
-
-
+                          );
 
 function drawBall()
 {   
@@ -129,13 +164,12 @@ function drawBall()
     canvasContext.arc(player_ball.x, player_ball.y, player_ball.radius, 0, Math.PI*2);
     canvasContext.fillStyle = "blue";
     canvasContext.fill();
-
     canvasContext.closePath();
-
-
 }
-/* because = is just the pointer on the object, but i want to copy it*/
-function copy(mainObj) {
+
+/* because =  just copies the pointer on the object; but i want to copy of the object */
+function copy(mainObj) 
+{
     let objCopy = {}; // objCopy will store a copy of the mainObj
     let key;
   
@@ -143,34 +177,37 @@ function copy(mainObj) {
       objCopy[key] = mainObj[key]; // copies each property to the objCopy object
     }
     return objCopy;
-  }
+}
+
 // draws paddel
 function drawpaddel()
 {   
-
     canvasContext.beginPath();
     canvasContext.fillStyle = "grey";
     canvasContext.fillRect(paddel.x, paddel.y, paddel.width, paddel.height); 
     canvasContext.closePath();  
 }
 
-function drawRect(x, y)
+function drawBricket(x, y)
 {
-    canvasContext.fillStyle = "green"; // red
-    canvasContext.fillRect(x,y,50,20);
+    for (let index = 1; index < bricketnumber; index++) 
+    { 
+        canvasContext.beginPath();
+        canvasContext.fillStyle = "black";
+        canvasContext.fillRect(levelBricket[index].x, levelBricket[index].y, levelBricket[index].width, levelBricket[index].height); 
+        canvasContext.closePath();         
+    }
 }
 
 // playing around with canvas
 function clearCanvasObject(object)
 {
-    canvasContext.clearRect(object.x, object.y, object.width, object.height);
-    
+    canvasContext.clearRect(object.x, object.y, object.width, object.height);  
 }
 
 function objectPosition(ball)
 {
     console.log("gameloop", ball);
-
 }
 
 function drawbackground(img)
@@ -191,11 +228,15 @@ function paddelmovement()
     {
         paddel.x += paddel.dx;
     }
+    else if(kspace && (player_ball.dx == 0 && player_ball.dy == 0))
+    {
+        player_ball.dx = 5, // speed of movement right and left 
+        player_ball.dy = -7 // speed of movement right and left
+    }
 }
 function collisionDetection()
 {
-
-
+    /* ball and bottom */
     if(player_ball.y > paddel.y + 60)
     {
 
@@ -205,18 +246,51 @@ function collisionDetection()
         player_ball.id = int;
 
         console.log("player_ball.y set", player_ball, RESET_BALL);
-        int = int + 1;
-        
+        int = int + 1;   
     }
+
+    /* ball and paddel */
     //console.log(player_ball, paddel.x + paddel_width, player_ball.x ,paddel.x <= player_ball.x , (paddel.x + paddel_width) > player_ball.x, paddel.y == player_ball.y - 5);
     else if ( paddel.x <= player_ball.x 
               && (paddel.x + paddel_width) > player_ball.x 
               && paddel.y > player_ball.y - 10 && paddel.y < player_ball.y + 5)
-    {
-        
+    {     
         player_ball.dy *= -1;
     }
+    /* ball and bricket */
+    //console.log(player_ball, paddel.x + paddel_width, player_ball.x ,paddel.x <= player_ball.x , (paddel.x + paddel_width) > player_ball.x, paddel.y == player_ball.y - 5);
+    if ( hitbricket())
+    {     
+        console.log("geschwindigkeit ändern");
+        player_ball.dy *= -1;
+    }    
+}
 
+function hitbricket ()
+{
+    for (let index = 1; index < bricketnumber; index++) 
+    { 
+        if(brickethit(levelBricket[index])) 
+        {
+            console.log("getroffen");
+            return true;    
+        }      
+       
+    }
+    levelBricket.forEach(bricket => {
+        
+    });
+    return false;
+   //return true;
+}
+
+function brickethit(object)
+{
+
+   if ( object.x <= player_ball.x 
+    && (object.x + object.width) > player_ball.x 
+    && object.y > player_ball.y - 10 && object.y < player_ball.y + 5) return true;
+   else return false;
 }
 
 function ballmovement()
@@ -240,32 +314,27 @@ function updatescreen()
     canvasContext.clearRect(0,0, canvas.width, canvas.height);
     collisionDetection();
     movement();
- 
-    
-
 }
+
 function draw()
 {   
    canvasContext.drawImage(bg_img, 0, 0, canvas.width, canvas.height);
    drawBall();
    drawpaddel();
-  
+   drawBricket();
 }
 function gameLoop()
 {
    //objectPosition(player_ball); 
-
    updatescreen();
    draw();
    // objectPosition(paddel);
-   
-   
    requestAnimationFrame(gameLoop);
 } 
 
 function main()
 {
-
+    loadLevel();
     bg_img = new Image();
     bg_img.src = "../img_folder/background_pattern1.jpg";
     document.addEventListener("DOMContentLoaded", gameLoop);
