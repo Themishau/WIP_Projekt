@@ -1,6 +1,6 @@
 # WIP_Projekt
 Kleines Spiel in Javascript/HTML 
-
+Organisation geschieht über Microsoft Teams und Github
 
 ## Termine
 - 18.10.2020 Erste Ideen 
