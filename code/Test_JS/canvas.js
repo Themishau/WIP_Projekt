@@ -78,7 +78,6 @@ document.addEventListener("keyup", function(event)
     } 
 });
 
-
 /* paddel */
 const paddel_width = 120;
 const paddel_height = 20;
@@ -105,28 +104,6 @@ var bricket = class {
         this.height      = 20
     }
 };
-
-function getRandomIntInclusive(min, max) 
-{
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min +1)) + min; 
-} 
-function loadLevel ()
-{
-    loadBrickets()
-}
-function loadBrickets()
-{
-
-    for (let index = 1; index < bricketnumber; index++) 
-    { 
-       var bricketindex = new bricket(index, getRandomIntInclusive (0, canvas.width), getRandomIntInclusive (0, paddel.y - 50) )
-       levelBricket.push(bricketindex);
-       
-    }
-    console.log(levelBricket);
-}
 
 /* ball */
 var ball = class {
@@ -160,46 +137,7 @@ var player_ball = new ball( 1,
                             -7 // speed of movement right and left
                           );
 
-function drawBall()
-{   
-    canvasContext.beginPath();
-    canvasContext.arc(player_ball.x, player_ball.y, player_ball.radius, 0, Math.PI*2);
-    canvasContext.fillStyle = "blue";
-    canvasContext.fill();
-    canvasContext.closePath();
-}
 
-/* because =  just copies the pointer on the object; but i want to copy of the object */
-function copy(mainObj) 
-{
-    let objCopy = {}; // objCopy will store a copy of the mainObj
-    let key;
-  
-    for (key in mainObj) {
-      objCopy[key] = mainObj[key]; // copies each property to the objCopy object
-    }
-    return objCopy;
-}
-
-// draws paddel
-function drawpaddel()
-{   
-    canvasContext.beginPath();
-    canvasContext.fillStyle = "grey";
-    canvasContext.fillRect(paddel.x, paddel.y, paddel.width, paddel.height); 
-    canvasContext.closePath();  
-}
-
-function drawBricket(x, y)
-{
-    for (let index = 1; index < bricketnumber; index++) 
-    { 
-        canvasContext.beginPath();
-        canvasContext.fillStyle = "black";
-        canvasContext.fillRect(levelBricket[index].x, levelBricket[index].y, levelBricket[index].width, levelBricket[index].height); 
-        canvasContext.closePath();         
-    }
-}
 
 // playing around with canvas
 function clearCanvasObject(object)
@@ -212,6 +150,7 @@ function objectPosition(ball)
     console.log("gameloop", ball);
 }
 
+/* ---- draw section ---- */
 function drawbackground(img)
 {
   /*  img.onload = function () 
@@ -220,22 +159,45 @@ function drawbackground(img)
                     };
   */
 }
-function paddelmovement()
+// draws ball
+function drawBall()
+{   
+    canvasContext.beginPath();
+    canvasContext.arc(player_ball.x, player_ball.y, player_ball.radius, 0, Math.PI*2);
+    canvasContext.fillStyle = "blue";
+    canvasContext.fill();
+    canvasContext.closePath();
+}
+
+// draws paddel
+function drawpaddel()
+{   
+    canvasContext.beginPath();
+    canvasContext.fillStyle = "grey";
+    canvasContext.fillRect(paddel.x, paddel.y, paddel.width, paddel.height); 
+    canvasContext.closePath();  
+}
+
+// draws bricket
+function drawBricket(x, y)
 {
-    if(kleftA && (paddel.x > 0))
-    {
-        paddel.x -= paddel.dx;
-    }
-    else if(krightA && (paddel.x + paddel_width < canvas.width))
-    {
-        paddel.x += paddel.dx;
-    }
-    else if(kspace && (player_ball.dx == 0 && player_ball.dy == 0))
-    {
-        player_ball.dx = 5, // speed of movement right and left 
-        player_ball.dy = -7 // speed of movement right and left
+    for (let index = 1; index < bricketnumber; index++) 
+    { 
+        canvasContext.beginPath();
+        canvasContext.fillStyle = "black";
+        canvasContext.fillRect(levelBricket[index].x, levelBricket[index].y, levelBricket[index].width, levelBricket[index].height); 
+        canvasContext.closePath();         
     }
 }
+
+function draw()
+{   
+   canvasContext.drawImage(bg_img, 0, 0, canvas.width, canvas.height);
+   drawBall();
+   drawpaddel();
+   drawBricket();
+}
+/* ----  draw section end ---- */ 
 
 function collisionDetection()
 {
@@ -293,6 +255,23 @@ function brickethit(object)
     return false;
 }
 
+function paddelmovement()
+{
+    if(kleftA && (paddel.x > 0))
+    {
+        paddel.x -= paddel.dx;
+    }
+    else if(krightA && (paddel.x + paddel_width < canvas.width))
+    {
+        paddel.x += paddel.dx;
+    }
+    else if(kspace && (player_ball.dx == 0 && player_ball.dy == 0))
+    {
+        player_ball.dx = 5, // speed of movement right and left 
+        player_ball.dy = -7 // speed of movement right and left
+    }
+}
+
 function ballmovement()
 {
     if ( (player_ball.x >= canvas.width) || player_ball.x <= 0) player_ball.dx *= -1;
@@ -303,12 +282,14 @@ function ballmovement()
 
 
 }
+
 function movement()
 { 
     paddelmovement();
     ballmovement();
 
 }
+
 function updatescreen()
 { 
     canvasContext.clearRect(0,0, canvas.width, canvas.height);
@@ -316,13 +297,6 @@ function updatescreen()
     movement();
 }
 
-function draw()
-{   
-   canvasContext.drawImage(bg_img, 0, 0, canvas.width, canvas.height);
-   drawBall();
-   drawpaddel();
-   drawBricket();
-}
 function gameLoop()
 {
    //objectPosition(player_ball); 
@@ -330,6 +304,42 @@ function gameLoop()
    draw();
    // objectPosition(paddel);
    requestAnimationFrame(gameLoop);
+} 
+
+/* because =  just copies the pointer on the object; but i want to copy of the object */
+function copy(mainObj) 
+{
+    let objCopy = {}; // objCopy will store a copy of the mainObj
+    let key;
+  
+    for (key in mainObj) {
+      objCopy[key] = mainObj[key]; // copies each property to the objCopy object
+    }
+    return objCopy;
+}
+
+function loadLevel ()
+{
+    loadBrickets()
+}
+
+function loadBrickets()
+{
+
+    for (let index = 1; index < bricketnumber; index++) 
+    { 
+       var bricketindex = new bricket(index, getRandomIntInclusive (0, canvas.width), getRandomIntInclusive (0, paddel.y - 50) )
+       levelBricket.push(bricketindex);
+       
+    }
+    console.log(levelBricket);
+}
+
+function getRandomIntInclusive(min, max) 
+{
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min +1)) + min; 
 } 
 
 function main()
