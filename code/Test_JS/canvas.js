@@ -3,6 +3,7 @@
 var canvas, canvasContext;
 canvas = document.getElementById("ArkanoidCanvas");
 canvasContext = canvas.getContext("2d");
+
 /* keys */
 let kspace = false;
 let kleftA = false;
@@ -12,6 +13,7 @@ var int = 1;
 /* background */
 var bg_img;
 
+/* brickets */
 var levelBricket;
 var bricketnumber = 11;
 levelBricket = [bricketnumber];
@@ -77,7 +79,7 @@ document.addEventListener("keyup", function(event)
 });
 
 
-/* Paddel_Info */
+/* paddel */
 const paddel_width = 120;
 const paddel_height = 20;
 const paddel_margin_bottom = 20; 
@@ -89,7 +91,7 @@ var paddel =  {
                     width  : paddel_width,
                     height : paddel_height,
                     dx     : 6 // speed of movement right and left 
-                };
+              };
 
 /* bricket */
 var bricket = class {
@@ -234,12 +236,12 @@ function paddelmovement()
         player_ball.dy = -7 // speed of movement right and left
     }
 }
+
 function collisionDetection()
 {
     /* ball and bottom */
     if(player_ball.y > paddel.y + 60)
     {
-
         console.log("vor set", player_ball);
         player_ball = copy(RESET_BALL);
         player_ball.identifier = "player_ball";
@@ -257,6 +259,7 @@ function collisionDetection()
     {     
         player_ball.dy *= -1;
     }
+
     /* ball and bricket */
     //console.log(player_ball, paddel.x + paddel_width, player_ball.x ,paddel.x <= player_ball.x , (paddel.x + paddel_width) > player_ball.x, paddel.y == player_ball.y - 5);
     if ( hitbricket())
@@ -275,22 +278,19 @@ function hitbricket ()
             console.log("getroffen");
             return true;    
         }      
-       
     }
-    levelBricket.forEach(bricket => {
-        
-    });
     return false;
-   //return true;
 }
 
 function brickethit(object)
 {
-
    if ( object.x <= player_ball.x 
     && (object.x + object.width) > player_ball.x 
-    && object.y > player_ball.y - 10 && object.y < player_ball.y + 5) return true;
-   else return false;
+    && object.y > player_ball.y - 10 
+    && object.y < player_ball.y + 5) 
+    return true;
+   else 
+    return false;
 }
 
 function ballmovement()
