@@ -138,7 +138,6 @@ var player_ball = new ball( 1,
                           );
 
 
-
 // playing around with canvas
 function clearCanvasObject(object)
 {
