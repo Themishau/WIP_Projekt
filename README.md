@@ -1,7 +1,8 @@
 # WIP_Projekt
 Kleines Spiel in Javascript/HTML <br/>
 Organisation geschieht über Microsoft Teams und Github <br/>
-PSP: https://lucid.app/invitations/accept/d683a7b4-9c19-4de9-8bde-1c2fd71712a <br/>
+PSP: https://lucid.app/invitations/accept/d683a7b4-9c19-4de9-8bde-1c2fd71712a9
+<br/>
 
 ## Termine
 - 18.10.2020 Erste Ideen 
