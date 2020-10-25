@@ -1,4 +1,3 @@
-
 /* Canvas */
 var canvas, canvasContext;
 canvas = document.getElementById("SpaceSerpent");
@@ -10,22 +9,59 @@ let kleftA = false;
 let krightA = false;
 var int = 1;
 
-/* background */
-var bg_img;
+/* grid size scale */
+var gridSizeScale = 10;
 
-/* class */
+/* object_table */
+
+const objectTable = {empty   : 0,
+                     obstacle: 1
+                    };
+
+
+/*----class section----*/
+
+/* playground */
+var playground = class {
+    resetPlayground() {
+        for (var column = 0; column < this.xSize; column++) {
+          this.fields[column] = [];
+          for (var row = 0; row < this.ySize; row++) {
+            this.fields[column][row] = objectTable.empty;
+          }
+        }
+    }
+    constructor(id, x, y, width, height)
+    {
+        this.id          = id,
+        this.name        = "playground",
+        this.width       = canvas.width/gridSizeScale,
+        this.height      = canvas.height/gridSizeScale,
+        this.fields      = [],
+        this.bg_img      = new Image()
+        this.resetPlayground();
+    }
+};
+
+
+/* serpent */
 var serpent = class {
     constructor(id, x, y, width, height)
     {
         this.id          = id,
-        this.identifier  = "serpent",
+        this.name  = "serpent",
         this.x           = x,
         this.y           = y,
-        this.width       = ,
-        this.height      = 
+        this.width       = 10,
+        this.height      = 10,
+        this.dx          = 5,  /* speed x */
+        this.dy          = 5   /* speed y */
     }
+
 };
 
+
+/*----class section end----*/
 
 
 /* keyboard listener */
@@ -132,11 +168,11 @@ function getRandomIntInclusive(min, max) {
 
 /* setup */
 function main() {
-
+/* 
     loadLevel();
-    bg_img = new Image();
     bg_img.src = "../img_folder/background_pattern1.jpg";
     document.addEventListener("DOMContentLoaded", gameLoop);
+*/
 }
 
 function cleanUp() {
