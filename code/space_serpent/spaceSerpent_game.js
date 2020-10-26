@@ -31,12 +31,12 @@ var playground = class {
           }
         }
     }
-    constructor(id, x, y, width, height)
+    constructor(id, xSize, ySize)
     {
         this.id          = id,
         this.name        = "playground",
-        this.width       = canvas.width/gridSizeScale,
-        this.height      = canvas.height/gridSizeScale,
+        this.xSize       = canvas.width/gridSizeScale,
+        this.ySize       = canvas.height/gridSizeScale,
         this.fields      = [],
         this.bg_img      = new Image()
         this.resetPlayground();
