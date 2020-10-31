@@ -436,6 +436,17 @@ function gameLoop() {
 
 
 function loadLevel() {
+
+    /*
+    var img = new Image();
+    img.onload = function() { alert("Height: " + this.height); }
+    img.src = "http://path/to/image.jpg";
+    */
+
+    bg_image.onload = function() {
+        console.log("Background Image loaded.")
+    }
+
     bg_image.src = "sprites/serpent_sprite.png";
     img.src = "sprites/Snake.png";
 
@@ -453,10 +464,11 @@ function loadLevel() {
 
 /* setup */
 function main() {
-    gameField.init();
-    loadLevel();
+
     //canvasContext.drawImage(bg_image, 10, 10,256,256);
-    img.addEventListener("load", function (event) { // When the load event fires, do this:
+    window.addEventListener("load", function (event) { // When the load event fires, do this:
+        gameField.init();
+        loadLevel();
         fpsInterval = 1000/ 1;
         then = Date.now();
         startTime = then; 
