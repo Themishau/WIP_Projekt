@@ -46,7 +46,22 @@ objects = [
     "book",
     "feather",
     "snake",
-    "serpent_sprite"];
+    "serpent_sprite",
+    "snake_head1",
+    "snake_head2",
+    "snake_head3",
+    "snake_mid",
+    "snake_end",
+    "snake_downright",
+    "bg_stars",
+    "spr_planet01",
+    "spr_planet02",
+    "spr_planet03",
+    "spr_planet04",
+    "spr_planet05",
+    "spr_planet06",
+    "spr_planet07"
+];
 
 /* animations */
 var frame = 0;
@@ -185,6 +200,8 @@ constructor(id, x, y, spritesheet, initSnakeParts) {
 
 var bg_image = new Image();
 var img = new Image();
+var bg_universe = new Image();
+var bg_stars = new Image();
 
 var playGroundLevel;
 var serpentPlayer;
@@ -284,7 +301,6 @@ function drawbackground(img) {
 }
 
 function drawItems() {
-
     for (var i = 2; i < itemlist.length; i++) {
         itemlist[i].angle = itemlist[i].currentPointOfView * Math.PI / 180;
         ctx = gameField.canvasContext;
@@ -305,16 +321,14 @@ function drawItems() {
         ctx.restore();
         }   
 }
+
 function drawSerpent() {
-    var frame = 3;
     for (var i = 0; i < serpentPlayer.serpentParts.length; i++) {
     serpentPlayer.angle = serpentPlayer.currentPointOfView * Math.PI / 180;
     ctx = gameField.canvasContext;
     ctx.save();
     ctx.translate(serpentPlayer.serpentParts[i].x * gridSizeScale + (serpentPlayer.width / 2), serpentPlayer.serpentParts[i].y * gridSizeScale + (serpentPlayer.height / 2));
     ctx.rotate(serpentPlayer.angle);
-    //ctx.fillStyle = "red";
-    //ctx.fillRect(serpentPlayer.width / - 2, serpentPlayer.height / - 2, 50, 50);
     ctx.drawImage(serpentPlayer.animation.spritesheet,
         serpentPlayer.animation.frameSet[serpentPlayer.animation.currentFrame][0],    // position on image x
         serpentPlayer.animation.frameSet[serpentPlayer.animation.currentFrame][1],    // position on image y
@@ -325,7 +339,6 @@ function drawSerpent() {
         serpentPlayer.width, // strech to on x 
         serpentPlayer.height // strech to on y
     );
-    //console.log (serpentPlayer.width / - 2, serpentPlayer.height / - 2);
     ctx.restore();
     }
 }
@@ -333,27 +346,25 @@ function drawSerpent() {
 
 function drawKiSerpent() {
     for (var i = 1; i < kiSerpents.length; i++) {
-    for (var j = 0; j < kiSerpents[i].serpentParts.length; j++) {
-        // console.log("draw", kiSerpents[i]); 
-        kiSerpents[i].angle += i * Math.PI / 180; // rotation speed
-        ctx = gameField.canvasContext;
-        ctx.save();
-        ctx.translate(kiSerpents[i].serpentParts[j].x * gridSizeScale + (kiSerpents[i].width / 2), kiSerpents[i].serpentParts[j].y * gridSizeScale + (kiSerpents[i].height / 2));
-        ctx.rotate(kiSerpents[i].angle);
-        ctx.fillStyle = "red";
-        ctx.fillRect(kiSerpents[i].width / - 2, kiSerpents[i].height / - 2, 50, 50);
-        ctx.drawImage(kiSerpents[i].animation.spritesheet,
-            kiSerpents[i].animation.frameSet[kiSerpents[i].animation.currentFrame][0],    // position on sprite x
-            kiSerpents[i].animation.frameSet[kiSerpents[i].animation.currentFrame][1],    // position on sprite y
-            kiSerpents[i].animation.spritesheetformatx, // part of sprite x
-            kiSerpents[i].animation.spritesheetformaty, // part of sprite y
-            kiSerpents[i].width / - 2, // position on canvas x 
-            kiSerpents[i].height / - 2, // position on canvas y
-            kiSerpents[i].width, // strech to width  
-            kiSerpents[i].height // strech to height
-        );
-        // console.log (serpentPlayer.x, serpentPlayer.angle);
-        ctx.restore();
+        for (var j = 0; j < kiSerpents[i].serpentParts.length; j++) {
+            kiSerpents[i].angle += i * Math.PI / 180; // rotation speed
+            ctx = gameField.canvasContext;
+            ctx.save();
+            ctx.translate(kiSerpents[i].serpentParts[j].x * gridSizeScale + (kiSerpents[i].width / 2), kiSerpents[i].serpentParts[j].y * gridSizeScale + (kiSerpents[i].height / 2));
+            ctx.rotate(kiSerpents[i].angle);
+            ctx.fillStyle = "red";
+            ctx.fillRect(kiSerpents[i].width / - 2, kiSerpents[i].height / - 2, 50, 50);
+            ctx.drawImage(kiSerpents[i].animation.spritesheet,
+                kiSerpents[i].animation.frameSet[kiSerpents[i].animation.currentFrame][0],    // position on sprite x
+                kiSerpents[i].animation.frameSet[kiSerpents[i].animation.currentFrame][1],    // position on sprite y
+                kiSerpents[i].animation.spritesheetformatx, // part of sprite x
+                kiSerpents[i].animation.spritesheetformaty, // part of sprite y
+                kiSerpents[i].width / - 2, // position on canvas x 
+                kiSerpents[i].height / - 2, // position on canvas y
+                kiSerpents[i].width, // strech to width  
+                kiSerpents[i].height // strech to height
+            );
+            ctx.restore();
         }
     }
 }
@@ -367,10 +378,10 @@ function drawGrid() {
         for (var row = 0; row <= playGroundLevel.fields.length; row++) {
 
             gameField.canvasContext.beginPath();
-            gameField.canvasContext.fillStyle = "grey";
+            //gameField.canvasContext.fillStyle = "grey";
             gameField.canvasContext.fillRect(groundx, groundy, gridSizex, gridSizey);
-            gameField.canvasContext.strokeStyle = "blue";
-            gameField.canvasContext.strokeRect(groundx, groundy, gridSizex, gridSizey);
+            //gameField.canvasContext.strokeStyle = "grey";
+            //gameField.canvasContext.strokeRect(groundx, groundy, gridSizex, gridSizey);
             gameField.canvasContext.closePath();
             groundx += gridSizeScale;
 
@@ -380,7 +391,8 @@ function drawGrid() {
         groundx = 0;
         groundy += gridSizeScale;
     }
-
+    gameField.canvasContext.drawImage(bg_universe, 50,0); 
+    gameField.canvasContext.drawImage(bg_stars, 0,0); 
     gameField.canvasContext.drawImage(playGroundLevel.bg_img,
         serpentPlayer.animation.currentFrame * playGroundLevel.bg_img.width / 4,
         0,
@@ -410,7 +422,7 @@ function movePlayerSerpent() {
 
     // Create the new Snake's head
     var newHead = new serpentPart(serpentPlayer.serpentParts[0].x + serpentPlayer.dx, serpentPlayer.serpentParts[0].y + serpentPlayer.dy);
-    console.log(newHead, serpentPlayer.dx, serpentPlayer.dy);
+    //console.log(newHead, serpentPlayer.dx, serpentPlayer.dy);
     // serpentPlayer.serpentParts = {​​​​​ x: snake[0].x + dx, y: snake[0].y + dy }​​​​​;
 
     // Add the new head to the beginning of snake body
@@ -482,14 +494,13 @@ function animations() {
 
 /* ----  animation section  end ---- */
 
-function gameLoop() {
 
-    
+
+function gameLoop() {  
     // if enough time has elapsed, draw the next frame
     now = Date.now();
     elapsed = now - then;
     if (elapsed > fpsInterval) {
-
         // Get ready for next frame by setting then=now, but also adjust for your
         // specified fpsInterval not being a multiple of RAF's interval (16.7ms)
         then = now - (elapsed % fpsInterval);
@@ -498,21 +509,15 @@ function gameLoop() {
         draw();
     }
     requestAnimationFrame(gameLoop);
-
         // Put your drawing code here
   //  setInterval(function() { gameloop(); }, 2000);
-
-
 }
 
-
 function loadImages(names, callback) {
-
     var n,name,
         result = {},
         count  = names.length,
         onload = function() { if (--count == 0) callback(result); };
-
     for(n = 0 ; n < names.length ; n++) {
         name = names[n];
         result[name] = document.createElement('img');
@@ -522,20 +527,19 @@ function loadImages(names, callback) {
 }
     
 function loadLevel(objects) {
-
-    playGroundLevel = new playground(0, objects.serpent_sprite);  
+    playGroundLevel = new playground(0, objects.serpent_sprite);
+    bg_universe = objects.spr_planet02;
+    bg_stars = objects.bg_stars;   
     serpentPlayer = new serpent(0, 5, 5, objects.snake, 3);
     itemlist[2] = new item(2, "backpack", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19),objects.backpack);
     itemlist[3] = new item(3, "bomb", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19),objects.bomb);
     itemlist[4] = new item(4, "book", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19),objects.book);
     itemlist[5] = new item(5, "feather", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19),objects.feather);
-    console.log(itemlist);
+    // console.log(itemlist);
     for (var i = 0; i <= 10; i++) {
         kiSerpents[i] = new serpent(i, getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19), objects.snake, 2);
        // console.log(kiSerpents[i], kiSerpents[i].angle);
     }
-    
-     
 }
 
 
@@ -543,7 +547,7 @@ function loadLevel(objects) {
 function main() {
     gameField.init();
     loadImages(objects, loadLevel);
-    fpsInterval = 1000/ 1;
+    fpsInterval = 1000/ 15;
     then = Date.now();
     startTime = then; 
     //canvasContext.drawImage(bg_image, 10, 10,256,256);
@@ -552,12 +556,11 @@ function main() {
     });
 }
 
-
 function cleanUp() {
+
 }
 
 main();
-
 
 /* ---- help functions section  */
 function copy(mainObj) {
