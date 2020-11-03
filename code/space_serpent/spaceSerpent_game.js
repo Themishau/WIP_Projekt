@@ -302,7 +302,8 @@ function drawbackground(img) {
 
 function drawItems() {
     for (var i = 2; i < itemlist.length; i++) {
-        itemlist[i].angle = itemlist[i].currentPointOfView * Math.PI / 180;
+       // itemlist[i].angle = itemlist[i].currentPointOfView * Math.PI / 180;
+        itemlist[i].angle += 2 * Math.PI / 180;
         ctx = gameField.canvasContext;
         ctx.save();
         ctx.translate(itemlist[i].gridx * gridSizeScale + (itemlist[i].width / 2), itemlist[i].gridy * gridSizeScale + (itemlist[i].height / 2));
