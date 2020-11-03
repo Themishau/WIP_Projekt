@@ -495,8 +495,6 @@ function animations() {
 
 /* ----  animation section  end ---- */
 
-
-
 function gameLoop() {  
     // if enough time has elapsed, draw the next frame
     now = Date.now();
@@ -510,8 +508,6 @@ function gameLoop() {
         draw();
     }
     requestAnimationFrame(gameLoop);
-        // Put your drawing code here
-  //  setInterval(function() { gameloop(); }, 2000);
 }
 
 function loadImages(names, callback) {
