@@ -39,6 +39,8 @@ items = [
     "bomb",
     "book",
     "feather"];
+ 
+    
 /* objects and sprites src */
 objects = [
     "backpack",
@@ -63,6 +65,21 @@ objects = [
     "spr_planet07"
 ];
 
+/* objects and sprites src */
+soundEffects = [
+    "Explosion1.wav",
+    "Explosion2.wav",
+    "Explosion3.wav",
+    "Explosion4.wav",
+    "Explosion5.wav",
+    "Explosion6.wav",
+    "Touch.wav",
+    "VictoryBig.wav",
+    "VictorySmall.wav",
+    "Wind.wav",
+    "WindParticles.wav",
+    "bg_Jupiter.mp3"
+];
 /* animations */
 var frame = 0;
 var fps, fpsInterval, startTime, now, then, elapsed;
@@ -142,13 +159,14 @@ var playground = class {
             }
         }
     }
-    constructor(id, bg_img) {
+    constructor(id, bg_img, bgsound) {
         this.id = id,
         this.name = "playground",
         this.xSize = gameField.canvas.width / gridSizeScale,
         this.ySize = gameField.canvas.height / gridSizeScale,
         this.fields = [],
         this.bg_img = bg_img,
+        this.bgsound = bgsound,
         this.resetPlayground()
     }
 };
@@ -213,6 +231,7 @@ var itemlist = [];
 /* keyboard listener */
 document.addEventListener("keydown", function (event) {
     /* as there might be some support issues we have to check the property of the key pressed */
+    playGroundLevel.bgsound.play();
     if (event.which || event.charCode || event.keyCode) {
         var characterCode = event.which || event.charCode || event.keyCode;
     }
@@ -510,45 +529,70 @@ function gameLoop() {
     requestAnimationFrame(gameLoop);
 }
 
-function loadImages(names, callback) {
-    var n,name,
-        result = {},
-        count  = names.length,
-        onload = function() { if (--count == 0) callback(result); };
-    for(n = 0 ; n < names.length ; n++) {
-        name = names[n];
-        result[name] = document.createElement('img');
-        result[name].addEventListener('load', onload);
-        result[name].src = "sprites/" + name + ".png";
+function loadRessources(imagenames, soundnames, callback)
+{
+    var n, imagename, m, soundname,
+    result = {},
+    count  = imagenames.length,
+        onload = function() { 
+            if (--count == 0) {
+                //console.log("resultSound", resultSound);
+                console.log("result", result);
+                callback(result); 
+            }
+            }
+    ;  
+    for(n = 0 ; n < imagenames.length ; n++) {
+        imagename = imagenames[n];
+        result[imagename] = document.createElement('img');
+        result[imagename].addEventListener('load', onload);
+        result[imagename].src = "sprites/" + imagename + ".png";
     }
-}
-    
-function loadLevel(objects) {
-    playGroundLevel = new playground(0, objects.serpent_sprite);
-    bg_universe = objects.spr_planet02;
-    bg_stars = objects.bg_stars;   
-    serpentPlayer = new serpent(0, 5, 5, objects.snake, 3);
-    itemlist[2] = new item(2, "backpack", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19),objects.backpack);
-    itemlist[3] = new item(3, "bomb", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19),objects.bomb);
-    itemlist[4] = new item(4, "book", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19),objects.book);
-    itemlist[5] = new item(5, "feather", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19),objects.feather);
-    // console.log(itemlist);
-    for (var i = 0; i <= 10; i++) {
-        kiSerpents[i] = new serpent(i, getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19), objects.snake, 2);
-       // console.log(kiSerpents[i], kiSerpents[i].angle);
+    for(m = 0 ; m < soundnames.length ; m++) {
+        soundname = soundnames[m].slice(0, soundnames[m].length - 4);
+        result[soundname] = document.createElement('audio');
+        result[soundname].addEventListener('onload', onload, false);
+        result[soundname].src = "sounds/" + soundnames[m];
     }
+
 }
 
+function loadLevel(assets)
+{
+    console.log("assets", assets);
+    playGroundLevel = new playground(0, assets.serpent_sprite, assets.bg_Jupiter);
+    bg_universe = assets.spr_planet02;
+    bg_stars = assets.bg_stars; 
+    playGroundLevel.bgsound.volume = 0.1;
+    playGroundLevel.bgsound.loop = true;
+    
+    serpentPlayer = new serpent(0, 5, 5, assets.snake, 3);
+    itemlist[2] = new item(2, "backpack", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19),assets.backpack);
+    itemlist[3] = new item(3, "bomb", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19),assets.bomb);
+    itemlist[4] = new item(4, "book", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19),assets.book);
+    itemlist[5] = new item(5, "feather", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19),assets.feather);
+    for (var i = 0; i <= 10; i++) {
+        kiSerpents[i] = new serpent(i, getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19), assets.snake, 2);
+       // console.log(kiSerpents[i], kiSerpents[i].angle);
+    }
+
+}
 
 /* setup */
 function main() {
-    gameField.init();
-    loadImages(objects, loadLevel);
-    fpsInterval = 1000/ 15;
+    gameField.init();    
+    //loadSound(soundEffects, loadObjectSound);
+    //loadImages(objects, loadObjectsImages);
+    loadRessources(objects, soundEffects, loadLevel);
+    //console.log("loaded");
+    fpsInterval = 1000/ 12;
     then = Date.now();
     startTime = then; 
+    
     //canvasContext.drawImage(bg_image, 10, 10,256,256);
     window.addEventListener("load", function (event) { // When the load event fires, do this:
+        console.log(playGroundLevel);
+    
         gameLoop(); // when assets loaded -> gameloop starts
     });
 }
@@ -577,3 +621,73 @@ function getRandomIntInclusive(min, max) {
 }
 
 /* ---- help functions section end  */
+
+/*
+function loadSound(soundnames, callback) {
+    var m, soundname
+        resultSound = {},
+        countSound = soundnames.length,
+        canplay = function() { if (--countSound == 0) callback(resultSound); };
+        for(m = 0 ; m < soundnames.length ; m++) {
+            soundname = soundnames[m].slice(0, soundnames[m].length - 4);
+            resultSound[soundname] = document.createElement('audio');
+            resultSound[soundname].addEventListener('canplay', canplay, false);
+            resultSound[soundname].src = "sounds/" + soundnames[m];
+        }
+    // console.log(resultSound);
+}   
+
+function loadImages(names, callback) {
+        var n,name, 
+        result = {},
+        count  = names.length,
+        onload = function() { if (--count == 0) callback(result);  };
+    for(n = 0 ; n < names.length ; n++) {
+        name = names[n];
+        result[name] = document.createElement('img');
+        result[name].addEventListener('load', onload);
+        result[name].src = "sprites/" + name + ".png";
+    }
+
+
+}
+
+
+
+function loadObjectsImages(sprites) {
+    //console.log("sprites", sprites);
+
+    playGroundLevel = new playground(0, sprites.serpent_sprite);
+    bg_universe = sprites.spr_planet02;
+    bg_stars = sprites.bg_stars;   
+    serpentPlayer = new serpent(0, 5, 5, sprites.snake, 3);
+    itemlist[2] = new item(2, "backpack", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19),sprites.backpack);
+    itemlist[3] = new item(3, "bomb", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19),sprites.bomb);
+    itemlist[4] = new item(4, "book", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19),sprites.book);
+    itemlist[5] = new item(5, "feather", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19),sprites.feather);
+    for (var i = 0; i <= 10; i++) {
+        kiSerpents[i] = new serpent(i, getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19), sprites.snake, 2);
+       // console.log(kiSerpents[i], kiSerpents[i].angle);
+    }
+    
+}
+
+function loadObjectSound(sounds) {
+    console.log("sounds", sounds);
+    playGroundLevel.bgsound = sounds.bg_Jupiter;
+   
+
+    serpentPlayer = new serpent(0, 5, 5, objects.snake, 3);
+    itemlist[2] = new item(2, "backpack", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19),objects.backpack);
+    itemlist[3] = new item(3, "bomb", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19),objects.bomb);
+    itemlist[4] = new item(4, "book", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19),objects.book);
+    itemlist[5] = new item(5, "feather", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19),objects.feather);
+    // console.log(itemlist);
+    for (var i = 0; i <= 10; i++) {
+        kiSerpents[i] = new serpent(i, getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19), objects.snake, 2);
+       // console.log(kiSerpents[i], kiSerpents[i].angle);
+    }
+      
+    }
+
+*/
