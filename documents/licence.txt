@@ -1,3 +1,5 @@
 Code:
 
 https://stackoverflow.com/questions/19764018/controlling-fps-with-requestanimationframe
+
+https://codeincomplete.com/articles/javascript-game-foundations-loading-assets/

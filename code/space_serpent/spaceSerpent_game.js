@@ -7,8 +7,8 @@ var gameField = {
         this.canvasContext = this.canvas.getContext("2d");
         document.body.insertBefore(this.canvas, document.body.childNodes[0]); // due to some loading issues with images and sprites w want to insert it before
     }
-
 }
+
 
 /* keys */
 let kspace = false;
@@ -27,8 +27,41 @@ var gridSizex = 50;
 
 const objectTable = {
     empty: 0,
-    obstacle: 1
+    obstacle: 1,
+    backpack: 2,
+    bomb: 3,
+    feather:4
 };
+
+/* items */
+items = [
+    "backpack",
+    "bomb",
+    "book",
+    "feather"];
+/* objects and sprites src */
+objects = [
+    "backpack",
+    "bomb",
+    "book",
+    "feather",
+    "snake",
+    "serpent_sprite",
+    "snake_head1",
+    "snake_head2",
+    "snake_head3",
+    "snake_mid",
+    "snake_end",
+    "snake_downright",
+    "bg_stars",
+    "spr_planet01",
+    "spr_planet02",
+    "spr_planet03",
+    "spr_planet04",
+    "spr_planet05",
+    "spr_planet06",
+    "spr_planet07"
+];
 
 /* animations */
 var frame = 0;
@@ -39,14 +72,29 @@ const animationdelay = 10;
 
 /* ---- class section ---- */
 
+/* item spritesheet */
+var itemSpritesheet = class {
+    constructor(id, spritesheet) {
+        this.id = id,
+            this.spritesheet = spritesheet,
+            this.name = "itemSpritesheet",
+            this.spritesheetformatx = spritesheet.width, // size of one sprite x
+            this.spritesheetformaty = spritesheet.height, // size of one sprite y
+            this.width = gridSizex,
+            this.height = gridSizey,
+            this.frameSet = 0,
+            this.currentFrame = 0, // init is 0
+            this.framelength = 0 // because we start at 0 :)
+    }
+};
 /* space serpent spritesheet */
 var serpentSpritesheet = class {
     constructor(id, spritesheet) {
         this.id = id,
             this.spritesheet = spritesheet,
             this.name = "serpentSprite",
-            this.spritesheetformatx = spritesheet.width * 0.33,// size of one sprite x
-            this.spritesheetformaty = spritesheet.height * 0.34,// size of one sprite y
+            this.spritesheetformatx = spritesheet.width * 0.33, // size of one sprite x
+            this.spritesheetformaty = spritesheet.height * 0.34, // size of one sprite y
             this.width = gridSizex,
             this.height = gridSizey,
             this.frameSet = [[0, 0], // SnakeHead1
@@ -58,21 +106,30 @@ var serpentSpritesheet = class {
     }
 };
 
-/* space serpent spritesheet */
-var itemSpritesheet = class {
-    constructor(id, spritesheet) {
+var item = class {
+    constructor(id, name, x, y, itemSprite) {
         this.id = id,
-            this.spritesheet = spritesheet,
-            this.name = "itemSprite",
-            this.spritesheetformatx = spritesheet.width,// size of one sprite x
-            this.spritesheetformaty = spritesheet.height,// size of one sprite y
+            this.name = name,
+            this.gridx = x, // init the serpents position regarding to the grid ex.: gridSizex = 20 ; x = gridnumber in row n;  25 * 20 = 500 -> the position is x = 500 on the canvas
+            this.gridy = y,
             this.width = gridSizex,
             this.height = gridSizey,
-            this.frameSet = 0,
-            this.currentFrame = 0, // init is 0
-            this.framelength = this.frameSet.length // because we start at 0 :)
+            this.PointOfView = {
+                north: 180,
+                east: 270,
+                south: 0,
+                west: 90
+            },
+            this.angle = 0,
+            this.currentPointOfView = this.PointOfView.south,
+            this.angle = this.currentPointOfView,
+            this.animation = new itemSpritesheet(0, itemSprite),
+            this.dx = 0,  /* speed x */
+            this.dy = 0   /* speed y */
     }
-};
+    
+    
+    };
 
 /* playground */
 var playground = class {
@@ -143,12 +200,14 @@ constructor(id, x, y, spritesheet, initSnakeParts) {
 
 var bg_image = new Image();
 var img = new Image();
+var bg_universe = new Image();
+var bg_stars = new Image();
 
 var playGroundLevel;
 var serpentPlayer;
 var serpentParts;
 var kiSerpents = [];
-
+var itemlist = []; 
 
 
 /* keyboard listener */
@@ -168,22 +227,26 @@ document.addEventListener("keydown", function (event) {
         kleftA = true;
         serpentPlayer.dx = -1;
         serpentPlayer.dy = 0;
+        serpentPlayer.currentPointOfView = serpentPlayer.PointOfView.west;
     }
     else if (characterCode == 39) {
         krightA = true;
         serpentPlayer.dx = +1;
         serpentPlayer.dy = 0;
+        serpentPlayer.currentPointOfView = serpentPlayer.PointOfView.east;
     }
     else if (characterCode == 38) {
         kupA = true;
         serpentPlayer.dx = 0;
         serpentPlayer.dy = -1;
+        serpentPlayer.currentPointOfView = serpentPlayer.PointOfView.north;
         
     }
     else if (characterCode == 40) {
         kdownA = true;
         serpentPlayer.dx = 0;
         serpentPlayer.dy = +1;
+        serpentPlayer.currentPointOfView = serpentPlayer.PointOfView.south;
     }
 
     if (characterCode == 32) {
@@ -237,16 +300,36 @@ function drawbackground(img) {
 
 }
 
+function drawItems() {
+    for (var i = 2; i < itemlist.length; i++) {
+       // itemlist[i].angle = itemlist[i].currentPointOfView * Math.PI / 180;
+        itemlist[i].angle += 2 * Math.PI / 180;
+        ctx = gameField.canvasContext;
+        ctx.save();
+        ctx.translate(itemlist[i].gridx * gridSizeScale + (itemlist[i].width / 2), itemlist[i].gridy * gridSizeScale + (itemlist[i].height / 2));
+        ctx.rotate(itemlist[i].angle);
+        ctx.drawImage(itemlist[i].animation.spritesheet,
+            itemlist[i].animation.frameSet,    // position on image x
+            itemlist[i].animation.frameSet,    // position on image y
+            itemlist[i].animation.spritesheetformatx, // part of image x
+            itemlist[i].animation.spritesheetformaty, // part of image y
+            itemlist[i].width / - 2, // position on canvas x
+            itemlist[i].height / - 2, // position on canvas y
+            itemlist[i].width, // strech to on x 
+            itemlist[i].height // strech to on y         
+        );
+        // console.log (itemlist[i], itemlist[i].width / - 2, itemlist[i].height / - 2);
+        ctx.restore();
+        }   
+}
+
 function drawSerpent() {
-    var frame = 3;
     for (var i = 0; i < serpentPlayer.serpentParts.length; i++) {
-    serpentPlayer.angle = 270 * Math.PI / 180;
+    serpentPlayer.angle = serpentPlayer.currentPointOfView * Math.PI / 180;
     ctx = gameField.canvasContext;
     ctx.save();
     ctx.translate(serpentPlayer.serpentParts[i].x * gridSizeScale + (serpentPlayer.width / 2), serpentPlayer.serpentParts[i].y * gridSizeScale + (serpentPlayer.height / 2));
     ctx.rotate(serpentPlayer.angle);
-    //ctx.fillStyle = "red";
-    //ctx.fillRect(serpentPlayer.width / - 2, serpentPlayer.height / - 2, 50, 50);
     ctx.drawImage(serpentPlayer.animation.spritesheet,
         serpentPlayer.animation.frameSet[serpentPlayer.animation.currentFrame][0],    // position on image x
         serpentPlayer.animation.frameSet[serpentPlayer.animation.currentFrame][1],    // position on image y
@@ -257,37 +340,36 @@ function drawSerpent() {
         serpentPlayer.width, // strech to on x 
         serpentPlayer.height // strech to on y
     );
-    // console.log (serpentPlayer.x, serpentPlayer.angle);
     ctx.restore();
     }
 }
 
 
 function drawKiSerpent() {
-
     for (var i = 1; i < kiSerpents.length; i++) {
-        // console.log("draw", kiSerpents[i]); 
-        kiSerpents[i].angle += i * Math.PI / 180; // rotation speed
-        ctx = gameField.canvasContext;
-        ctx.save();
-        ctx.translate(kiSerpents[i].gridx * gridSizeScale + (kiSerpents[i].width / 2), kiSerpents[i].gridy * gridSizeScale + (kiSerpents[i].height / 2));
-        ctx.rotate(kiSerpents[i].angle);
-        ctx.fillStyle = "red";
-        ctx.fillRect(kiSerpents[i].width / - 2, kiSerpents[i].height / - 2, 50, 50);
-        ctx.drawImage(kiSerpents[i].animation.spritesheet,
-            kiSerpents[i].animation.frameSet[kiSerpents[i].animation.currentFrame][0],    // position on sprite x
-            kiSerpents[i].animation.frameSet[kiSerpents[i].animation.currentFrame][1],    // position on sprite y
-            kiSerpents[i].animation.spritesheetformatx, // part of sprite x
-            kiSerpents[i].animation.spritesheetformaty, // part of sprite y
-            kiSerpents[i].width / - 2, // position on canvas x 
-            kiSerpents[i].height / - 2, // position on canvas y
-            kiSerpents[i].width, // strech to width  
-            kiSerpents[i].height // strech to height
-        );
-        // console.log (serpentPlayer.x, serpentPlayer.angle);
-        ctx.restore();
+        for (var j = 0; j < kiSerpents[i].serpentParts.length; j++) {
+            kiSerpents[i].angle += i * Math.PI / 180; // rotation speed
+            ctx = gameField.canvasContext;
+            ctx.save();
+            ctx.translate(kiSerpents[i].serpentParts[j].x * gridSizeScale + (kiSerpents[i].width / 2), kiSerpents[i].serpentParts[j].y * gridSizeScale + (kiSerpents[i].height / 2));
+            ctx.rotate(kiSerpents[i].angle);
+            ctx.fillStyle = "red";
+            ctx.fillRect(kiSerpents[i].width / - 2, kiSerpents[i].height / - 2, 50, 50);
+            ctx.drawImage(kiSerpents[i].animation.spritesheet,
+                kiSerpents[i].animation.frameSet[kiSerpents[i].animation.currentFrame][0],    // position on sprite x
+                kiSerpents[i].animation.frameSet[kiSerpents[i].animation.currentFrame][1],    // position on sprite y
+                kiSerpents[i].animation.spritesheetformatx, // part of sprite x
+                kiSerpents[i].animation.spritesheetformaty, // part of sprite y
+                kiSerpents[i].width / - 2, // position on canvas x 
+                kiSerpents[i].height / - 2, // position on canvas y
+                kiSerpents[i].width, // strech to width  
+                kiSerpents[i].height // strech to height
+            );
+            ctx.restore();
+        }
     }
 }
+
 
 // created this function for visualization reasons
 function drawGrid() {
@@ -297,10 +379,10 @@ function drawGrid() {
         for (var row = 0; row <= playGroundLevel.fields.length; row++) {
 
             gameField.canvasContext.beginPath();
-            gameField.canvasContext.fillStyle = "grey";
+            //gameField.canvasContext.fillStyle = "grey";
             gameField.canvasContext.fillRect(groundx, groundy, gridSizex, gridSizey);
-            gameField.canvasContext.strokeStyle = "blue";
-            gameField.canvasContext.strokeRect(groundx, groundy, gridSizex, gridSizey);
+            //gameField.canvasContext.strokeStyle = "grey";
+            //gameField.canvasContext.strokeRect(groundx, groundy, gridSizex, gridSizey);
             gameField.canvasContext.closePath();
             groundx += gridSizeScale;
 
@@ -310,7 +392,8 @@ function drawGrid() {
         groundx = 0;
         groundy += gridSizeScale;
     }
-
+    gameField.canvasContext.drawImage(bg_universe, 50,0); 
+    gameField.canvasContext.drawImage(bg_stars, 0,0); 
     gameField.canvasContext.drawImage(playGroundLevel.bg_img,
         serpentPlayer.animation.currentFrame * playGroundLevel.bg_img.width / 4,
         0,
@@ -325,7 +408,8 @@ function drawGrid() {
 }
 function draw() {
     drawGrid();
-    // drawKiSerpent();
+    drawItems();
+    drawKiSerpent();
     drawSerpent();
 }
 
@@ -339,7 +423,7 @@ function movePlayerSerpent() {
 
     // Create the new Snake's head
     var newHead = new serpentPart(serpentPlayer.serpentParts[0].x + serpentPlayer.dx, serpentPlayer.serpentParts[0].y + serpentPlayer.dy);
-    console.log(newHead, serpentPlayer.dx, serpentPlayer.dy);
+    //console.log(newHead, serpentPlayer.dx, serpentPlayer.dy);
     // serpentPlayer.serpentParts = {​​​​​ x: snake[0].x + dx, y: snake[0].y + dy }​​​​​;
 
     // Add the new head to the beginning of snake body
@@ -411,14 +495,11 @@ function animations() {
 
 /* ----  animation section  end ---- */
 
-function gameLoop() {
-
-    requestAnimationFrame(gameLoop);
+function gameLoop() {  
     // if enough time has elapsed, draw the next frame
     now = Date.now();
     elapsed = now - then;
     if (elapsed > fpsInterval) {
-
         // Get ready for next frame by setting then=now, but also adjust for your
         // specified fpsInterval not being a multiple of RAF's interval (16.7ms)
         then = now - (elapsed % fpsInterval);
@@ -426,37 +507,34 @@ function gameLoop() {
         update();
         draw();
     }
-
-
-        // Put your drawing code here
-  //  setInterval(function() { gameloop(); }, 2000);
-
-
+    requestAnimationFrame(gameLoop);
 }
 
-
-function loadLevel() {
-
-    /*
-    var img = new Image();
-    img.onload = function() { alert("Height: " + this.height); }
-    img.src = "http://path/to/image.jpg";
-    */
-
-    bg_image.onload = function() {
-        console.log("Background Image loaded.")
+function loadImages(names, callback) {
+    var n,name,
+        result = {},
+        count  = names.length,
+        onload = function() { if (--count == 0) callback(result); };
+    for(n = 0 ; n < names.length ; n++) {
+        name = names[n];
+        result[name] = document.createElement('img');
+        result[name].addEventListener('load', onload);
+        result[name].src = "sprites/" + name + ".png";
     }
-
-    bg_image.src = "sprites/serpent_sprite.png";
-    img.src = "sprites/Snake.png";
-
-
-    playGroundLevel = new playground(0, bg_image);
-    serpentPlayer = new serpent(0, 5, 5, img, 3);
-    console.log(playGroundLevel);
-    console.log(serpentPlayer);
+}
+    
+function loadLevel(objects) {
+    playGroundLevel = new playground(0, objects.serpent_sprite);
+    bg_universe = objects.spr_planet02;
+    bg_stars = objects.bg_stars;   
+    serpentPlayer = new serpent(0, 5, 5, objects.snake, 3);
+    itemlist[2] = new item(2, "backpack", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19),objects.backpack);
+    itemlist[3] = new item(3, "bomb", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19),objects.bomb);
+    itemlist[4] = new item(4, "book", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19),objects.book);
+    itemlist[5] = new item(5, "feather", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19),objects.feather);
+    // console.log(itemlist);
     for (var i = 0; i <= 10; i++) {
-        kiSerpents[i] = new serpent(i, getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19), img);
+        kiSerpents[i] = new serpent(i, getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19), objects.snake, 2);
        // console.log(kiSerpents[i], kiSerpents[i].angle);
     }
 }
@@ -464,27 +542,22 @@ function loadLevel() {
 
 /* setup */
 function main() {
-
+    gameField.init();
+    loadImages(objects, loadLevel);
+    fpsInterval = 1000/ 15;
+    then = Date.now();
+    startTime = then; 
     //canvasContext.drawImage(bg_image, 10, 10,256,256);
     window.addEventListener("load", function (event) { // When the load event fires, do this:
-        gameField.init();
-        loadLevel();
-        fpsInterval = 1000/ 1;
-        then = Date.now();
-        startTime = then; 
-        gameLoop();
-
-        // document.addEventListener("DOMContentLoaded", gameLoop);
-
+        gameLoop(); // when assets loaded -> gameloop starts
     });
 }
 
-
 function cleanUp() {
+
 }
 
 main();
-
 
 /* ---- help functions section  */
 function copy(mainObj) {
