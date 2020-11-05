@@ -1,21 +1,9 @@
-/* Canvas */
-var gameField = {
-    canvas: document.createElement("canvas"),
-    init: function () {
-        this.canvas.width = 1000;
-        this.canvas.height = 1000;
-        this.canvasContext = this.canvas.getContext("2d");
-        document.body.insertBefore(this.canvas, document.body.childNodes[0]); // due to some loading issues with images and sprites w want to insert it before
-    }
-}
-
-
 /* keys */
 let kspace = false;
 let kleftA = false;
 let krightA = false;
-let kupA    = false;
-let kdownA  = false;
+let kupA = false;
+let kdownA = false;
 var int = 1;
 
 /* grid size scale */
@@ -30,7 +18,7 @@ const objectTable = {
     obstacle: 1,
     backpack: 2,
     bomb: 3,
-    feather:4
+    feather: 4
 };
 
 /* items */
@@ -39,8 +27,8 @@ items = [
     "bomb",
     "book",
     "feather"];
- 
-    
+
+
 /* objects and sprites src */
 objects = [
     "backpack",
@@ -55,6 +43,7 @@ objects = [
     "snake_mid",
     "snake_end",
     "snake_downright",
+    "snake_downleft",
     "bg_stars",
     "spr_planet01",
     "spr_planet02",
@@ -80,12 +69,12 @@ soundEffects = [
     "WindParticles.wav",
     "bg_Jupiter.mp3"
 ];
-/* animations */
-var frame = 0;
-var fps, fpsInterval, startTime, now, then, elapsed;
-var animationInterval = 0;
-const animationdelay = 10;
-
+/*
+        var frame = 0;
+        //var fps, fpsInterval, startTime, now, then, elapsed;
+        var animationInterval = 0;
+        const animationdelay = 10;   
+*/
 
 /* ---- class section ---- */
 
@@ -110,16 +99,22 @@ var serpentSpritesheet = class {
         this.id = id,
             this.spritesheet = spritesheet,
             this.name = "serpentSprite",
-            this.spritesheetformatx = spritesheet.width * 0.33, // size of one sprite x
-            this.spritesheetformaty = spritesheet.height * 0.34, // size of one sprite y
+            this.spritesheetformatx = spritesheet[0].width, // size of one sprite x
+            this.spritesheetformaty = spritesheet[0].height, // size of one sprite y
             this.width = gridSizex,
             this.height = gridSizey,
-            this.frameSet = [[0, 0], // SnakeHead1
-            [0, 40], // SnakeHead2
-            [0, 80] // SnakeHead3
+            this.frameSet = [0, // SnakeHead1
+                1, // SnakeHead2
+                2, // SnakeHead3
+                3, // mid
+                4, // downleft
+                5, // downright
+                6  // end
             ],
             this.currentFrame = 0, // init is 0
-            this.framelength = this.frameSet.length // because we start at 0 :)
+            this.framelength = 3,// because we start at 0 :)
+            this.animationInterval = 0,
+            this.animationdelay = 10
     }
 };
 
@@ -144,9 +139,9 @@ var item = class {
             this.dx = 0,  /* speed x */
             this.dy = 0   /* speed y */
     }
-    
-    
-    };
+
+
+};
 
 /* playground */
 var playground = class {
@@ -161,21 +156,29 @@ var playground = class {
     }
     constructor(id, bg_img, bgsound) {
         this.id = id,
-        this.name = "playground",
-        this.xSize = gameField.canvas.width / gridSizeScale,
-        this.ySize = gameField.canvas.height / gridSizeScale,
-        this.fields = [],
-        this.bg_img = bg_img,
-        this.bgsound = bgsound,
-        this.resetPlayground()
+            this.name = "playground",
+            this.xSize = gameField.canvas.width / gridSizeScale,
+            this.ySize = gameField.canvas.height / gridSizeScale,
+            this.fields = [],
+            this.bg_img = bg_img,
+            this.bgsound = bgsound,
+            this.resetPlayground()
     }
 };
 
 var serpentPart = class {
-    constructor( x, y) {
-            this.name = "serpentPart",
+    constructor(x, y) {
+        this.name = "serpentPart",
             this.x = x, // init the serpents position regarding to the grid ex.: gridSizex = 20 ; x = gridnumber in row n;  25 * 20 = 500 -> the position is x = 500 on the canvas
-            this.y = y  
+            this.y = y,
+            this.angle = 0,
+            this.PointOfView = {
+                north: 180,
+                east: 270,
+                south: 0,
+                west: 90
+            },
+            this.currentPointOfView = this.PointOfView.east
     }
 };
 
@@ -183,30 +186,22 @@ var serpentPart = class {
 var serpent = class {
     addSerpentPart(amount) {
         for (var i = 0; i < amount; i++) {
-        this.serpentParts.push(new serpentPart (this.gridx -i , this.gridy));
+            this.serpentParts.push(new serpentPart(this.gridx - i, this.gridy));
         }
     }
-constructor(id, x, y, spritesheet, initSnakeParts) {
-    this.id = id,
-        this.name = "serpent",
-        this.gridx = x, // init the serpents position regarding to the grid ex.: gridSizex = 20 ; x = gridnumber in row n;  25 * 20 = 500 -> the position is x = 500 on the canvas
-        this.gridy = y,
-        this.width = gridSizex,
-        this.height = gridSizey,
-        this.angle = 0,
-        this.PointOfView = {
-            north: 180,
-            east: 270,
-            south: 0,
-            west: 90
-        },
-        this.currentPointOfView = this.PointOfView.east,
-        this.animation = new serpentSpritesheet(0, spritesheet),
-        this.dx = 1,  /* speed x */
-        this.dy = 0,   /* speed y */
-        this.serpentParts = [],
-        this.addSerpentPart(initSnakeParts)
-}
+    constructor(id, x, y, spritesheet, initSnakeParts) {
+        this.id = id,
+            this.name = "serpent",
+            this.gridx = x, // init the serpents position regarding to the grid ex.: gridSizex = 20 ; x = gridnumber in row n;  25 * 20 = 500 -> the position is x = 500 on the canvas
+            this.gridy = y,
+            this.width = gridSizex,
+            this.height = gridSizey,
+            this.animation = new serpentSpritesheet(0, spritesheet),
+            this.dx = 1,  /* speed x */
+            this.dy = 0,   /* speed y */
+            this.serpentParts = [],
+            this.addSerpentPart(initSnakeParts)
+    }
 
 };
 
@@ -220,89 +215,304 @@ var bg_image = new Image();
 var img = new Image();
 var bg_universe = new Image();
 var bg_stars = new Image();
-
+var serpentSprites = [];
 var playGroundLevel;
 var serpentPlayer;
 var serpentParts;
 var kiSerpents = [];
-var itemlist = []; 
+var itemlist = [];
 
+var State = function () {
+    this.name; // Just to identify the State
+    this.update = function () { };
+    this.render = function () { };
+    this.onEnter = function () { };
+    this.onExit = function () { };
 
-/* keyboard listener */
-document.addEventListener("keydown", function (event) {
-    /* as there might be some support issues we have to check the property of the key pressed */
-    playGroundLevel.bgsound.play();
-    if (event.which || event.charCode || event.keyCode) {
-        var characterCode = event.which || event.charCode || event.keyCode;
-    }
-    else if (event.key != undefined) {
-        var characterCode = charCodeArr[event.key] || event.key.charCodeAt(0);
-    }
-    else {
-        var characterCode = 0;
-    }
-    /* check saved key */
-    if (characterCode == 37) {
-        kleftA = true;
-        serpentPlayer.dx = -1;
-        serpentPlayer.dy = 0;
-        serpentPlayer.currentPointOfView = serpentPlayer.PointOfView.west;
-    }
-    else if (characterCode == 39) {
-        krightA = true;
-        serpentPlayer.dx = +1;
-        serpentPlayer.dy = 0;
-        serpentPlayer.currentPointOfView = serpentPlayer.PointOfView.east;
-    }
-    else if (characterCode == 38) {
-        kupA = true;
-        serpentPlayer.dx = 0;
-        serpentPlayer.dy = -1;
-        serpentPlayer.currentPointOfView = serpentPlayer.PointOfView.north;
+    // Optional but useful
+    this.onPause = function () { };
+    this.onResume = function () { };
+};
+
+var EmptyState = function () {
+    this.name = "EmptyState";
+    this.onEnter = function () { };
+    this.onExit = function () { };
+
+    this.update = function () {
+        // update values
+    };
+
+    this.render = function () {
+        // redraw
+    };
+};
+
+/* level0 */
+var level0 = function () {
+    this.name = "level0";
+    /* animations */
+    this.frame = 0;
+    this.animationInterval = 0;
+    this.animationdelay = 10;
+    
+ 
+    /* on enter this state */
+    this.onEnter = function () {
+        var pause = false;
+        var onChangeDirection = new Event ("onChangeDirection");
+        loadRessources(objects, soundEffects, loadLevel);
+        document.addEventListener("onChangeDirection", function (event) {
         
-    }
-    else if (characterCode == 40) {
-        kdownA = true;
-        serpentPlayer.dx = 0;
-        serpentPlayer.dy = +1;
-        serpentPlayer.currentPointOfView = serpentPlayer.PointOfView.south;
-    }
+        });
+        /* keyboard listener */
+        document.addEventListener("keydown", function (event) {
+            var playerDx = serpentPlayer.dx;
+            var playerDy = serpentPlayer.dy;            
+            /* as there might be some support issues we have to check the property of the key pressed */
+            playGroundLevel.bgsound.play();
+            if (event.which || event.charCode || event.keyCode) {
+                var characterCode = event.which || event.charCode || event.keyCode;
+            }
+            else if (event.key != undefined) {
+                var characterCode = charCodeArr[event.key] || event.key.charCodeAt(0);
+            }
+            else {
+                var characterCode = 0;
+            }
+            /* check saved key */
+            if (characterCode == 27) {
+                if (pause == false) {
+                    pause = true;
+                    pauseGame();
+                }
+                else {
+                    pause = false;
+                    resumeGame();
+                }
 
-    if (characterCode == 32) {
-        kspace = true;
-    }
-});
+                // gameMode.push(new Level1State());
+            }
+            else if (characterCode == 37) {
+                kleftA = true;
+                serpentPlayer.dx = -1;
+                serpentPlayer.dy = 0;
+                serpentPlayer.serpentParts[0].currentPointOfView = serpentPlayer.serpentParts[0].PointOfView.west;
+            }
+            else if (characterCode == 39) {
+                krightA = true;
+                serpentPlayer.dx = +1;
+                serpentPlayer.dy = 0;
+                serpentPlayer.serpentParts[0].currentPointOfView = serpentPlayer.serpentParts[0].PointOfView.east;
+            }
+            else if (characterCode == 38) {
+                kupA = true;
+                serpentPlayer.dx = 0;
+                serpentPlayer.dy = -1;
+                serpentPlayer.serpentParts[0].currentPointOfView = serpentPlayer.serpentParts[0].PointOfView.north;
+
+            }
+            else if (characterCode == 40) {
+                kdownA = true;
+                serpentPlayer.dx = 0;
+                serpentPlayer.dy = +1;
+                serpentPlayer.serpentParts[0].currentPointOfView = serpentPlayer.serpentParts[0].PointOfView.south;
+            }
+
+            if (characterCode == 32) {
+                kspace = true;
+            }
+            if ((playerDx != serpentPlayer.dx) && (playerDy != serpentPlayer.dy)) {
+
+            }
+        });
+
+        document.addEventListener("keyup", function (event) {
+            /* as there might be some support issues we have to check the property of the key pressed */
+            if (event.which || event.charCode || event.keyCode) {
+                var characterCode = event.which || event.charCode || event.keyCode;
+            }
+            else if (event.key != undefined) {
+                var characterCode = charCodeArr[event.key] || event.key.charCodeAt(0);
+            }
+            else {
+                var characterCode = 0;
+            }
+
+            /* check saved key */
+            if (characterCode == 37) {
+                kleftA = false;
+            }
+            else if (characterCode == 39) {
+                krightA = false;
+            }
+            else if (characterCode == 38) {
+                kupA = false;
+            }
+            else if (characterCode == 40) {
+                kdownA = false;
+            }
+            if (characterCode == 32) {
+                kspace = false;
+            }
+        });
+
+        
+    };
+    /* if direction changes we need*/
 
 
-document.addEventListener("keyup", function (event) {
-    /* as there might be some support issues we have to check the property of the key pressed */
-    if (event.which || event.charCode || event.keyCode) {
-        var characterCode = event.which || event.charCode || event.keyCode;
-    }
-    else if (event.key != undefined) {
-        var characterCode = charCodeArr[event.key] || event.key.charCodeAt(0);
-    }
-    else {
-        var characterCode = 0;
-    }
+    /* on leave this state */
+    this.onExit = function () {
+    };
 
-    /* check saved key */
-    if (characterCode == 37) {
-        kleftA = false;
+    /* update section */
+    this.update = function () {
+        animations();
+        update();
+    };
+    /* draw section */
+    this.render = function () {
+        draw();
+    };
+    this.onPause = function () {
+        //alert("game is paused");
+    };
+    this.onResume = function () {
+    };
+
+}
+
+var StateList = function () {
+    var states = [];
+    this.pop = function () {
+        return states.pop();
+    };
+    this.push = function (state) {
+        states.push(state);
+    };
+    this.top = function () {
+        return states[states.length - 1];
     }
-    else if (characterCode == 39) {
-        krightA = false;
+};
+
+var StateStack = function () {
+    var states = new StateList();
+
+    /* adds an empty state to prevent errors */
+    states.push(new EmptyState());
+    this.update = function () {
+        var state = states.top();
+        if (state) {
+            state.update();
+        }
+    };
+    this.render = function () {
+        var state = states.top();
+        if (state) {
+            state.render();
+        }
+    };
+    this.push = function (state) {
+        states.push(state);
+        state.onEnter();
+    };
+    this.pop = function () {
+        var state = states.top();
+        state.onExit();
+        return states.pop();
+    };
+    this.pause = function () {
+        var state = states.top();
+        if (state.onPause) {
+            state.onPause();
+        }
+    };
+
+    this.resume = function () {
+        var state = states.top();
+        if (state.onResume) {
+            state.onResume();
+        }
+    };
+};
+
+window.onload = function () {
+    window.getGameInstance = function () {
+        return gameField.gameMode;
+    };
+
+    window.getCanvas = function () {
+        return gameField.canvas;
+    };
+
+    window.getGameDimensions = function () {
+        return {
+            width: gameField.canvas_width,
+            height: gameField.canvas_height
+        };
+    };
+
+    window.pauseGame = function () {
+        gameField.gameMode.pause();
+        gameField.pauseGame();
+    };
+
+    window.resumeGame = function () {
+        gameField.resumeGame();
+        gameField.gameMode.resume();
+    };
+
+    window.getCanvasElement = function () {
+        return gameField.canvasElement;
+    };
+
+};
+
+/* Canvas */
+var gameField = {
+    canvas: document.createElement("canvas"),
+    gameMode: new StateStack(),
+    then: null,
+    startTime: null,
+    timer: null,
+    FPS: 2,
+    fpsInterval: null,
+
+    update: function () {
+        // console.log(this.fpsInterval);
+        this.gameMode.update();
+        this.gameMode.render();
+    },
+    startGame: function () {
+        // this.gameMode.push(new MainMenuState());
+        this.gameMode.push(new level0());
+        console.log(this.gameMode);
+        this.fpsInterval = setInterval(this.update.bind(this), this.timer);
+
+    },
+    pauseGame: function () {
+        clearInterval(this.fpsInterval);
+        // console.log("pause", this.fpsInterval);
+    },
+
+    resumeGame: function () {
+        this.fpsInterval = setInterval(this.update.bind(this), this.timer);
+    },
+    init: function () {
+        //this.then = Date.now(),
+        //this.startTime = this.then,
+        this.canvas.width = 1000;
+        this.canvas.height = 1000;
+        this.canvasContext = this.canvas.getContext("2d");
+        document.body.insertBefore(this.canvas, document.body.childNodes[0]); // due to some loading issues with images and sprites w want to insert it before
+        this.timer = 1000 / this.FPS;
+        this.startGame();
     }
-    else if (characterCode == 38) {
-        kupA = false;
-    }
-    else if (characterCode == 40) {
-        kdownA = false;
-    }
-    if (characterCode == 32) {
-        kspace = false;
-    }
-});
+}
+
+
+
 
 
 // playing around with canvas
@@ -312,6 +522,11 @@ function clearCanvasObject(object) {
 
 
 /* ---- draw section ---- */
+onChangeDirection = function() {
+
+}   
+
+
 function drawbackground(img) {
     img.onload = function () {
         canvasContext.drawImage(img, 0, 0, canvas.width, canvas.height);
@@ -321,7 +536,7 @@ function drawbackground(img) {
 
 function drawItems() {
     for (var i = 2; i < itemlist.length; i++) {
-       // itemlist[i].angle = itemlist[i].currentPointOfView * Math.PI / 180;
+        // itemlist[i].angle = itemlist[i].currentPointOfView * Math.PI / 180;
         itemlist[i].angle += 2 * Math.PI / 180;
         ctx = gameField.canvasContext;
         ctx.save();
@@ -339,27 +554,90 @@ function drawItems() {
         );
         // console.log (itemlist[i], itemlist[i].width / - 2, itemlist[i].height / - 2);
         ctx.restore();
-        }   
+    }
 }
 
 function drawSerpent() {
+    var serpentPartbefore = [];
+    serpentPartafter = [];
+    var spritecorner = new Image();
+
     for (var i = 0; i < serpentPlayer.serpentParts.length; i++) {
-    serpentPlayer.angle = serpentPlayer.currentPointOfView * Math.PI / 180;
-    ctx = gameField.canvasContext;
-    ctx.save();
-    ctx.translate(serpentPlayer.serpentParts[i].x * gridSizeScale + (serpentPlayer.width / 2), serpentPlayer.serpentParts[i].y * gridSizeScale + (serpentPlayer.height / 2));
-    ctx.rotate(serpentPlayer.angle);
-    ctx.drawImage(serpentPlayer.animation.spritesheet,
-        serpentPlayer.animation.frameSet[serpentPlayer.animation.currentFrame][0],    // position on image x
-        serpentPlayer.animation.frameSet[serpentPlayer.animation.currentFrame][1],    // position on image y
-        serpentPlayer.animation.spritesheetformatx, // part of image x
-        serpentPlayer.animation.spritesheetformaty, // part of image y
-        serpentPlayer.width / - 2, // position on canvas x
-        serpentPlayer.height / - 2, // position on canvas y
-        serpentPlayer.width, // strech to on x 
-        serpentPlayer.height // strech to on y
-    );
-    ctx.restore();
+        serpentPlayer.serpentParts[i].angle = serpentPlayer.serpentParts[i].currentPointOfView * Math.PI / 180;
+        ctx = gameField.canvasContext;
+        ctx.save();
+        if (i == 0) {
+            ctx.translate(serpentPlayer.serpentParts[i].x * gridSizeScale + (serpentPlayer.width / 2), serpentPlayer.serpentParts[i].y * gridSizeScale + (serpentPlayer.height / 2));
+            ctx.rotate(serpentPlayer.serpentParts[i].angle);
+            ctx.drawImage(serpentPlayer.animation.spritesheet[serpentPlayer.animation.currentFrame],
+                0,    // position on image x
+                0,    // position on image y
+                serpentPlayer.animation.spritesheetformatx, // part of image x
+                serpentPlayer.animation.spritesheetformaty, // part of image y
+                serpentPlayer.width / - 2, // position on canvas x
+                serpentPlayer.height / - 2, // position on canvas y
+                serpentPlayer.width, // strech to on x 
+                serpentPlayer.height // strech to on y
+            );
+
+        }
+        else if (i == serpentPlayer.serpentParts.length - 1) {
+            ctx = gameField.canvasContext;
+            ctx.save();
+            ctx.translate(serpentPlayer.serpentParts[i].x * gridSizeScale + (serpentPlayer.width / 2), serpentPlayer.serpentParts[i].y * gridSizeScale + (serpentPlayer.height / 2));
+            ctx.rotate(serpentPlayer.serpentParts[i].angle);
+
+            ctx.drawImage(serpentPlayer.animation.spritesheet[6],
+                0,    // position on image x
+                0,    // position on image y
+                serpentPlayer.animation.spritesheetformatx, // part of image x
+                serpentPlayer.animation.spritesheetformaty, // part of image y
+                serpentPlayer.width / - 2, // position on canvas x
+                serpentPlayer.height / - 2, // position on canvas y
+                serpentPlayer.width, // strech to on x 
+                serpentPlayer.height // strech to on y
+            );
+
+        }
+
+        else {
+            serpentPartbefore = [serpentPlayer.serpentParts[i - 1].x, serpentPlayer.serpentParts[i - 1].y]; //
+            serpentPartafter = [serpentPlayer.serpentParts[i + 1].x, serpentPlayer.serpentParts[i + 1].y]; //
+            ctx = gameField.canvasContext;
+            ctx.save();
+            ctx.translate(serpentPlayer.serpentParts[i].x * gridSizeScale + (serpentPlayer.width / 2), serpentPlayer.serpentParts[i].y * gridSizeScale + (serpentPlayer.height / 2));
+            ctx.rotate(serpentPlayer.serpentParts[i].angle);
+            console.log("head", serpentPartbefore, "end", serpentPartafter);
+            if ((serpentPartbefore[0] != serpentPartafter[0]) && (serpentPartbefore[1] != serpentPartafter[1])) {
+                console.log("corner");
+                ctx.drawImage(serpentPlayer.animation.spritesheet[4],
+                    0,    // position on image x
+                    0,    // position on image y
+                    serpentPlayer.animation.spritesheetformatx, // part of image x
+                    serpentPlayer.animation.spritesheetformaty, // part of image y
+                    serpentPlayer.width / - 2, // position on canvas x
+                    serpentPlayer.height / - 2, // position on canvas y
+                    serpentPlayer.width, // strech to on x 
+                    serpentPlayer.height // strech to on y
+                );
+            }
+            else {
+                ctx.drawImage(serpentPlayer.animation.spritesheet[3],
+                    0,    // position on image x
+                    0,    // position on image y
+                    serpentPlayer.animation.spritesheetformatx, // part of image x
+                    serpentPlayer.animation.spritesheetformaty, // part of image y
+                    serpentPlayer.width / - 2, // position on canvas x
+                    serpentPlayer.height / - 2, // position on canvas y
+                    serpentPlayer.width, // strech to on x 
+                    serpentPlayer.height // strech to on y
+                );
+            }
+
+
+
+        }
+        ctx.restore();
     }
 }
 
@@ -367,16 +645,16 @@ function drawSerpent() {
 function drawKiSerpent() {
     for (var i = 1; i < kiSerpents.length; i++) {
         for (var j = 0; j < kiSerpents[i].serpentParts.length; j++) {
-            kiSerpents[i].angle += i * Math.PI / 180; // rotation speed
+            kiSerpents[i].serpentParts[j].angle += i * Math.PI / 180; // rotation speed
             ctx = gameField.canvasContext;
             ctx.save();
             ctx.translate(kiSerpents[i].serpentParts[j].x * gridSizeScale + (kiSerpents[i].width / 2), kiSerpents[i].serpentParts[j].y * gridSizeScale + (kiSerpents[i].height / 2));
-            ctx.rotate(kiSerpents[i].angle);
+            ctx.rotate(kiSerpents[i].serpentParts[j].angle);
             ctx.fillStyle = "red";
             ctx.fillRect(kiSerpents[i].width / - 2, kiSerpents[i].height / - 2, 50, 50);
-            ctx.drawImage(kiSerpents[i].animation.spritesheet,
-                kiSerpents[i].animation.frameSet[kiSerpents[i].animation.currentFrame][0],    // position on sprite x
-                kiSerpents[i].animation.frameSet[kiSerpents[i].animation.currentFrame][1],    // position on sprite y
+            ctx.drawImage(kiSerpents[i].animation.spritesheet[kiSerpents[i].animation.currentFrame],
+                0,    // position on sprite x
+                0,    // position on sprite y
                 kiSerpents[i].animation.spritesheetformatx, // part of sprite x
                 kiSerpents[i].animation.spritesheetformaty, // part of sprite y
                 kiSerpents[i].width / - 2, // position on canvas x 
@@ -411,8 +689,8 @@ function drawGrid() {
         groundx = 0;
         groundy += gridSizeScale;
     }
-    gameField.canvasContext.drawImage(bg_universe, 50,0); 
-    gameField.canvasContext.drawImage(bg_stars, 0,0); 
+    gameField.canvasContext.drawImage(bg_universe, 50, 0);
+    gameField.canvasContext.drawImage(bg_stars, 0, 0);
     gameField.canvasContext.drawImage(playGroundLevel.bg_img,
         serpentPlayer.animation.currentFrame * playGroundLevel.bg_img.width / 4,
         0,
@@ -442,6 +720,7 @@ function movePlayerSerpent() {
 
     // Create the new Snake's head
     var newHead = new serpentPart(serpentPlayer.serpentParts[0].x + serpentPlayer.dx, serpentPlayer.serpentParts[0].y + serpentPlayer.dy);
+    newHead.currentPointOfView = serpentPlayer.serpentParts[0].currentPointOfView;
     //console.log(newHead, serpentPlayer.dx, serpentPlayer.dy);
     // serpentPlayer.serpentParts = {​​​​​ x: snake[0].x + dx, y: snake[0].y + dy }​​​​​;
 
@@ -450,7 +729,7 @@ function movePlayerSerpent() {
     serpentPlayer.serpentParts.unshift(newHead);
 
     serpentPlayer.serpentParts.pop();
-    
+
     //const has_eaten_food = snake[0].x === food_x && snake[0].y === food_y;
     /*
     if (has_eaten_food) {​​​​​
@@ -484,21 +763,20 @@ function update() {
 
 /* ----  animation section  ---- */
 
-
 function animationPlayer() {
     var vCurrentFrame = serpentPlayer.animation.currentFrame;
 
 
-    if (vCurrentFrame < serpentPlayer.animation.framelength - 1 && animationInterval == animationdelay) {
+    if (vCurrentFrame < serpentPlayer.animation.framelength - 1 && serpentPlayer.animation.animationInterval == serpentPlayer.animation.animationdelay) {
         serpentPlayer.animation.currentFrame += 1;
-        animationInterval = 0;
+        serpentPlayer.animation.animationInterval = 0;
     }
-    else if (vCurrentFrame >= serpentPlayer.animation.framelength - 1 && animationInterval == animationdelay) {
-        animationInterval = 0;
+    else if (vCurrentFrame >= serpentPlayer.animation.framelength - 1 && serpentPlayer.animation.animationInterval == serpentPlayer.animation.animationdelay) {
+        serpentPlayer.animation.animationInterval = 0;
         serpentPlayer.animation.currentFrame = 0;
     }
 
-    animationInterval += 10;
+    serpentPlayer.animation.animationInterval += 10;
     // console.log(serpentPlayer.animation.frameSet.length, serpentPlayer.animation.currentFrame, animationInterval);
 
 }
@@ -514,41 +792,25 @@ function animations() {
 
 /* ----  animation section  end ---- */
 
-function gameLoop() {  
-    // if enough time has elapsed, draw the next frame
-    now = Date.now();
-    elapsed = now - then;
-    if (elapsed > fpsInterval) {
-        // Get ready for next frame by setting then=now, but also adjust for your
-        // specified fpsInterval not being a multiple of RAF's interval (16.7ms)
-        then = now - (elapsed % fpsInterval);
-        animations();
-        update();
-        draw();
-    }
-    requestAnimationFrame(gameLoop);
-}
 
-function loadRessources(imagenames, soundnames, callback)
-{
+function loadRessources(imagenames, soundnames, callback) {
     var n, imagename, m, soundname,
-    result = {},
-    count  = imagenames.length,
-        onload = function() { 
+        result = {},
+        count = imagenames.length,
+        onload = function () {
             if (--count == 0) {
                 //console.log("resultSound", resultSound);
-                console.log("result", result);
-                callback(result); 
+                callback(result);
             }
-            }
-    ;  
-    for(n = 0 ; n < imagenames.length ; n++) {
+        }
+        ;
+    for (n = 0; n < imagenames.length; n++) {
         imagename = imagenames[n];
         result[imagename] = document.createElement('img');
         result[imagename].addEventListener('load', onload);
         result[imagename].src = "sprites/" + imagename + ".png";
     }
-    for(m = 0 ; m < soundnames.length ; m++) {
+    for (m = 0; m < soundnames.length; m++) {
         soundname = soundnames[m].slice(0, soundnames[m].length - 4);
         result[soundname] = document.createElement('audio');
         result[soundname].addEventListener('onload', onload, false);
@@ -557,51 +819,36 @@ function loadRessources(imagenames, soundnames, callback)
 
 }
 
-function loadLevel(assets)
-{
+function loadLevel(assets) {
     console.log("assets", assets);
     playGroundLevel = new playground(0, assets.serpent_sprite, assets.bg_Jupiter);
     bg_universe = assets.spr_planet02;
-    bg_stars = assets.bg_stars; 
+    bg_stars = assets.bg_stars;
     playGroundLevel.bgsound.volume = 0.1;
     playGroundLevel.bgsound.loop = true;
-    
-    serpentPlayer = new serpent(0, 5, 5, assets.snake, 3);
-    itemlist[2] = new item(2, "backpack", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19),assets.backpack);
-    itemlist[3] = new item(3, "bomb", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19),assets.bomb);
-    itemlist[4] = new item(4, "book", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19),assets.book);
-    itemlist[5] = new item(5, "feather", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19),assets.feather);
+    serpentSprites = [assets.snake_head1, assets.snake_head2, assets.snake_head3, assets.snake_mid, assets.snake_downleft, assets.snake_downleft, assets.snake_end];
+    serpentPlayer = new serpent(0, 5, 5, serpentSprites, 3);
+    console.log(serpentPlayer);
+    itemlist[2] = new item(2, "backpack", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19), assets.backpack);
+    itemlist[3] = new item(3, "bomb", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19), assets.bomb);
+    itemlist[4] = new item(4, "book", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19), assets.book);
+    itemlist[5] = new item(5, "feather", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19), assets.feather);
     for (var i = 0; i <= 10; i++) {
-        kiSerpents[i] = new serpent(i, getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19), assets.snake, 2);
-       // console.log(kiSerpents[i], kiSerpents[i].angle);
+        kiSerpents[i] = new serpent(i, getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19), serpentSprites, 2);
+        // console.log(kiSerpents[i], kiSerpents[i].angle);
     }
 
 }
 
-/* setup */
-function main() {
-    gameField.init();    
-    //loadSound(soundEffects, loadObjectSound);
-    //loadImages(objects, loadObjectsImages);
-    loadRessources(objects, soundEffects, loadLevel);
-    //console.log("loaded");
-    fpsInterval = 1000/ 12;
-    then = Date.now();
-    startTime = then; 
-    
-    //canvasContext.drawImage(bg_image, 10, 10,256,256);
-    window.addEventListener("load", function (event) { // When the load event fires, do this:
-        console.log(playGroundLevel);
-    
-        gameLoop(); // when assets loaded -> gameloop starts
-    });
-}
+
 
 function cleanUp() {
 
 }
 
-main();
+
+gameField.init();
+
 
 /* ---- help functions section  */
 function copy(mainObj) {
@@ -635,10 +882,10 @@ function loadSound(soundnames, callback) {
             resultSound[soundname].src = "sounds/" + soundnames[m];
         }
     // console.log(resultSound);
-}   
+}
 
 function loadImages(names, callback) {
-        var n,name, 
+        var n,name,
         result = {},
         count  = names.length,
         onload = function() { if (--count == 0) callback(result);  };
@@ -659,7 +906,7 @@ function loadObjectsImages(sprites) {
 
     playGroundLevel = new playground(0, sprites.serpent_sprite);
     bg_universe = sprites.spr_planet02;
-    bg_stars = sprites.bg_stars;   
+    bg_stars = sprites.bg_stars;
     serpentPlayer = new serpent(0, 5, 5, sprites.snake, 3);
     itemlist[2] = new item(2, "backpack", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19),sprites.backpack);
     itemlist[3] = new item(3, "bomb", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19),sprites.bomb);
@@ -669,13 +916,13 @@ function loadObjectsImages(sprites) {
         kiSerpents[i] = new serpent(i, getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19), sprites.snake, 2);
        // console.log(kiSerpents[i], kiSerpents[i].angle);
     }
-    
+
 }
 
 function loadObjectSound(sounds) {
     console.log("sounds", sounds);
     playGroundLevel.bgsound = sounds.bg_Jupiter;
-   
+
 
     serpentPlayer = new serpent(0, 5, 5, objects.snake, 3);
     itemlist[2] = new item(2, "backpack", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19),objects.backpack);
@@ -687,7 +934,7 @@ function loadObjectSound(sounds) {
         kiSerpents[i] = new serpent(i, getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19), objects.snake, 2);
        // console.log(kiSerpents[i], kiSerpents[i].angle);
     }
-      
+
     }
 
 */
