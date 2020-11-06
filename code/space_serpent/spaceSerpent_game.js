@@ -11,6 +11,7 @@ var gridSizeScale = 50;
 var gridSizey = 50;
 var gridSizex = 50;
 
+
 /* object_table */
 var objectTable = {
     empty: 0, // empty
@@ -21,7 +22,6 @@ var objectTable = {
     feather: 5,
     playerSerpent: 6
 };
-
 /* items */
 items = [
     "clover",
@@ -73,7 +73,7 @@ soundEffects = [
 
 /* ---- class section ---- */
 /* item spritesheet */
-var itemSpritesheet = class {
+itemSpritesheet = class {
     constructor(id, spritesheet) {
         this.id = id,
             this.spritesheet = spritesheet,
@@ -88,7 +88,7 @@ var itemSpritesheet = class {
     }
 };
 /* space serpent spritesheet */
-var serpentSpritesheet = class {
+serpentSpritesheet = class {
     constructor(id, spritesheet) {
         this.id = id,
             this.spritesheet = spritesheet,
@@ -113,7 +113,7 @@ var serpentSpritesheet = class {
     }
 };
 /* item */
-var item = class {
+item = class {
     constructor(id, name, x, y, itemSprite) {
         this.id = id,
             this.name = name,
@@ -139,7 +139,7 @@ var item = class {
     }
 };
 /* playground */
-var playground = class {
+playground = class {
     resetPlayground() {
         for (var column = 0; column < this.xSize; column++) {
             this.fields[column] = [];
@@ -162,7 +162,7 @@ var playground = class {
 
 };
 /* individual part of the serpent */
-var serpentPart = class {
+serpentPart = class {
     constructor(x, y) {
         this.name = "serpentPart",
             this.x = x, // init the serpents position regarding to the grid ex.: gridSizex = 20 ; x = gridnumber in row n;  25 * 20 = 500 -> the position is x = 500 on the canvas
@@ -179,7 +179,7 @@ var serpentPart = class {
     }
 };
 /* serpent */
-var serpent = class {
+serpent = class {
     addSerpentPart(amount) {
         for (var i = 0; i < amount; i++) {
             this.serpentParts.push(new serpentPart(this.gridx - i, this.gridy));
@@ -200,64 +200,35 @@ var serpent = class {
     }
 
 };
-/* ---- class section end ---- */
 
-
-/* ---- init some variables ---- */
-var bg_image = new Image();
-var img = new Image();
-var bg_universe = new Image();
-var bg_stars = new Image();
-var serpentSprites = [];
-var playGroundLevel;
-var serpentPlayer;
-var serpentParts;
-var kiSerpents = [];
-var itemlist = [];
-
-/*
-this is the standard state 
-var State = function () {
-    this.name; // Just to identify the State
-    this.update = function () { };
-    this.render = function () { };
-    this.onEnter = function () { };
-    this.onExit = function () { };
-    
+EmptyState = class {
+    constructor (name){
+        this.name = name // Just to identify the State
+    }
+    update() { };
+    render() { };
+    onEnter() { };
+    onExit(){ };
     // Optionalb ut useful
-    this.onPause = function () { };
-    this.onResume = function () { };
+    onPause() { };
+    onResume() { };
 };
-*/
 
-/* states */
+level = class {
+    constructor (name) {
+    this.name = name;
 
-var EmptyState = function () {
-    this.name = "EmptyState";
-    this.onEnter = function () { };
-    this.onExit = function () { };
-    this.update = function () {
-        // update values
-    };
-    this.render = function () {
-        // redraw
-        this.onPause = function () { };
-        this.onResume = function () { };
-    };
-};
-/* level0 aka debuglevel */
-var level0 = function () {
-    this.name = "level0";
-    
     /* animations */
     this.frame = 0;
     this.animationInterval = 0;
     this.animationdelay = 10;
-    
+    /* other variables to change things */
+    //
+    }
     /* on enter this state */
-    this.onEnter = function () {
+    onEnter () {
         var pause = false;
-        
+      
         loadRessources(objects, soundEffects, loadLevel);
  
         /* direction changedListener */
@@ -379,45 +350,53 @@ var level0 = function () {
     };
     /* if direction changes we need*/
     /* on leave this state */
-    this.onExit = function () {
+    onExit () {
+
     };
     /* update section */
-    this.update = function () {
+    update () {
         animations();
         update();
     };
     /* draw section */
-    this.render = function () {
+    render () {
         draw();
     };
-    this.onPause = function () {
+    onPause () {
         var currentState = getGameInstance();
-        console.log(currentState);
         //currentState.push(new MainMenu());
 
     };
-    this.onResume = function () {
+    onResume () {
     };
 
 };
 
-var MainMenu = function () {
-    this.name = "MainMenu";
-
-    var canvas = getContext(),
-        dimensions = getGameDimensions(),
-        backgroundColor = "#000",
-        mainText = "Press Enter For Start",
-        textColor = "rgb(0,0,0)", // Starts with black
-        colorsArray = [], // our fade values
-        colorIndex = 0;
-
-    this.onEnter = function(){
-        var i = 1,l=100,values = [];
-        for(;i<=l;i++){
+MainMenu = class {
+    constructor (name){
+        this.name = name // Just to identify the State
+        this.canvas = getContext(),
+        this.dimensions = getGameDimensions(),
+        this.backgroundColor = "#000",
+        this.mainText = "Press Enter To Start",
+        this.textColor = "rgb(0,0,0)", // Starts with black
+        this.colorsArray = [], // our fade values
+        this.colorIndex = 0;
+        this.update =  function (){
+            // update values
+            if (this.colorIndex == this.colorsArray.length){
+                this.colorIndex = 0;
+            }
+            this.textColor = "rgb(" + this.colorsArray[this.colorIndex]+","+this.colorsArray[this.colorIndex]+","+ this.colorsArray[this.colorIndex]+")";
+            this.colorIndex++;
+        };
+    }
+    onEnter (){
+        var i = 1, l = 100, values = [];
+        for(i;i<=l;i++){
             values.push(Math.round(Math.sin(Math.PI*i/100)*255));
         }
-        colorsArray = values;
+        this.colorsArray = values;
 
         // When the Enter key is pressed go to the next state
         window.onkeydown = function (e) {
@@ -425,94 +404,111 @@ var MainMenu = function () {
             if (keyCode === 13){
                 // Go to next State
                 var gameMode = getGameInstance();
-                gameMode.push(new level0());
+                gameMode.push(new level("level0"));
                 /** Note that this does not remove the current state
                  *  from the list. it just adds Level1State on top of it.
                  */
             }
         };
     };
-
-    this.onExit  = function(){
+    onExit (){
         // clear the keydown event
+        console.log("EVENT IS DELETED");
         window.onkeydown = null;
     };
 
-    this.update = function (){
-        // update values
-        if (colorIndex == colorsArray.length){
-            colorIndex = 0;
-        }
-        textColor = "rgb("+colorsArray[colorIndex]+","+colorsArray[colorIndex]+","+colorsArray[colorIndex]+")";
-        colorIndex++;
-    };
 
-    this.render = function (){
+    render (){
         // redraw
-        canvas.clearRect(0,0,dimensions.width,dimensions.height)
-        canvas.beginPath();
-        canvas.fillStyle = backgroundColor;
-        canvas.fillColor = backgroundColor;
-        canvas.fillRect(0,0,dimensions.width,dimensions.height);
-        canvas.fillStyle = textColor;
-        canvas.font = "24pt Courier";
-        canvas.fillText(mainText, 120, 100);
+        this.canvas.clearRect(0,0,this.dimensions.width,this.dimensions.height)
+        this.canvas.beginPath();
+        this.canvas.fillStyle = this.backgroundColor;
+        this.canvas.fillColor = this.backgroundColor;
+        this.canvas.fillRect(0,0,this.dimensions.width,this.dimensions.height);
+        this.canvas.fillStyle = this.textColor;
+        this.canvas.font = "24pt Courier";
+        this.canvas.fillText(this.mainText, 120, 100);
     };
 };
 
-var StateList = function () {
-    var states = [];
-    this.pop = function () {
-        return states.pop();
+StateList = class {
+    constructor (){
+        this.states = []
+    }
+    pop () {
+        return this.states.pop();
     };
-    this.push = function (state) {
-        states.push(state);
+    push (state) {
+        console.log("pushed", state);
+        this.states.push(state);
     };
-    this.top = function () {
-        return states[states.length - 1];
+    top () {
+        return this.states[this.states.length - 1];
     }
 };
 
-var StateStack = function () {
-    var states = new StateList();
-    /* adds an empty state to prevent errors */
-    states.push(new EmptyState());
-    this.update = function () {
-        var state = states.top();
+StateStack = class {
+    constructor (){
+     this.states = new StateList();
+    
+     /* adds an empty state to prevent errors */
+     this.push(new EmptyState());
+    }
+    
+    update () {
+        var state = this.states.top();     
         if (state) {
             state.update();
         }
     };
-    this.render = function () {
-        var state = states.top();
+    render () {
+        var state = this.states.top();
         if (state) {
             state.render();
         }
     };
-    this.push = function (state) {
-        states.push(state);
+    push (state) {
+        this.change();
+        this.states.push(state);
         state.onEnter();
     };
-    this.pop = function () {
-        var state = states.top();
+    pop () {
+        var state = this.states.top();
         state.onExit();
-        return states.pop();
+        return this.states.pop();
     };
-    this.pause = function () {
-        var state = states.top();
+    pause () {
+        var state = this.states.top();
         if (state.onPause) {
             state.onPause();
         }
     };
-
-    this.resume = function () {
-        var state = states.top();
+    change(){
+        var state = this.states.top(); 
+        if (state)
+            state.onExit();
+    };
+    resume () {
+        var state = this.states.top();
         if (state.onResume) {
             state.onResume();
         }
     };
-};
 
+};
+/* ---- class section end ---- */
+
+/* ---- init some variables ---- */
+var bg_image = new Image();
+var img = new Image();
+var bg_universe = new Image();
+var bg_stars = new Image();
+var serpentSprites = [];
+var playGroundLevel;
+var serpentPlayer;
+var serpentParts;
+var kiSerpents = [];
+var itemlist = [];
 
 /* Canvas */
 var gameField = {
@@ -524,29 +520,27 @@ var gameField = {
     //then: null,
     //startTime: null,
     timer: null,
-    FPS: 2,
+    FPS: 15,
     fpsInterval: null,
-
     update: function () {
-        // console.log(this.fpsInterval);
         this.gameMode.update();
         this.gameMode.render();
     },
     startGame: function () {
+        getTest();
         this.gameMode.push(new MainMenu());
         //this.gameMode.push(new level0());
-        console.log(this.gameMode);
         this.fpsInterval = setInterval(this.update.bind(this), this.timer);
     },
     pauseGame: function () {
         clearInterval(this.fpsInterval);
         // console.log("pause", this.fpsInterval);
     },
-
+    
     resumeGame: function () {
         this.fpsInterval = setInterval(this.update.bind(this), this.timer);
     },
-
+    
     init: function () {
         //this.then = Date.now(),
         //this.startTime = this.then,
@@ -558,29 +552,26 @@ var gameField = {
         this.timer = 1000 / this.FPS;
         this.startGame();
     },
-
 }
 
 window.onload = function () {
-
+    var playGroundLevel = playGroundLevel;
     window.getGameInstance = function () {
-        console.log(gameField.gameMode);
         return gameField.gameMode;
     };
 
     window.getContext = function () {
-        console.log(gameField.canvasContext);
         return gameField.canvasContext;
     };
-
+    window.getPlayGroundLevel = function () {
+        return playGroundLevel;
+    };
     window.getGameDimensions = function () {
-        console.log(gameField.canvas_width, gameField.canvas_height);
         return {
             width: gameField.canvas_width,
             height: gameField.canvas_height
         };
     };
-
     window.pauseGame = function () {
         gameField.gameMode.pause();
         gameField.pauseGame();
@@ -592,11 +583,15 @@ window.onload = function () {
     };
 
     window.getContextElement = function () {
-        console.log(gameField.canvasContext);
         return gameField.canvasContext;
     };
+   
+    window.getTest = function () {
+    };
+    /***** GAME STARTS HERE *****/
     gameField.init();
 };
+
 
 // playing around with canvas
 function clearCanvasObject(object) {
@@ -660,7 +655,6 @@ function drawSerpent() {
             ctx.save();
             ctx.translate(serpentPlayer.serpentParts[i].x * gridSizeScale + (serpentPlayer.width / 2), serpentPlayer.serpentParts[i].y * gridSizeScale + (serpentPlayer.height / 2));
             ctx.rotate(serpentPlayer.serpentParts[i].angle);
-
             ctx.drawImage(serpentPlayer.animation.spritesheet[6],
                 0,    // position on image x
                 0,    // position on image y
@@ -828,12 +822,12 @@ function movePlayerSerpent() {
 }
 
 function generateNewItems() {
-
 }
 
 function update() {
     gameField.canvasContext.clearRect(0, 0, gameField.canvas.width, gameField.canvas.height);
     // generateNewItems();
+    // updatePlayfieldfields()
     //console.log(playGroundLevel.fields);
     movement();
 }
@@ -1040,5 +1034,14 @@ function loadObjectSound(sounds) {
     }
 
     }
+
+
+
+    
+*/
+
+
+/*
+
 
 */
