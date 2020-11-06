@@ -371,9 +371,6 @@ level = class {
 
 };
 
-
-
-
 MainMenu = class {
     constructor (name){
         this.name = name // Just to identify the State
@@ -476,11 +473,11 @@ StateStack = class {
     pop () {
         var state = this.states.top();
         state.onExit();
-        return states.pop();
+        return this.states.pop();
     };
     pause () {
         var state = this.states.top();
-        if (this.state.onPause) {
+        if (state.onPause) {
             state.onPause();
         }
     };
