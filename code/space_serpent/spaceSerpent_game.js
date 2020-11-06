@@ -219,7 +219,8 @@ var State = function () {
     this.render = function () { };
     this.onEnter = function () { };
     this.onExit = function () { };
-    // Optional but useful
+    
+    // Optionalb ut useful
     this.onPause = function () { };
     this.onResume = function () { };
 };
@@ -380,7 +381,10 @@ var level0 = function () {
         draw();
     };
     this.onPause = function () {
-        //alert("game is paused");
+        var currentState = getGameInstance();
+        console.log(currentState);
+        //currentState.push(new MainMenuState());
+
     };
     this.onResume = function () {
     };
@@ -710,8 +714,12 @@ function draw() {
 
 function movement() {
     movePlayerSerpent();
+    moveKISerpent();
 }
 
+function moveKISerpent(){
+
+}
 function movePlayerSerpent() {
 
     // Create the new Snake's head
@@ -737,6 +745,7 @@ function movePlayerSerpent() {
     }​​​​​
     */
 }
+
 function generateNewItems() {
 
 }
