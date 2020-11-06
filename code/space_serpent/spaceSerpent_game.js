@@ -12,13 +12,14 @@ var gridSizey = 50;
 var gridSizex = 50;
 
 /* object_table */
-const objectTable = {
-    empty:    0,
-    food:     1,
+var objectTable = {
+    empty: 0, // empty
+    food: 1,
     obstacle: 2,
     backpack: 3,
-    bomb:     4,
-    feather:  5
+    bomb: 4,
+    feather: 5,
+    playerSerpent: 6
 };
 
 /* items */
@@ -96,7 +97,8 @@ var serpentSpritesheet = class {
             this.spritesheetformaty = spritesheet[0].height, // size of one sprite y
             this.width = gridSizex,
             this.height = gridSizey,
-            this.frameSet = [0, // SnakeHead1
+            this.frameSet = [
+                0, // SnakeHead1
                 1, // SnakeHead2
                 2, // SnakeHead3
                 3, // mid
@@ -132,8 +134,8 @@ var item = class {
             this.dx = 0,  /* speed x */
             this.dy = 0   /* speed y */
     }
-    addToPlayground () {
-        playGroundLevel.fields[this.gridx][this.gridy] = this.id;    
+    addToPlayground() {
+        playGroundLevel.fields[this.gridx][this.gridy] = this.id;
     }
 };
 /* playground */
@@ -157,6 +159,7 @@ var playground = class {
             this.bgsound = bgsound,
             this.resetPlayground()
     }
+
 };
 /* individual part of the serpent */
 var serpentPart = class {
@@ -199,6 +202,7 @@ var serpent = class {
 };
 /* ---- class section end ---- */
 
+
 /* ---- init some variables ---- */
 var bg_image = new Image();
 var img = new Image();
@@ -226,6 +230,8 @@ var State = function () {
 };
 */
 
+/* states */
+
 var EmptyState = function () {
     this.name = "EmptyState";
     this.onEnter = function () { };
@@ -235,11 +241,10 @@ var EmptyState = function () {
     };
     this.render = function () {
         // redraw
-    this.onPause = function () { };
-    this.onResume = function () { };    
+        this.onPause = function () { };
+        this.onResume = function () { };
     };
 };
-
 /* level0 aka debuglevel */
 var level0 = function () {
     this.name = "level0";
@@ -248,11 +253,13 @@ var level0 = function () {
     this.frame = 0;
     this.animationInterval = 0;
     this.animationdelay = 10;
-
+    
     /* on enter this state */
     this.onEnter = function () {
         var pause = false;
+        
         loadRessources(objects, soundEffects, loadLevel);
+ 
         /* direction changedListener */
         document.addEventListener("onChangeDirection", function (event) {
             /* changing direction to the left */
@@ -262,6 +269,7 @@ var level0 = function () {
                 || (event.detail.playerDeltay > 0) && (event.detail.oldDeltax < 0)) {
                 serpentPlayer.serpentParts[0].currentCorner = 1;
                 console.log("direction changed left", serpentPlayer.serpentParts[0].currentCorner);
+
             }
             else {
                 serpentPlayer.serpentParts[0].currentCorner = 2;
@@ -272,6 +280,7 @@ var level0 = function () {
         document.addEventListener("keydown", function (event) {
             var playerDx = serpentPlayer.dx;
             var playerDy = serpentPlayer.dy;
+            var currentMovingDirection = serpentPlayer.serpentParts[0].currentPointOfView;
             /* as there might be some support issues we have to check the property of the key pressed */
             playGroundLevel.bgsound.play();
             if (event.which || event.charCode || event.keyCode) {
@@ -296,26 +305,26 @@ var level0 = function () {
 
                 // gameMode.push(new Level1State());
             }
-            else if (characterCode == 37) {
+            else if ((characterCode == 37) && (currentMovingDirection != serpentPlayer.serpentParts[0].PointOfView.east)) {
                 kleftA = true;
                 serpentPlayer.dx = -1;
                 serpentPlayer.dy = 0;
                 serpentPlayer.serpentParts[0].currentPointOfView = serpentPlayer.serpentParts[0].PointOfView.west;
             }
-            else if (characterCode == 39) {
+            else if ((characterCode == 39) && (currentMovingDirection != serpentPlayer.serpentParts[0].PointOfView.west)) {
                 krightA = true;
                 serpentPlayer.dx = +1;
                 serpentPlayer.dy = 0;
                 serpentPlayer.serpentParts[0].currentPointOfView = serpentPlayer.serpentParts[0].PointOfView.east;
             }
-            else if (characterCode == 38) {
+            else if ((characterCode == 38) && (currentMovingDirection != serpentPlayer.serpentParts[0].PointOfView.south)) {
                 kupA = true;
                 serpentPlayer.dx = 0;
                 serpentPlayer.dy = -1;
                 serpentPlayer.serpentParts[0].currentPointOfView = serpentPlayer.serpentParts[0].PointOfView.north;
 
             }
-            else if (characterCode == 40) {
+            else if ((characterCode == 40) && (currentMovingDirection != serpentPlayer.serpentParts[0].PointOfView.north)) {
                 kdownA = true;
                 serpentPlayer.dx = 0;
                 serpentPlayer.dy = +1;
@@ -365,6 +374,7 @@ var level0 = function () {
                 kspace = false;
             }
         });
+
         
     };
     /* if direction changes we need*/
@@ -383,13 +393,72 @@ var level0 = function () {
     this.onPause = function () {
         var currentState = getGameInstance();
         console.log(currentState);
-        //currentState.push(new MainMenuState());
+        //currentState.push(new MainMenu());
 
     };
     this.onResume = function () {
     };
 
-}
+};
+
+var MainMenu = function () {
+    this.name = "MainMenu";
+
+    var canvas = getContext(),
+        dimensions = getGameDimensions(),
+        backgroundColor = "#000",
+        mainText = "Press Enter For Start",
+        textColor = "rgb(0,0,0)", // Starts with black
+        colorsArray = [], // our fade values
+        colorIndex = 0;
+
+    this.onEnter = function(){
+        var i = 1,l=100,values = [];
+        for(;i<=l;i++){
+            values.push(Math.round(Math.sin(Math.PI*i/100)*255));
+        }
+        colorsArray = values;
+
+        // When the Enter key is pressed go to the next state
+        window.onkeydown = function (e) {
+            var keyCode = e.keyCode;
+            if (keyCode === 13){
+                // Go to next State
+                var gameMode = getGameInstance();
+                gameMode.push(new level0());
+                /** Note that this does not remove the current state
+                 *  from the list. it just adds Level1State on top of it.
+                 */
+            }
+        };
+    };
+
+    this.onExit  = function(){
+        // clear the keydown event
+        window.onkeydown = null;
+    };
+
+    this.update = function (){
+        // update values
+        if (colorIndex == colorsArray.length){
+            colorIndex = 0;
+        }
+        textColor = "rgb("+colorsArray[colorIndex]+","+colorsArray[colorIndex]+","+colorsArray[colorIndex]+")";
+        colorIndex++;
+    };
+
+    this.render = function (){
+        // redraw
+        canvas.clearRect(0,0,dimensions.width,dimensions.height)
+        canvas.beginPath();
+        canvas.fillStyle = backgroundColor;
+        canvas.fillColor = backgroundColor;
+        canvas.fillRect(0,0,dimensions.width,dimensions.height);
+        canvas.fillStyle = textColor;
+        canvas.font = "24pt Courier";
+        canvas.fillText(mainText, 120, 100);
+    };
+};
 
 var StateList = function () {
     var states = [];
@@ -444,16 +513,68 @@ var StateStack = function () {
     };
 };
 
+
+/* Canvas */
+var gameField = {
+    canvas: null,
+    canvasContext: null,
+    canvas_width:   1000,
+    canvas_height:  1000,
+    gameMode: new StateStack(),
+    //then: null,
+    //startTime: null,
+    timer: null,
+    FPS: 2,
+    fpsInterval: null,
+
+    update: function () {
+        // console.log(this.fpsInterval);
+        this.gameMode.update();
+        this.gameMode.render();
+    },
+    startGame: function () {
+        this.gameMode.push(new MainMenu());
+        //this.gameMode.push(new level0());
+        console.log(this.gameMode);
+        this.fpsInterval = setInterval(this.update.bind(this), this.timer);
+    },
+    pauseGame: function () {
+        clearInterval(this.fpsInterval);
+        // console.log("pause", this.fpsInterval);
+    },
+
+    resumeGame: function () {
+        this.fpsInterval = setInterval(this.update.bind(this), this.timer);
+    },
+
+    init: function () {
+        //this.then = Date.now(),
+        //this.startTime = this.then,
+        this.canvas = document.createElement("canvas");
+        this.canvas.width = this.canvas_width;
+        this.canvas.height = this.canvas_height;
+        this.canvasContext = this.canvas.getContext("2d");
+        document.body.insertBefore(this.canvas, document.body.childNodes[0]); // due to some loading issues with images and sprites w want to insert it before
+        this.timer = 1000 / this.FPS;
+        this.startGame();
+    },
+
+}
+
 window.onload = function () {
+
     window.getGameInstance = function () {
+        console.log(gameField.gameMode);
         return gameField.gameMode;
     };
 
-    window.getCanvas = function () {
-        return gameField.canvas;
+    window.getContext = function () {
+        console.log(gameField.canvasContext);
+        return gameField.canvasContext;
     };
 
     window.getGameDimensions = function () {
+        console.log(gameField.canvas_width, gameField.canvas_height);
         return {
             width: gameField.canvas_width,
             height: gameField.canvas_height
@@ -470,52 +591,12 @@ window.onload = function () {
         gameField.gameMode.resume();
     };
 
-    window.getCanvasElement = function () {
-        return gameField.canvasElement;
+    window.getContextElement = function () {
+        console.log(gameField.canvasContext);
+        return gameField.canvasContext;
     };
-
+    gameField.init();
 };
-
-/* Canvas */
-var gameField = {
-    canvas: document.createElement("canvas"),
-    gameMode: new StateStack(),
-    //then: null,
-    //startTime: null,
-    timer: null,
-    FPS: 10,
-    fpsInterval: null,
-
-    update: function () {
-        // console.log(this.fpsInterval);
-        this.gameMode.update();
-        this.gameMode.render();
-    },
-    startGame: function () {
-        // this.gameMode.push(new MainMenuState());
-        this.gameMode.push(new level0());
-        console.log(this.gameMode);
-        this.fpsInterval = setInterval(this.update.bind(this), this.timer);
-    },
-    pauseGame: function () {
-        clearInterval(this.fpsInterval);
-        // console.log("pause", this.fpsInterval);
-    },
-
-    resumeGame: function () {
-        this.fpsInterval = setInterval(this.update.bind(this), this.timer);
-    },
-    init: function () {
-        //this.then = Date.now(),
-        //this.startTime = this.then,
-        this.canvas.width = 1000;
-        this.canvas.height = 1000;
-        this.canvasContext = this.canvas.getContext("2d");
-        document.body.insertBefore(this.canvas, document.body.childNodes[0]); // due to some loading issues with images and sprites w want to insert it before
-        this.timer = 1000 / this.FPS;
-        this.startGame();
-    }
-}
 
 // playing around with canvas
 function clearCanvasObject(object) {
@@ -717,7 +798,7 @@ function movement() {
     moveKISerpent();
 }
 
-function moveKISerpent(){
+function moveKISerpent() {
 
 }
 function movePlayerSerpent() {
@@ -757,6 +838,14 @@ function update() {
     movement();
 }
 
+function updatePlayfieldfields()
+{
+    
+}
+function ObjectCollision ()
+{
+    // 
+}
 /* ----  animation section  ---- */
 function animationPlayer() {
     var vCurrentFrame = serpentPlayer.animation.currentFrame;
@@ -836,6 +925,12 @@ function cleanUp() {
 }
 
 /* ---- help functions section  */
+
+function addToObjectTable (objectName, objectcode)
+{
+    objectTable[objectName] = objectcode;
+}
+
 function copy(mainObj) {
     let objCopy = {}; // objCopy will store a copy of the mainObj
     let key;
@@ -853,7 +948,9 @@ function getRandomIntInclusive(min, max) {
 }
 /* ---- help functions section end  */
 
-gameField.init();
+
+
+
 
 
 
