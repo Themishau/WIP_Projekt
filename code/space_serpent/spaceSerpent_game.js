@@ -364,7 +364,6 @@ level = class {
     };
     onPause () {
         var currentState = getGameInstance();
-        console.log(currentState);
         //currentState.push(new MainMenu());
 
     };
@@ -385,7 +384,6 @@ MainMenu = class {
         this.colorIndex = 0;
         this.update =  function (){
             // update values
-            console.log("MAIN MENU");
             if (this.colorIndex == this.colorsArray.length){
                 this.colorIndex = 0;
             }
@@ -394,7 +392,6 @@ MainMenu = class {
         };
     }
     onEnter (){
-        console.log("entered MENU AGAIN");
         var i = 1, l = 100, values = [];
         for(i;i<=l;i++){
             values.push(Math.round(Math.sin(Math.PI*i/100)*255));
@@ -407,7 +404,6 @@ MainMenu = class {
             if (keyCode === 13){
                 // Go to next State
                 var gameMode = getGameInstance();
-                console.log("next state", gameMode);
                 gameMode.push(new level("level0"));
                 /** Note that this does not remove the current state
                  *  from the list. it just adds Level1State on top of it.
@@ -447,7 +443,6 @@ StateList = class {
         this.states.push(state);
     };
     top () {
-        console.log("oberster", this.states[this.states.length - 1]);
         return this.states[this.states.length - 1];
     }
 };
@@ -528,7 +523,6 @@ var gameField = {
     FPS: 15,
     fpsInterval: null,
     update: function () {
-        console.log(this.gameMode);
         this.gameMode.update();
         this.gameMode.render();
     },
@@ -593,7 +587,6 @@ window.onload = function () {
     };
    
     window.getTest = function () {
-        console.log("lol", gameField.gameMode);
     };
     /***** GAME STARTS HERE *****/
     gameField.init();
