@@ -213,6 +213,7 @@ EmptyState = class {
     onPause() { };
     onResume() { };
 };
+
 level = class {
     constructor (name) {
     this.name = name;
@@ -350,6 +351,7 @@ level = class {
     /* if direction changes we need*/
     /* on leave this state */
     onExit () {
+
     };
     /* update section */
     update () {
@@ -381,8 +383,18 @@ MainMenu = class {
         this.textColor = "rgb(0,0,0)", // Starts with black
         this.colorsArray = [], // our fade values
         this.colorIndex = 0;
+        this.update =  function (){
+            // update values
+            console.log("MAIN MENU");
+            if (this.colorIndex == this.colorsArray.length){
+                this.colorIndex = 0;
+            }
+            this.textColor = "rgb(" + this.colorsArray[this.colorIndex]+","+this.colorsArray[this.colorIndex]+","+ this.colorsArray[this.colorIndex]+")";
+            this.colorIndex++;
+        };
     }
     onEnter (){
+        console.log("entered MENU AGAIN");
         var i = 1, l = 100, values = [];
         for(i;i<=l;i++){
             values.push(Math.round(Math.sin(Math.PI*i/100)*255));
@@ -403,20 +415,12 @@ MainMenu = class {
             }
         };
     };
-
     onExit (){
         // clear the keydown event
+        console.log("EVENT IS DELETED");
         window.onkeydown = null;
     };
 
-    update (){
-        // update values
-        if (this.colorIndex == this.colorsArray.length){
-            this.colorIndex = 0;
-        }
-        this.textColor = "rgb(" + this.colorsArray[this.colorIndex]+","+this.colorsArray[this.colorIndex]+","+ this.colorsArray[this.colorIndex]+")";
-        this.colorIndex++;
-    };
 
     render (){
         // redraw
@@ -439,9 +443,11 @@ StateList = class {
         return this.states.pop();
     };
     push (state) {
+        console.log("pushed", state);
         this.states.push(state);
     };
     top () {
+        console.log("oberster", this.states[this.states.length - 1]);
         return this.states[this.states.length - 1];
     }
 };
@@ -450,12 +456,12 @@ StateStack = class {
     constructor (){
      this.states = new StateList();
     
-    /* adds an empty state to prevent errors */
-    this.states.push(new EmptyState());
+     /* adds an empty state to prevent errors */
+     this.push(new EmptyState());
     }
     
-    update (){
-        var state = this.states.top();
+    update () {
+        var state = this.states.top();     
         if (state) {
             state.update();
         }
@@ -467,6 +473,7 @@ StateStack = class {
         }
     };
     push (state) {
+        this.change();
         this.states.push(state);
         state.onEnter();
     };
@@ -481,6 +488,11 @@ StateStack = class {
             state.onPause();
         }
     };
+    change(){
+        var state = this.states.top(); 
+        if (state)
+            state.onExit();
+    };
     resume () {
         var state = this.states.top();
         if (state.onResume) {
@@ -490,7 +502,6 @@ StateStack = class {
 
 };
 /* ---- class section end ---- */
-
 
 /* ---- init some variables ---- */
 var bg_image = new Image();
@@ -504,22 +515,6 @@ var serpentParts;
 var kiSerpents = [];
 var itemlist = [];
 
-/*
-this is the standard state 
-var State = function () {
-    this.name; // Just to identify the State
-    this.update = function () { };
-    this.render = function () { };
-    this.onEnter = function () { };
-    this.onExit = function () { };
-    
-    // Optionalb ut useful
-    this.onPause = function () { };
-    this.onResume = function () { };
-};
-*/
-
-
 /* Canvas */
 var gameField = {
     canvas: null,
@@ -530,10 +525,10 @@ var gameField = {
     //then: null,
     //startTime: null,
     timer: null,
-    FPS: 2,
+    FPS: 15,
     fpsInterval: null,
     update: function () {
-        // console.log(this.fpsInterval);
+        console.log(this.gameMode);
         this.gameMode.update();
         this.gameMode.render();
     },
@@ -596,14 +591,12 @@ window.onload = function () {
     window.getContextElement = function () {
         return gameField.canvasContext;
     };
-
-    
+   
     window.getTest = function () {
         console.log("lol", gameField.gameMode);
     };
-
+    /***** GAME STARTS HERE *****/
     gameField.init();
-
 };
 
 
@@ -669,7 +662,6 @@ function drawSerpent() {
             ctx.save();
             ctx.translate(serpentPlayer.serpentParts[i].x * gridSizeScale + (serpentPlayer.width / 2), serpentPlayer.serpentParts[i].y * gridSizeScale + (serpentPlayer.height / 2));
             ctx.rotate(serpentPlayer.serpentParts[i].angle);
-
             ctx.drawImage(serpentPlayer.animation.spritesheet[6],
                 0,    // position on image x
                 0,    // position on image y
@@ -837,12 +829,12 @@ function movePlayerSerpent() {
 }
 
 function generateNewItems() {
-
 }
 
 function update() {
     gameField.canvasContext.clearRect(0, 0, gameField.canvas.width, gameField.canvas.height);
     // generateNewItems();
+    // updatePlayfieldfields()
     //console.log(playGroundLevel.fields);
     movement();
 }
