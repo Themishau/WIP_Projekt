@@ -23,6 +23,7 @@ const objectTable = {
 
 /* items */
 items = [
+    "clover",
     "backpack",
     "bomb",
     "book",
@@ -30,6 +31,7 @@ items = [
 ];
 /* objects and sprites src */
 objects = [
+    "clover",
     "backpack",
     "bomb",
     "book",
@@ -69,7 +71,6 @@ soundEffects = [
 ];
 
 /* ---- class section ---- */
-
 /* item spritesheet */
 var itemSpritesheet = class {
     constructor(id, spritesheet) {
@@ -130,6 +131,9 @@ var item = class {
             this.animation = new itemSpritesheet(0, itemSprite),
             this.dx = 0,  /* speed x */
             this.dy = 0   /* speed y */
+    }
+    addToPlayground () {
+        playGroundLevel.fields[this.gridx][this.gridy] = this.id;    
     }
 };
 /* playground */
@@ -238,6 +242,7 @@ var EmptyState = function () {
 /* level0 aka debuglevel */
 var level0 = function () {
     this.name = "level0";
+    
     /* animations */
     this.frame = 0;
     this.animationInterval = 0;
@@ -359,6 +364,7 @@ var level0 = function () {
                 kspace = false;
             }
         });
+        
     };
     /* if direction changes we need*/
     /* on leave this state */
@@ -519,7 +525,7 @@ function drawbackground(img) {
 }
 
 function drawItems() {
-    for (var i = 2; i < itemlist.length; i++) {
+    for (var i = 1; i < itemlist.length; i++) {
         // itemlist[i].angle = itemlist[i].currentPointOfView * Math.PI / 180;
         itemlist[i].angle += 2 * Math.PI / 180;
         ctx = gameField.canvasContext;
@@ -700,7 +706,6 @@ function draw() {
     drawKiSerpent();
     drawSerpent();
 }
-
 /* ----  draw section end ---- */
 
 function movement() {
@@ -732,14 +737,18 @@ function movePlayerSerpent() {
     }​​​​​
     */
 }
+function generateNewItems() {
+
+}
 
 function update() {
     gameField.canvasContext.clearRect(0, 0, gameField.canvas.width, gameField.canvas.height);
+    // generateNewItems();
+    //console.log(playGroundLevel.fields);
     movement();
 }
 
 /* ----  animation section  ---- */
-
 function animationPlayer() {
     var vCurrentFrame = serpentPlayer.animation.currentFrame;
     if (vCurrentFrame < serpentPlayer.animation.framelength - 1 && serpentPlayer.animation.animationInterval == serpentPlayer.animation.animationdelay) {
@@ -762,9 +771,7 @@ function animations() {
     animationPlayer();
     animationFood();
 }
-
 /* ----  animation section  end ---- */
-
 function loadRessources(imagenames, soundnames, callback) {
     var n, imagename, m, soundname,
         result = {},
@@ -798,28 +805,26 @@ function loadLevel(assets) {
     playGroundLevel.bgsound.volume = 0.1;
     playGroundLevel.bgsound.loop = true;
     serpentSprites = [assets.snake_head1, assets.snake_head2, assets.snake_head3, assets.snake_mid, assets.snake_downleft, assets.snake_downright, assets.snake_end];
-    serpentPlayer = new serpent(0, 5, 5, serpentSprites, 6);
+    serpentPlayer = new serpent(0, 5, 5, serpentSprites, 20);
     console.log(serpentPlayer);
+    itemlist[1] = new item(1, "clover", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19), assets.clover);
     itemlist[2] = new item(2, "backpack", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19), assets.backpack);
     itemlist[3] = new item(3, "bomb", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19), assets.bomb);
     itemlist[4] = new item(4, "book", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19), assets.book);
     itemlist[5] = new item(5, "feather", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19), assets.feather);
+    for (var i = 1; i < itemlist.length; i++) {
+        itemlist[i].addToPlayground();
+    }
     for (var i = 0; i <= 10; i++) {
         kiSerpents[i] = new serpent(i, getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19), serpentSprites, 2);
         // console.log(kiSerpents[i], kiSerpents[i].angle);
     }
-
+    console.log(playGroundLevel.fields);
 }
-
-
 
 function cleanUp() {
 
 }
-
-
-gameField.init();
-
 
 /* ---- help functions section  */
 function copy(mainObj) {
@@ -837,8 +842,30 @@ function getRandomIntInclusive(min, max) {
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-
 /* ---- help functions section end  */
+
+gameField.init();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /*
 function loadSound(soundnames, callback) {
