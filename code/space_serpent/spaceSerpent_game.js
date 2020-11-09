@@ -301,12 +301,13 @@ class LevelConfig {
         this.serpentPlayer = new serpent(6, 5, 5, this.serpentSprites, 3);
         this.itemlist[0] = new item(1, "food", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.clover);
         this.itemlist[1] = new item(1, "food", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.clover);
-       // this.itemlist[2] = new item(2, "backpack", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.backpack);
-       // this.itemlist[3] = new item(3, "bomb", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.bomb);
-       // this.itemlist[4] = new item(4, "book", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.book);
-       // this.itemlist[5] = new item(5, "feather", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.feather);
-        for (var i = 0; i < this.itemlist.length - 1; i++) {
-            this.playGroundLevel.addToPlayground(this.itemlist[i].gridx, this.itemlist[i].gridy, i);
+        this.itemlist[2] = new item(1, "food", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.clover);
+       // this.itemlist[3] = new item(2, "backpack", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.backpack);
+       // this.itemlist[4] = new item(3, "bomb", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.bomb);
+       // this.itemlist[5] = new item(4, "book", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.book);
+       // this.itemlist[6] = new item(5, "feather", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.feather);
+        for (var i = 0; i < this.itemlist.length; i++) {
+            this.playGroundLevel.addToPlayground(this.itemlist[i].gridx, this.itemlist[i].gridy, this.itemlist[i].id);
         }
         for (var i = 0; i <= 2; i++) {
             this.aiSerpents[i] = new serpent(i + 7, getRandomIntInclusive(3, 19), getRandomIntInclusive(1, 19), this.serpentSprites, 3);
@@ -961,7 +962,7 @@ function drawKiSerpent(aiSerpents) {
         serpentPartafter[k] = [];
     }
 
-    for (var i = 1; i < aiSerpents.length; i++) {
+    for (var i = 0; i < aiSerpents.length; i++) {
         for (var j = 0; j < aiSerpents[i].serpentParts.length; j++) {
             aiSerpents[i].serpentParts[j].angle = aiSerpents[i].serpentParts[j].currentPointOfView * Math.PI / 180;
             var ctx  = gameField.canvasContext;
@@ -1105,7 +1106,7 @@ function draw(bg_stars, bg_universe, serpentPlayer, itemlist, aiSerpents) {
 
 /* ----  add/Remove section  ---- */
 function removeSnakeFromMatrix(aiSerpentPart, playField) {
-    for (var i = 1; i < aiSerpentPart.serpentParts.length; i++) {
+    for (var i = 0; i < aiSerpentPart.serpentParts.length; i++) {
         removeSnakePart(aiSerpentPart.serpentParts[i], playField)
     }
 }
@@ -1114,7 +1115,7 @@ function removeSnakePart(aiSerpentPart, playField) {
     playField.fields[aiSerpentPart.x][aiSerpentPart.y] = 0;
 }
 function addSnakeToMatrix(aiSerpentPart, playField) {
-    for (var i = 1; i < aiSerpentPart.serpentPart.length; i++) {
+    for (var i = 0; i < aiSerpentPart.serpentPart.length; i++) {
         addSnakePart(aiSerpentPart.serpentPart[i], playField)
     }
 }
@@ -1260,12 +1261,12 @@ function moveKISerpent(aiSerpents, playField, items) {
             var chooseItem = null;
             chooseItem = items[getRandomIntInclusive(0, items.length - 1)];
             aiSerpents[i].nextGoal = {objectID : chooseItem.id, x : chooseItem.gridx, y : chooseItem.gridy };
-            console.log("NEW GOAL");
+            console.log("NEW GOAL", i);
             console.log("serpent",i);
             console.log("random", getRandomIntInclusive(0, items.length - 1));
             console.log("chooseItem", chooseItem);
             console.log("items", items);
-            console.log("aiSerpents[i].nextGoal", aiSerpents[i].nextGoal);
+            console.log("playField.fields", playField.fields);
             //console.log("NEXT GOAL", aiSerpents[i].nextGoal);
         }
         /* TODO: OBSTACLESTABLE GENERIEREN */
