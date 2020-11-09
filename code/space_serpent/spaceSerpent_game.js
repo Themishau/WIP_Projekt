@@ -301,14 +301,14 @@ class LevelConfig {
         this.serpentPlayer = new serpent(6, 5, 5, this.serpentSprites, 3);
         this.itemlist[0] = new item(1, "food", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.clover);
         this.itemlist[1] = new item(1, "food", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.clover);
-        this.itemlist[2] = new item(2, "backpack", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.backpack);
-        this.itemlist[3] = new item(3, "bomb", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.bomb);
-        this.itemlist[4] = new item(4, "book", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.book);
-        this.itemlist[5] = new item(5, "feather", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.feather);
+       // this.itemlist[2] = new item(2, "backpack", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.backpack);
+       // this.itemlist[3] = new item(3, "bomb", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.bomb);
+       // this.itemlist[4] = new item(4, "book", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.book);
+       // this.itemlist[5] = new item(5, "feather", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.feather);
         for (var i = 1; i < this.itemlist.length; i++) {
             this.playGroundLevel.addToPlayground(this.itemlist[i].gridx, this.itemlist[i].gridy, i);
         }
-        for (var i = 0; i <= 1; i++) {
+        for (var i = 0; i <= 2; i++) {
             this.aiSerpents[i] = new serpent(i + 7, getRandomIntInclusive(3, 19), getRandomIntInclusive(1, 19), this.serpentSprites, 3);
             // console.log(aiSerpents[i], aiSerpents[i].angle);
         }
@@ -1256,16 +1256,21 @@ function moveKISerpent(aiSerpents, playField, items) {
     
     // console.log("itemPosition", itemPosition);
     for (var i = 1; i < aiSerpents.length; i++) {
-        if ( aiSerpents[i].nextGoal == null || playField.fields[aiSerpents[i].nextGoal.x][aiSerpents[i].nextGoal.x] != aiSerpents[i].nextGoal.objectID ) {
+        if ( aiSerpents[i].nextGoal == null || ((aiSerpents[i].nextGoal.x != undefined && aiSerpents[i].nextGoal.y != undefined) && playField.fields[aiSerpents[i].nextGoal.x][aiSerpents[i].nextGoal.y] != aiSerpents[i].nextGoal.objectID)) {
             var chooseItem = null;
             chooseItem = items[getRandomIntInclusive(1, items.length - 1)];
             aiSerpents[i].nextGoal = {objectID : chooseItem.id, x : chooseItem.gridx, y : chooseItem.gridy };
+            console.log("NEW GOAL", aiSerpents[i].nextGoal == null, playField.fields[aiSerpents[i].nextGoal.x][aiSerpents[i].nextGoal.y] != aiSerpents[i].nextGoal.objectID);
+            console.log("NEXT GOAL", aiSerpents[i].nextGoal);
         }
         /* TODO: OBSTACLESTABLE GENERIEREN */
         var testPlayfield = new playground();
         var nextMovement = calculateNextMove(testPlayfield.fields, { x: aiSerpents[i].serpentParts[0].x, y: aiSerpents[i].serpentParts[0].y }, { x: aiSerpents[i].nextGoal.x, y: aiSerpents[i].nextGoal.y });
-        aiSerpents[i].dx = nextMovement.dx;
-        aiSerpents[i].dy = nextMovement.dy;
+        if (nextMovement != undefined ) {
+            aiSerpents[i].dx = nextMovement.dx;
+            aiSerpents[i].dy = nextMovement.dy;
+        }
+
         removeSnakeFromMatrix(aiSerpents[i], playField);
         moveSerpent(aiSerpents[i], playField, items);
     }
