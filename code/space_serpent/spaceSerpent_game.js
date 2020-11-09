@@ -305,7 +305,7 @@ class LevelConfig {
        // this.itemlist[3] = new item(3, "bomb", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.bomb);
        // this.itemlist[4] = new item(4, "book", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.book);
        // this.itemlist[5] = new item(5, "feather", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.feather);
-        for (var i = 1; i < this.itemlist.length; i++) {
+        for (var i = 0; i < this.itemlist.length - 1; i++) {
             this.playGroundLevel.addToPlayground(this.itemlist[i].gridx, this.itemlist[i].gridy, i);
         }
         for (var i = 0; i <= 2; i++) {
@@ -475,7 +475,7 @@ class level {
             window.onkeydown = this.KeyDownEvent;
             window.onkeyup = this.KeyUpEvent;
         }
-        console.log(this.levelConfig.playGroundLevel.fields);
+        //console.log(this.levelConfig.playGroundLevel.fields);
         update(this.levelConfig.serpentPlayer, this.levelConfig.aiSerpents, this.levelConfig.playGroundLevel, this.levelConfig.itemlist);
         animations(this.levelConfig.serpentPlayer);
 
@@ -1255,13 +1255,18 @@ function movement(serpentPlayer, aiSerpents, playGroundLevel, items) {
 function moveKISerpent(aiSerpents, playField, items) {
     
     // console.log("itemPosition", itemPosition);
-    for (var i = 1; i < aiSerpents.length; i++) {
-        if ( aiSerpents[i].nextGoal == null || ((aiSerpents[i].nextGoal.x != undefined && aiSerpents[i].nextGoal.y != undefined) && playField.fields[aiSerpents[i].nextGoal.x][aiSerpents[i].nextGoal.y] != aiSerpents[i].nextGoal.objectID)) {
+    for (var i = 0; i < aiSerpents.length; i++) {
+        if ( (aiSerpents[i].nextGoal == null) || (playField.fields[aiSerpents[i].nextGoal.x][aiSerpents[i].nextGoal.y] != aiSerpents[i].nextGoal.objectID)) {
             var chooseItem = null;
-            chooseItem = items[getRandomIntInclusive(1, items.length - 1)];
+            chooseItem = items[getRandomIntInclusive(0, items.length - 1)];
             aiSerpents[i].nextGoal = {objectID : chooseItem.id, x : chooseItem.gridx, y : chooseItem.gridy };
-            console.log("NEW GOAL", aiSerpents[i].nextGoal == null, playField.fields[aiSerpents[i].nextGoal.x][aiSerpents[i].nextGoal.y] != aiSerpents[i].nextGoal.objectID);
-            console.log("NEXT GOAL", aiSerpents[i].nextGoal);
+            console.log("NEW GOAL");
+            console.log("serpent",i);
+            console.log("random", getRandomIntInclusive(0, items.length - 1));
+            console.log("chooseItem", chooseItem);
+            console.log("items", items);
+            console.log("aiSerpents[i].nextGoal", aiSerpents[i].nextGoal);
+            //console.log("NEXT GOAL", aiSerpents[i].nextGoal);
         }
         /* TODO: OBSTACLESTABLE GENERIEREN */
         var testPlayfield = new playground();
@@ -1299,7 +1304,7 @@ function moveSerpent(serpent, playField, items) {
     if (chasEatenFood){
         
            console.log("eaten!!", newHead);
-           generateNewItem(1, items);
+           generateNewItem(1, items, playField);
            playField.addToPlayground(serpent.serpentParts[0].x, serpent.serpentParts[0].y, 1);
        }
        else {
@@ -1311,17 +1316,20 @@ function moveSerpent(serpent, playField, items) {
        //serpent.serpentParts[0].addToPlayground();
 
 }
-function generateNewItem(ObjectType, itemlist) {
+function generateNewItem(ObjectType, itemlist, playField) {
     // if food
-    if (ObjectType == 1)
-        itemlist.push(new item(1, "food", getRandomIntInclusive(0, 19), getRandomIntInclusive(0, 19), globalassets.clover))
+    if (ObjectType == 1) {
+        var newFood = new item(1, "food", getRandomIntInclusive(3, 17), getRandomIntInclusive(3, 17), globalassets.clover); 
+        itemlist.push(newFood)
+        playField.addToPlayground(newFood.gridx, newFood.gridy, 1);
+    }
 }
 /* ----  movement section end ---- */
 
 
 /* ----  update section  ---- */
 function update(serpentPlayer, aiSerpents, playGroundLevel, items) {
-    generateNewItem(item);
+    //generateNewItem(item);
     updatePlayfieldfields()
     //console.log(playGroundLevel.fields, items);
     movement(serpentPlayer, aiSerpents, playGroundLevel, items);
