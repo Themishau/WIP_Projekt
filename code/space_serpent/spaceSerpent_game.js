@@ -286,7 +286,8 @@ class LevelConfig {
             this.serpent_sprite, // for testing
             //this.obstacleTable = null;
             this.aiSerpents = [],
-            this.itemlist = []
+            this.itemlist = [],
+            this.sound;
             //this.foodList = []
         // this.loadRessources(objects, soundEffects, this.loadLevel);
     }
@@ -295,6 +296,8 @@ class LevelConfig {
         this.serpentSprites = [assets.snake_head1, assets.snake_head2, assets.snake_head3, assets.snake_mid, assets.snake_downleft, assets.snake_downright, assets.snake_end];
         this.playGroundLevel = new playground(0, assets.serpent_sprite, assets.bg_Jupiter);
         this.serpent_sprite = assets.serpent_sprite;
+        this.sound = assets.Touch;
+        this.sound.volume = 0.1;
         //this.obstacleTable = new playground(1, null, null);
         this.bg_universe = assets.spr_planet02;
         this.bg_stars = assets.bg_stars;
@@ -479,7 +482,7 @@ class level {
             window.onkeyup = this.KeyUpEvent;
         }
         //console.log(this.levelConfig.playGroundLevel.fields);
-        update(this.levelConfig.serpentPlayer, this.levelConfig.aiSerpents, this.levelConfig.playGroundLevel, this.levelConfig.itemlist);
+        update(this.levelConfig.serpentPlayer, this.levelConfig.aiSerpents, this.levelConfig.playGroundLevel, this.levelConfig.itemlist, this.levelConfig.sound);
         animations(this.levelConfig.serpentPlayer);
 
     };
@@ -492,6 +495,7 @@ class level {
     onPause() {
         window.onkeydown = null;
         window.onkeyup = null;
+        levelConfig.playGroundLevel.bgsound.pause();
         var gameMode = getGameInstance();
         gameMode.push(new PauseMenu("PauseMenuLevel0"));
     };
@@ -1249,15 +1253,16 @@ function aStar(obstaclesTable, goalPosition, startPosition) {
 /* ----  AI section end ---- */
 
 /* ----  movement section  ---- */
-function movement(serpentPlayer, aiSerpents, playGroundLevel, items) {
+function movement(serpentPlayer, aiSerpents, playGroundLevel, items, sound) {
     //console.log("movement", items);
-    moveKISerpent(aiSerpents, playGroundLevel, items);
+    moveKISerpent(aiSerpents, playGroundLevel, items, sound);
     // console.log("movementafterki", items);
-    moveSerpent(serpentPlayer, playGroundLevel, items);
+    moveSerpent(serpentPlayer, playGroundLevel, items, sound);
 }
-function moveKISerpent(aiSerpents, playField, items) {
+function moveKISerpent(aiSerpents, playField, items, sound) {
     
     // console.log("itemPosition", itemPosition);
+    das for funktioniert noch nicht gut, chooseItem ist falsch 
     for (var i = 0; i < aiSerpents.length; i++) {
         if ( (aiSerpents[i].nextGoal == null) || (aiSerpents[i].nextGoal == undefined) || (playField.fields[aiSerpents[i].nextGoal.x][aiSerpents[i].nextGoal.y] != aiSerpents[i].nextGoal.objectID)) {
             var chooseItem = null;
@@ -1270,7 +1275,7 @@ function moveKISerpent(aiSerpents, playField, items) {
             console.log("random", getRandomIntInclusive(0, items.length - 1));
             console.log("chooseItem", chooseItem);
             console.log("items", items);
-            console.log("playField.fields", playField.fields);
+            //console.log("playField.fields", playField.fields);
             //console.log("NEXT GOAL", aiSerpents[i].nextGoal);
         }
         /* TODO: OBSTACLESTABLE GENERIEREN */
@@ -1306,7 +1311,7 @@ function moveKISerpent(aiSerpents, playField, items) {
         }
 
         removeSnakeFromMatrix(aiSerpents[i], playField);
-        moveSerpent(aiSerpents[i], playField, items);
+        moveSerpent(aiSerpents[i], playField, items, sound);
     }
     /*
     dx = 10 * nextMovement.dx;
@@ -1319,7 +1324,7 @@ function moveKISerpent(aiSerpents, playField, items) {
     */
 
 }
-function moveSerpent(serpent, playField, items) {
+function moveSerpent(serpent, playField, items,sound) {
     // Create the new Snake's head
     var newHead = new serpentPart(serpent.serpentParts[0].x + serpent.dx, serpent.serpentParts[0].y + serpent.dy);
     newHead.currentPointOfView = serpent.serpentParts[0].currentPointOfView;
@@ -1329,7 +1334,8 @@ function moveSerpent(serpent, playField, items) {
     // removes the last part of the serpent from playground
     // serpent.serpentParts.pop();
     // console.log("haseatenfood bevor", items);
-    const chasEatenFood = hasEatenFood(serpent, items, playField);
+    haseatenfood ist nicht korrekt, item wird nicht richtig gelöscht 
+    const chasEatenFood = hasEatenFood(serpent, items, playField, sound);
     if (chasEatenFood){
         
            console.log("eaten!!", newHead);
@@ -1347,11 +1353,11 @@ function moveSerpent(serpent, playField, items) {
 }
 function generateNewItem(ObjectType, itemlist, playField) {
     // if food
+    wird das item richtig in die liste gepusht? ich finde sie nicht in der liste laut console.log
     if (ObjectType == 1) {
         var newFood = new item(1, "food", getRandomIntInclusive(3, 17), getRandomIntInclusive(3, 17), globalassets.clover); 
         itemlist.push(newFood);
         playField.addToPlayground(newFood.gridx, newFood.gridy, 1);
-        item ist noch in der liste!!
         console.log("item generated", newFood, itemlist);
     }
 }
@@ -1359,11 +1365,11 @@ function generateNewItem(ObjectType, itemlist, playField) {
 
 
 /* ----  update section  ---- */
-function update(serpentPlayer, aiSerpents, playGroundLevel, items) {
+function update(serpentPlayer, aiSerpents, playGroundLevel, items, sound) {
     //generateNewItem(item);
     updatePlayfieldfields()
     //console.log(playGroundLevel.fields, items);
-    movement(serpentPlayer, aiSerpents, playGroundLevel, items);
+    movement(serpentPlayer, aiSerpents, playGroundLevel, items, sound);
 }
 function updatePlayfieldfields() {
 
@@ -1373,15 +1379,15 @@ function updatePlayfieldfields() {
 function ObjectCollision() {
     // 
 }
-function hasEatenFood(serpent, items, playField) {
+function hasEatenFood(serpent, items, playField, sound) {
     for (var i = 0; i < items.length; i++) {
         // if item == 1 , food is 1
         if (items[i].id == 1 && items[i] != null) {
             // console.log("eatenfood", serpent.serpentParts[0].x, items[i].gridx);
             const chasEatenFood = serpent.serpentParts[0].x === items[i].gridx && serpent.serpentParts[0].y === items[i].gridy;
             // return if true 
-            wird falsch gelöscht!!
             if (chasEatenFood) {
+                eatFoodSoundeffect(sound);
                 playField.removeFromPlayground(items[i].gridx, items[i].gridy);
                 console.log("vorslice", items, i);
                 items.splice(i, 1);
@@ -1413,6 +1419,15 @@ function animations(serpentPlayer) {
 }
 /* ----  animation section  end ---- */
 
+
+/* ----  soundeffect section  ---- */
+function eatFoodSoundeffect (eatSound)
+{   
+    eatSound.pause();
+    eatSound.currentTime = 0;
+    eatSound.play();
+}
+/* ----  soundeffect section  ---- */
 function cleanUp() {
 }
 
