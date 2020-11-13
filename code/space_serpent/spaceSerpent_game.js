@@ -1,11 +1,11 @@
 'use strict';
 /* ---- global section ---- */
 /* keys */
-let kspace = false;
-let kleftA = false;
-let krightA = false;
-let kupA = false;
-let kdownA = false;
+var kspace = false;
+var kleftA = false;
+var krightA = false;
+var kupA = false;
+var kdownA = false;
 var int = 1;
 /* grid size scale */
 var gridSizeScale = 50;
@@ -267,6 +267,8 @@ class serpent {
             this.OldDy = 0,
             this.serpentParts = [],
             this.nextGoal = {objectID : 1, x: 0, y: 0},
+            this.foodEaten = 0,
+            this.inventory = [],
             this.addSerpentPart(initSnakeParts)
     }
 }
@@ -311,11 +313,19 @@ class LevelConfig {
        // this.itemlist[4] = new item(3, "bomb", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.bomb);
        // this.itemlist[5] = new item(4, "book", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.book);
        // this.itemlist[6] = new item(5, "feather", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.feather);
-        for (var i = 0; i < this.itemlist.length; i++) {
+        for (let i = 0; i < this.itemlist.length; i++) {
             this.playGroundLevel.addToPlayground(this.itemlist[i].gridx, this.itemlist[i].gridy, this.itemlist[i].id);
         }
-        for (var i = 0; i <= 2; i++) {
-            this.aiSerpents[i] = new serpent(i + 7, getRandomIntInclusive(3, 19), getRandomIntInclusive(1, 19), this.serpentSprites, 3);
+        for (let i = 0; i <= 0; i++) {
+            this.aiSerpents[i] = new serpent(i + 7, getRandomIntInclusive(3, 19), getRandomIntInclusive(1, 19), this.serpentSprites, 3);      
+            
+            /* change color of serpents */
+            let ctx = gameField.canvasContext;
+            let imgData = ctx.getImageData(0, 0, this.aiSerpents[i].width, this.aiSerpents[i].height); 
+            console.log("beforecolorchange", imgData);
+            imgData = invertColors(imgData);
+            console.log("aftercolorchange", imgData);
+            ctx.putImageData(imgData, 0, 0); 
             // console.log(aiSerpents[i], aiSerpents[i].angle);
         }
     }
@@ -468,7 +478,7 @@ class level {
         window.onkeydown = this.KeyDownEvent;
         window.onkeyup = this.KeyUpEvent;
     };
-    /* if direction changes we need*/
+    /* if direction changes we need to delete the event listeners */
     /* on leave this state */
     onExit() {
         window.onkeydown = null;
@@ -495,8 +505,8 @@ class level {
     onPause() {
         window.onkeydown = null;
         window.onkeyup = null;
-        levelConfig.playGroundLevel.bgsound.pause();
-        var gameMode = getGameInstance();
+        this.levelConfig.playGroundLevel.bgsound.pause();
+        let gameMode = getGameInstance();
         gameMode.push(new PauseMenu("PauseMenuLevel0"));
     };
     onResume() {
@@ -527,7 +537,7 @@ class MainMenu {
         };
     }
     onEnter() {
-        var i = 1, l = 100, values = [];
+        let i = 1, l = 100, values = [];
         for (i; i <= l; i++) {
             values.push(Math.round(Math.sin(Math.PI * i / 100) * 255));
         }
@@ -535,11 +545,11 @@ class MainMenu {
 
         // When the Enter key is pressed go to the next state
         window.onkeydown = function (e) {
-            var keyCode = e.keyCode;
+            let keyCode = e.keyCode;
             if (keyCode === 13) {
                 // Go to next State
-                var gameMode = getGameInstance();
-                var levelConfig = new LevelConfig("level0", globalassets);
+                let gameMode = getGameInstance();
+                let levelConfig = new LevelConfig("level0", globalassets);
                 levelConfig.StartLoading();
                 gameMode.push(new level("level0", levelConfig));
                 /** Note that this does not remove the current state
@@ -723,7 +733,7 @@ var gameField = {
     //then: null,
     //startTime: null,
     timer: null,
-    FPS: 10,
+    FPS: 1,
     fpsInterval: null,
     update: function () {
         this.gameMode.update();
@@ -967,7 +977,7 @@ function drawKiSerpent(aiSerpents) {
         serpentPartbefore[k] = [];
         serpentPartafter[k] = [];
     }
-
+    /* head */
     for (var i = 0; i < aiSerpents.length; i++) {
         for (var j = 0; j < aiSerpents[i].serpentParts.length; j++) {
             aiSerpents[i].serpentParts[j].angle = aiSerpents[i].serpentParts[j].currentPointOfView * Math.PI / 180;
@@ -987,6 +997,13 @@ function drawKiSerpent(aiSerpents) {
                     aiSerpents[i].width, // strech to on x 
                     aiSerpents[i].height // strech to on y
                 );
+                /*
+                let imgData = ctx.getImageData(0, 0, 1000, 1000); 
+                console.log("beforecolorchange", imgData);
+                imgData = invertColors(imgData);
+                console.log("aftercolorchange", imgData);
+                ctx.putImageData(imgData, 0, 0); 
+                */
             }
             /* serpent end */
             else if (j == aiSerpents[i].serpentParts.length - 1) {
@@ -1051,28 +1068,7 @@ function drawKiSerpent(aiSerpents) {
                         aiSerpents[i].height // strech to on y
                     );
                 }
-
-
-
             }
-
-
-            /*
-                        ctx.translate(aiSerpents[i].serpentParts[j].x * gridSizeScale + (aiSerpents[i].width / 2), aiSerpents[i].serpentParts[j].y * gridSizeScale + (aiSerpents[i].height / 2));
-                        ctx.rotate(aiSerpents[i].serpentParts[j].angle);
-                        ctx.fillStyle = "red";
-                        ctx.fillRect(aiSerpents[i].width / - 2, aiSerpents[i].height / - 2, 50, 50);
-                        ctx.drawImage(aiSerpents[i].animation.spritesheet[aiSerpents[i].animation.currentFrame],
-                            0,    // position on sprite x
-                            0,    // position on sprite y
-                            aiSerpents[i].animation.spritesheetformatx, // part of sprite x
-                            aiSerpents[i].animation.spritesheetformaty, // part of sprite y
-                            aiSerpents[i].width / - 2, // position on canvas x 
-                            aiSerpents[i].height / - 2, // position on canvas y
-                            aiSerpents[i].width, // strech to width  
-                            aiSerpents[i].height // strech to height
-                        );
-                        */
 
             ctx.restore();
         }
@@ -1109,27 +1105,6 @@ function draw(bg_stars, bg_universe, serpentPlayer, itemlist, aiSerpents) {
     drawSerpent(serpentPlayer);
 }
 /* ----  draw section end ---- */
-
-/* ----  add/Remove section  ---- */
-function removeSnakeFromMatrix(aiSerpentPart, playField) {
-    for (var i = 0; i < aiSerpentPart.serpentParts.length; i++) {
-        removeSnakePart(aiSerpentPart.serpentParts[i], playField)
-    }
-}
-function removeSnakePart(aiSerpentPart, playField) {
-    if (aiSerpentPart.x < playField.fields.length && aiSerpentPart.y < playField.fields.length)
-    playField.fields[aiSerpentPart.x][aiSerpentPart.y] = 0;
-}
-function addSnakeToMatrix(aiSerpentPart, playField) {
-    for (var i = 0; i < aiSerpentPart.serpentPart.length; i++) {
-        addSnakePart(aiSerpentPart.serpentPart[i], playField)
-    }
-}
-function addSnakePart(aiSerpentPart, playField) {
-    if (aiSerpentPart.x < playField.fields.length && aiSerpentPart.y < playField.fields.length)
-    playField.fields[aiSerpentPart.x][aiSerpentPart.y] = 1;
-}
-/* ----  add/Remove section end ---- */
 
 /* ----  AI section  ---- */
 function calculateNextMove(obstaclesTable, currentPosition, itemPosition) {
@@ -1209,7 +1184,7 @@ function aStar(obstaclesTable, goalPosition, startPosition) {
     
     // If there are no more entries in the openList, this means that the algorithm has visited
     // all possible fields without finding the goal along its path.
-    for (let index = 0; !openList.isEmpty() && index < obstaclesTable.length * obstaclesTable.length; index++) {
+    for (let index = 0; !openList.isEmpty() && index < obstaclesTable.length * obstaclesTable.length * obstaclesTable.length; index++) {
         // The field with the shortest estimated costs (FCosts) towards the goal is removed from the open list
         var smallestFScoreField = openList.dequeue().element;
         
@@ -1250,6 +1225,28 @@ function aStar(obstaclesTable, goalPosition, startPosition) {
     }
     return { pathFound: false, nextNode: null };
 }
+
+/* ----  add/Remove section  ---- */
+function removeSnakeFromMatrix(aiSerpentPart, playField) {
+    for (var i = 0; i < aiSerpentPart.serpentParts.length; i++) {
+        removeSnakePart(aiSerpentPart.serpentParts[i], playField)
+    }
+}
+function removeSnakePart(aiSerpentPart, playField) {
+    if (aiSerpentPart.x < playField.fields.length && aiSerpentPart.y < playField.fields.length)
+    playField.fields[aiSerpentPart.x][aiSerpentPart.y] = 0;
+}
+function addSnakeToMatrix(aiSerpentPart, playField) {
+    for (var i = 0; i < aiSerpentPart.serpentPart.length; i++) {
+        addSnakePart(aiSerpentPart.serpentPart[i], playField)
+    }
+}
+function addSnakePart(aiSerpentPart, playField) {
+    if (aiSerpentPart.x < playField.fields.length && aiSerpentPart.y < playField.fields.length)
+    playField.fields[aiSerpentPart.x][aiSerpentPart.y] = 1;
+}
+/* ----  add/Remove section end ---- */
+
 /* ----  AI section end ---- */
 
 /* ----  movement section  ---- */
@@ -1262,25 +1259,22 @@ function movement(serpentPlayer, aiSerpents, playGroundLevel, items, sound) {
 function moveKISerpent(aiSerpents, playField, items, sound) {
     
     // console.log("itemPosition", itemPosition);
-    das for funktioniert noch nicht gut, chooseItem ist falsch 
-    for (var i = 0; i < aiSerpents.length; i++) {
+    for (let i = 0; i < aiSerpents.length; i++) {
         if ( (aiSerpents[i].nextGoal == null) || (aiSerpents[i].nextGoal == undefined) || (playField.fields[aiSerpents[i].nextGoal.x][aiSerpents[i].nextGoal.y] != aiSerpents[i].nextGoal.objectID)) {
-            var chooseItem = null;
+            let chooseItem = null;
             chooseItem = items[getRandomIntInclusive(0, items.length - 1)];
             aiSerpents[i].nextGoal.objectID = chooseItem.id;
             aiSerpents[i].nextGoal.x = chooseItem.gridx; 
             aiSerpents[i].nextGoal.y =  chooseItem.gridy;
-            console.log("NEW GOAL", i);
-            console.log("serpent",i);
-            console.log("random", getRandomIntInclusive(0, items.length - 1));
-            console.log("chooseItem", chooseItem);
-            console.log("items", items);
+            console.log("items", items, "chosenItem", chooseItem, "objectID", playField.fields[aiSerpents[i].nextGoal.x][aiSerpents[i].nextGoal.y]);
             //console.log("playField.fields", playField.fields);
             //console.log("NEXT GOAL", aiSerpents[i].nextGoal);
         }
         /* TODO: OBSTACLESTABLE GENERIEREN */
-        var testPlayfield = new playground();
-        var nextMovement = calculateNextMove(testPlayfield.fields, { x: aiSerpents[i].serpentParts[0].x, y: aiSerpents[i].serpentParts[0].y }, { x: aiSerpents[i].nextGoal.x, y: aiSerpents[i].nextGoal.y });
+        let testPlayfield = new playground();
+        console.log("x Ai Serpent", aiSerpents[i].serpentParts[1].x, aiSerpents[i].serpentParts[1].y);
+        testPlayfield.fields[aiSerpents[i].serpentParts[1].x][aiSerpents[i].serpentParts[1].y] = 1;
+        let nextMovement = calculateNextMove(testPlayfield.fields, { x: aiSerpents[i].serpentParts[0].x, y: aiSerpents[i].serpentParts[0].y }, { x: aiSerpents[i].nextGoal.x, y: aiSerpents[i].nextGoal.y });
         if (nextMovement != undefined ) {
             aiSerpents[i].OldDx = aiSerpents[i].dx;
             aiSerpents[i].OldDy = aiSerpents[i].dy;
@@ -1297,17 +1291,19 @@ function moveKISerpent(aiSerpents, playField, items, sound) {
                
                     /* change direction for animation body */
                 if (    (aiSerpents[i].OldDx == + 1 && aiSerpents[i].serpentParts[0].currentPointOfView == aiSerpents[i].serpentParts[0].PointOfView.north) 
-                    ||  (aiSerpents[i].OldDy == + 1 && aiSerpents[i].serpentParts[0].currentPointOfView == aiSerpents[i].serpentParts[0].PointOfView.west) 
+                    ||  (aiSerpents[i].OldDy == + 1 && aiSerpents[i].serpentParts[0].currentPointOfView == aiSerpents[i].serpentParts[0].PointOfView.east) 
                     ||  (aiSerpents[i].OldDx == - 1 && aiSerpents[i].serpentParts[0].currentPointOfView == aiSerpents[i].serpentParts[0].PointOfView.south)
-                    ||  (aiSerpents[i].OldDy == - 1 && aiSerpents[i].serpentParts[0].currentPointOfView == aiSerpents[i].serpentParts[0].PointOfView.east) )
+                    ||  (aiSerpents[i].OldDy == - 1 && aiSerpents[i].serpentParts[0].currentPointOfView == aiSerpents[i].serpentParts[0].PointOfView.west) ) {
                     aiSerpents[i].serpentParts[0].currentCorner = 1;
-                else
+                }
+                else {
                     aiSerpents[i].serpentParts[0].currentCorner = 2;
+                }
                 
                 /* set movement */
                 aiSerpents[i].dx = nextMovement.dx;
                 aiSerpents[i].dy = nextMovement.dy;
-            
+                
         }
 
         removeSnakeFromMatrix(aiSerpents[i], playField);
@@ -1324,42 +1320,59 @@ function moveKISerpent(aiSerpents, playField, items, sound) {
     */
 
 }
-function moveSerpent(serpent, playField, items,sound) {
+function moveSerpent(serpent, playField, items, sound) {
     // Create the new Snake's head
     var newHead = new serpentPart(serpent.serpentParts[0].x + serpent.dx, serpent.serpentParts[0].y + serpent.dy);
     newHead.currentPointOfView = serpent.serpentParts[0].currentPointOfView;
-    // serpentPlayer.serpentParts = {​​​​​ x: snake[0].x + dx, y: snake[0].y + dy }​​​​​;
     // Add the new head to the beginning of snake body
     serpent.serpentParts.unshift(newHead);
     // removes the last part of the serpent from playground
-    // serpent.serpentParts.pop();
-    // console.log("haseatenfood bevor", items);
-    haseatenfood ist nicht korrekt, item wird nicht richtig gelöscht 
     const chasEatenFood = hasEatenFood(serpent, items, playField, sound);
     if (chasEatenFood){
         
            console.log("eaten!!", newHead);
            generateNewItem(1, items, playField);
            playField.addToPlayground(serpent.serpentParts[0].x, serpent.serpentParts[0].y, 1);
-       }
-       else {
-           // Remove the last part of snake body
-           playField.removeFromPlayground(serpent.serpentParts[serpent.serpentParts.length - 1].x, serpent.serpentParts[serpent.serpentParts.length - 1].y);
-           // serpent.serpentParts[serpent.serpentParts.length - 1].removeFromPlayground();
-           serpent.serpentParts.pop();
-       }
-       //serpent.serpentParts[0].addToPlayground();
-
+    }
+    else {
+        // Remove the last part of snake body
+        playField.removeFromPlayground(serpent.serpentParts[serpent.serpentParts.length - 1].x, serpent.serpentParts[serpent.serpentParts.length - 1].y);
+        // serpent.serpentParts[serpent.serpentParts.length - 1].removeFromPlayground();
+        serpent.serpentParts.pop();
+    }
 }
 function generateNewItem(ObjectType, itemlist, playField) {
     // if food
-    wird das item richtig in die liste gepusht? ich finde sie nicht in der liste laut console.log
     if (ObjectType == 1) {
         var newFood = new item(1, "food", getRandomIntInclusive(3, 17), getRandomIntInclusive(3, 17), globalassets.clover); 
         itemlist.push(newFood);
         playField.addToPlayground(newFood.gridx, newFood.gridy, 1);
-        console.log("item generated", newFood, itemlist);
+        console.log("food generated", newFood, itemlist);
     }
+    else if (ObjectType == 2) {
+        var newBackpack = new item(2, "backpack", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.backpack);
+        itemlist.push(newBackpack);
+        playField.addToPlayground(newBackpack.gridx, newBackpack.gridy, 1);
+        console.log("backpack generated", newBackpack, itemlist);
+    }
+    else if (ObjectType == 3) {
+        var newBomb = new item(3, "bomb", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.bomb);
+        itemlist.push(newBomb);
+        playField.addToPlayground(newBomb.gridx, newBomb.gridy, 1);
+        console.log("newBomb generated", newBomb, itemlist);       
+    }
+    else if (ObjectType == 4) {
+        var newBook = new item(4, "book", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.book);
+        itemlist.push(newBook);
+        playField.addToPlayground(newBook.gridx, newBook.gridy, 1);
+        console.log("newBook generated", newBook, itemlist);       
+    } 
+    else if (ObjectType == 5) {
+        var newFeather = new item(5, "feather", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.feather);
+        itemlist.push(newFeather);
+        playField.addToPlayground(newFeather.gridx, newFeather.gridy, 1);
+        console.log("newFeather generated", newFeather, itemlist);       
+    }         
 }
 /* ----  movement section end ---- */
 
@@ -1380,18 +1393,19 @@ function ObjectCollision() {
     // 
 }
 function hasEatenFood(serpent, items, playField, sound) {
-    for (var i = 0; i < items.length; i++) {
+    for (let i = 0; i < items.length; i++) {
+        console.log("haseatenfood", items, items[i], i);
         // if item == 1 , food is 1
-        if (items[i].id == 1 && items[i] != null) {
+        if (items[i].id == 1 && items[i] != null && items[i] != undefined) {
             // console.log("eatenfood", serpent.serpentParts[0].x, items[i].gridx);
             const chasEatenFood = serpent.serpentParts[0].x === items[i].gridx && serpent.serpentParts[0].y === items[i].gridy;
             // return if true 
             if (chasEatenFood) {
                 eatFoodSoundeffect(sound);
                 playField.removeFromPlayground(items[i].gridx, items[i].gridy);
-                console.log("vorslice", items, i);
+                console.log("vorsplice", items, i);
                 items.splice(i, 1);
-                console.log("nachslice", items, i);
+                console.log("nachsplice", items, i);
                 return chasEatenFood;
             }
         }
@@ -1449,15 +1463,22 @@ function getRandomIntInclusive(min, max) {
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+function invertColors(imageData) {
+    for (var i = 0; i < imageData.data.length; i+= 4) {
+      imageData.data[i] = imageData.data[i] ^ 255; // Invert Red
+      imageData.data[i+1] = imageData.data[i+1] ^ 255; // Invert Green
+      imageData.data[i+2] = imageData.data[i+2] ^ 255; // Invert Blue
+    }
+    return imageData;
+  }
+  function invertColors2(data) {
+    for (let i = 0; i < data.length; i += 4) {
+        data[i] = 255 - data[i];
+        data[i+1] = 255 - data[i+1];
+        data[i+2] = 255 - data[i+2];
+        data[i+3] = 255;
+      }
+    return data;
+  }
 /* ---- help functions section end  */
 
-function gen_food() {
-    food_x = random_food(0, snakeboard.width - 10);
-    food_y = random_food(0, snakeboard.height - 10);
-
-    // if the new food location is where the snake currently is, generate a new food location
-    snake.forEach(function has_snake_eaten_food(part) {
-        const has_eaten = part.x == food_x && part.y == food_y;
-        if (has_eaten) gen_food();
-    });
-}
