@@ -1,3 +1,6 @@
+# WIP_Projekt develop branch Markus
+Tests 
+
 # WIP_Projekt
 Kleines Spiel in Javascript/HTML <br/>
 Organisation geschieht über Microsoft Teams und Github <br/>
@@ -23,7 +26,6 @@ Nebenprojekte: Arkanoid (NES), Snake <br/>
 
 Aufgaben: 
 - Programmierstruktur anlegen 
-
 - KI-Programmierung (Kai)
 - Spielfeld 
 - Kamerafixierung auf Player
@@ -32,9 +34,6 @@ Aufgaben:
 - Sprites und Animation 
 
 - (Levelgenerierung automatisch)
-
-
-
 
 
 ## Mitglieder
