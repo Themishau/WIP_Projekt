@@ -134,6 +134,7 @@ class PriorityQueue {
         return this.items.length == 0;
     }
 }
+
 /* item spritesheet */
 class itemSpritesheet {
     constructor(id, spritesheet) {
@@ -353,7 +354,7 @@ class level {
         this.KeyUpEvent = function (event) {
             /* as there might be some support issues we have to check the property of the key pressed */
             if (event.which || event.charCode || event.keyCode) {
-                var characterCode = event.which || event.charCode || event.keyCode;
+                var characterCode = event.which || event.charCode || event.keyCode; //set characterCode on pressed keycode
             }
             else if (event.key != undefined) {
                 var characterCode = charCodeArr[event.key] || event.key.charCodeAt(0);
@@ -363,21 +364,19 @@ class level {
             }
 
             /* check saved key */
-            if (characterCode == 37) {
-                kleftA = false;
+            switch(characterCode){
+                case "37": 
+                    kleftA = false;
+                case "39":
+                    krightA = false;
+                case "38":
+                    kupA = false;
+                case "40":
+                    kdownA = false;
+                case "32":
+                    kspace = false;
             }
-            else if (characterCode == 39) {
-                krightA = false;
-            }
-            else if (characterCode == 38) {
-                kupA = false;
-            }
-            else if (characterCode == 40) {
-                kdownA = false;
-            }
-            if (characterCode == 32) {
-                kspace = false;
-            }
+           
         };
     };
 
@@ -1262,11 +1261,10 @@ function movement(serpentPlayer, aiSerpents, playGroundLevel, items, sound) {
 function moveKISerpent(aiSerpents, playField, items, sound) {
     
     // console.log("itemPosition", itemPosition);
-    das for funktioniert noch nicht gut, chooseItem ist falsch 
+   //FIX THIS das for funktioniert noch nicht gut, chooseItem ist falsch 
     for (var i = 0; i < aiSerpents.length; i++) {
         if ( (aiSerpents[i].nextGoal == null) || (aiSerpents[i].nextGoal == undefined) || (playField.fields[aiSerpents[i].nextGoal.x][aiSerpents[i].nextGoal.y] != aiSerpents[i].nextGoal.objectID)) {
-            var chooseItem = null;
-            chooseItem = items[getRandomIntInclusive(0, items.length - 1)];
+            var chooseItem = items[getRandomIntInclusive(0, items.length - 1)];
             aiSerpents[i].nextGoal.objectID = chooseItem.id;
             aiSerpents[i].nextGoal.x = chooseItem.gridx; 
             aiSerpents[i].nextGoal.y =  chooseItem.gridy;
@@ -1334,10 +1332,9 @@ function moveSerpent(serpent, playField, items,sound) {
     // removes the last part of the serpent from playground
     // serpent.serpentParts.pop();
     // console.log("haseatenfood bevor", items);
-    haseatenfood ist nicht korrekt, item wird nicht richtig gelöscht 
+    //FIX THIS haseatenfood ist nicht korrekt, item wird nicht richtig gelöscht 
     const chasEatenFood = hasEatenFood(serpent, items, playField, sound);
     if (chasEatenFood){
-        
            console.log("eaten!!", newHead);
            generateNewItem(1, items, playField);
            playField.addToPlayground(serpent.serpentParts[0].x, serpent.serpentParts[0].y, 1);
@@ -1379,6 +1376,7 @@ function updatePlayfieldfields() {
 function ObjectCollision() {
     // 
 }
+
 function hasEatenFood(serpent, items, playField, sound) {
     for (var i = 0; i < items.length; i++) {
         // if item == 1 , food is 1
