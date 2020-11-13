@@ -336,15 +336,12 @@ class LevelConfig {
         }
 
         for (let i = 0; i <= 0; i++) {
-
             if (i == 0)
                 this.aiSerpents[i] = new serpent(i + 7, getRandomIntInclusive(3, 19), getRandomIntInclusive(3, 19), this.serpentSpritesBlue, 3);  
             if (i == 1)        
                 this.aiSerpents[i] = new serpent(i + 7, getRandomIntInclusive(3, 19), getRandomIntInclusive(3, 19), this.serpentSpriteRed, 3);
             else 
                 this.aiSerpents[i] = new serpent(i + 7, getRandomIntInclusive(3, 19), getRandomIntInclusive(3, 19), this.serpentSpritesBlue, 3); 
-
-            this.aiSerpents[i] = new serpent(i + 7, getRandomIntInclusive(3, 19), getRandomIntInclusive(1, 19), this.serpentSprites, 3);
 
             /* change color of serpents */
             let ctx = gameField.canvasContext;
