@@ -38,6 +38,20 @@ var objects = [
     "feather",
     "snake",
     "serpent_sprite",
+    "snake_head_b_1",
+    "snake_head_b_2",
+    "snake_head_b_3",
+    "snake_mid_b",
+    "snake_end_b",
+    "snake_downright_b",
+    "snake_downleft_b",
+    "snake_head_r_1",
+    "snake_head_r_2",
+    "snake_head_r_3",
+    "snake_mid_r",
+    "snake_end_r",
+    "snake_downright_r",
+    "snake_downleft_r",  
     "snake_head1",
     "snake_head2",
     "snake_head3",
@@ -283,6 +297,8 @@ class LevelConfig {
             this.bg_universe = new Image(),
             this.bg_stars = new Image(),
             this.serpentSprites = [],
+            this.serpentSpritesBlue = [],
+            this.serpentSpriteRed = [],
             this.playGroundLevel,
             this.serpentPlayer,
             this.serpent_sprite, // for testing
@@ -296,6 +312,8 @@ class LevelConfig {
     loadLevel(assets) {
         console.log("assets", assets);
         this.serpentSprites = [assets.snake_head1, assets.snake_head2, assets.snake_head3, assets.snake_mid, assets.snake_downleft, assets.snake_downright, assets.snake_end];
+        this.serpentSpritesBlue = [assets.snake_head_b_1, assets.snake_head_b_2, assets.snake_head_b_3, assets.snake_mid_b, assets.snake_downleft_b, assets.snake_downright_b, assets.snake_end_b];
+        this.serpentSpriteRed = [assets.snake_head_r_1, assets.snake_head_r_2, assets.snake_head_r_3, assets.snake_mid_r, assets.snake_downleft_r, assets.snake_downright_r, assets.snake_end_r];
         this.playGroundLevel = new playground(0, assets.serpent_sprite, assets.bg_Jupiter);
         this.serpent_sprite = assets.serpent_sprite;
         this.sound = assets.Touch;
@@ -316,9 +334,14 @@ class LevelConfig {
         for (let i = 0; i < this.itemlist.length; i++) {
             this.playGroundLevel.addToPlayground(this.itemlist[i].gridx, this.itemlist[i].gridy, this.itemlist[i].id);
         }
+
         for (let i = 0; i <= 0; i++) {
-            this.aiSerpents[i] = new serpent(i + 7, getRandomIntInclusive(3, 19), getRandomIntInclusive(1, 19), this.serpentSprites, 3);      
-            
+            if (i == 0)
+                this.aiSerpents[i] = new serpent(i + 7, getRandomIntInclusive(3, 19), getRandomIntInclusive(3, 19), this.serpentSpritesBlue, 3);  
+            if (i == 1)        
+                this.aiSerpents[i] = new serpent(i + 7, getRandomIntInclusive(3, 19), getRandomIntInclusive(3, 19), this.serpentSpriteRed, 3);
+            else 
+                this.aiSerpents[i] = new serpent(i + 7, getRandomIntInclusive(3, 19), getRandomIntInclusive(3, 19), this.serpentSpritesBlue, 3); 
             /* change color of serpents */
             let ctx = gameField.canvasContext;
             let imgData = ctx.getImageData(0, 0, this.aiSerpents[i].width, this.aiSerpents[i].height); 
@@ -733,7 +756,7 @@ var gameField = {
     //then: null,
     //startTime: null,
     timer: null,
-    FPS: 1,
+    FPS: 10,
     fpsInterval: null,
     update: function () {
         this.gameMode.update();
@@ -1332,7 +1355,6 @@ function moveSerpent(serpent, playField, items, sound) {
         
            console.log("eaten!!", newHead);
            generateNewItem(1, items, playField);
-           playField.addToPlayground(serpent.serpentParts[0].x, serpent.serpentParts[0].y, 1);
     }
     else {
         // Remove the last part of snake body
@@ -1394,7 +1416,7 @@ function ObjectCollision() {
 }
 function hasEatenFood(serpent, items, playField, sound) {
     for (let i = 0; i < items.length; i++) {
-        console.log("haseatenfood", items, items[i], i);
+        // console.log("haseatenfood", items, items[i], i);
         // if item == 1 , food is 1
         if (items[i].id == 1 && items[i] != null && items[i] != undefined) {
             // console.log("eatenfood", serpent.serpentParts[0].x, items[i].gridx);
