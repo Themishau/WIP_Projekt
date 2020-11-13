@@ -266,7 +266,7 @@ class serpent {
             this.OldDx = 1,
             this.OldDy = 0,
             this.serpentParts = [],
-            this.nextGoal = {objectID : 1, x: 0, y: 0},
+            this.nextTarget = { objectID: 1, x: 0, y: 0 },
             this.foodEaten = 0,
             this.inventory = [],
             this.addSerpentPart(initSnakeParts)
@@ -290,7 +290,7 @@ class LevelConfig {
             this.aiSerpents = [],
             this.itemlist = [],
             this.sound;
-            //this.foodList = []
+        //this.foodList = []
         // this.loadRessources(objects, soundEffects, this.loadLevel);
     }
     loadLevel(assets) {
@@ -309,23 +309,23 @@ class LevelConfig {
         this.itemlist[0] = new item(1, "food", getRandomIntInclusive(3, 17), getRandomIntInclusive(3, 17), assets.clover);
         this.itemlist[1] = new item(1, "food", getRandomIntInclusive(3, 17), getRandomIntInclusive(3, 17), assets.clover);
         this.itemlist[2] = new item(1, "food", getRandomIntInclusive(3, 17), getRandomIntInclusive(3, 17), assets.clover);
-       // this.itemlist[3] = new item(2, "backpack", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.backpack);
-       // this.itemlist[4] = new item(3, "bomb", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.bomb);
-       // this.itemlist[5] = new item(4, "book", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.book);
-       // this.itemlist[6] = new item(5, "feather", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.feather);
+        // this.itemlist[3] = new item(2, "backpack", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.backpack);
+        // this.itemlist[4] = new item(3, "bomb", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.bomb);
+        // this.itemlist[5] = new item(4, "book", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.book);
+        // this.itemlist[6] = new item(5, "feather", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.feather);
         for (let i = 0; i < this.itemlist.length; i++) {
             this.playGroundLevel.addToPlayground(this.itemlist[i].gridx, this.itemlist[i].gridy, this.itemlist[i].id);
         }
         for (let i = 0; i <= 0; i++) {
-            this.aiSerpents[i] = new serpent(i + 7, getRandomIntInclusive(3, 19), getRandomIntInclusive(1, 19), this.serpentSprites, 3);      
-            
+            this.aiSerpents[i] = new serpent(i + 7, getRandomIntInclusive(3, 19), getRandomIntInclusive(1, 19), this.serpentSprites, 3);
+
             /* change color of serpents */
             let ctx = gameField.canvasContext;
-            let imgData = ctx.getImageData(0, 0, this.aiSerpents[i].width, this.aiSerpents[i].height); 
+            let imgData = ctx.getImageData(0, 0, this.aiSerpents[i].width, this.aiSerpents[i].height);
             console.log("beforecolorchange", imgData);
             imgData = invertColors(imgData);
             console.log("aftercolorchange", imgData);
-            ctx.putImageData(imgData, 0, 0); 
+            ctx.putImageData(imgData, 0, 0);
             // console.log(aiSerpents[i], aiSerpents[i].angle);
         }
     }
@@ -733,7 +733,7 @@ var gameField = {
     //then: null,
     //startTime: null,
     timer: null,
-    FPS: 1,
+    FPS: 2,
     fpsInterval: null,
     update: function () {
         this.gameMode.update();
@@ -837,7 +837,7 @@ window.onload = function () {
         return levelData.levelConfig;
     };
     /***** GAME STARTS HERE *****/
-     
+
     window.loadRessources = function () {
         loadFromFiles(objects, soundEffects, loadAssets);
     }
@@ -981,7 +981,7 @@ function drawKiSerpent(aiSerpents) {
     for (var i = 0; i < aiSerpents.length; i++) {
         for (var j = 0; j < aiSerpents[i].serpentParts.length; j++) {
             aiSerpents[i].serpentParts[j].angle = aiSerpents[i].serpentParts[j].currentPointOfView * Math.PI / 180;
-            var ctx  = gameField.canvasContext;
+            var ctx = gameField.canvasContext;
             ctx.save();
             /* serpent head */
             if (j == 0) {
@@ -1108,10 +1108,10 @@ function draw(bg_stars, bg_universe, serpentPlayer, itemlist, aiSerpents) {
 
 /* ----  AI section  ---- */
 function calculateNextMove(obstaclesTable, currentPosition, itemPosition) {
-    
+
     // aStar is the Pathfinding algorithm used to find a shortest path from the snakehead to the food
     var aStarResult = aStar(obstaclesTable, itemPosition, currentPosition);
-    
+
     if (aStarResult.pathFound == true)
     // aStar can only find a path, if the food position is reacheable in the current state of the game
     {
@@ -1123,12 +1123,12 @@ function calculateNextMove(obstaclesTable, currentPosition, itemPosition) {
         if (nextNode.position.x < currentPosition.x) {
             //move left!
             return { dx: -1, dy: 0 };
-            
+
         }
         if (nextNode.position.y > currentPosition.y) {
             //move down!
             return { dx: 0, dy: 1 };
-            
+
         }
         if (nextNode.position.y < currentPosition.y) {
             //move up!
@@ -1141,17 +1141,17 @@ function calculateNextMove(obstaclesTable, currentPosition, itemPosition) {
             //move down!
             return { dx: 0, dy: 1 };
         }
-        
+
         if (currentPosition.y - 1 >= 0 && obstaclesTable[currentPosition.x][currentPosition.y - 1] == 0) {
             //move up!
             return { dx: 0, dy: -1 };
         }
-        
+
         if (currentPosition.x + 1 < obstaclesTable.length && obstaclesTable[currentPosition.x + 1][currentPosition.y] == 0) {
             //move right!
             return { dx: 1, dy: 0 };
         }
-        
+
         if (currentPosition.x - 1 >= 0 && obstaclesTable[currentPosition.x - 1][currentPosition.y] == 0) {
             //move left!
             return { dx: -1, dy: 0 };
@@ -1161,7 +1161,7 @@ function calculateNextMove(obstaclesTable, currentPosition, itemPosition) {
 function reconstruct_path(current) {
     while (current.parent != null) {
         if (current.parent.parent != null)
-        current = current.parent;
+            current = current.parent;
         else {
             return current;
         }
@@ -1175,48 +1175,48 @@ function aStar(obstaclesTable, goalPosition, startPosition) {
     // The closedTable describes, which elements have already been visited by the algorithm
     var closedTable = new playground(obstaclesTable.length, obstaclesTable.length).fields;
     var startField = new Node(startPosition, 0, null, goalPosition);
-    
+
     // The open List represents the possible neighbouring fields which could be visited next.
     var openList = new PriorityQueue();
-    
+
     // At first, the starting field is added to the open List
     openList.enqueue(startField, startField.fCost);
-    
+
     // If there are no more entries in the openList, this means that the algorithm has visited
     // all possible fields without finding the goal along its path.
     for (let index = 0; !openList.isEmpty() && index < obstaclesTable.length * obstaclesTable.length * obstaclesTable.length; index++) {
         // The field with the shortest estimated costs (FCosts) towards the goal is removed from the open list
         var smallestFScoreField = openList.dequeue().element;
-        
+
         let x = smallestFScoreField.position.x;
         let y = smallestFScoreField.position.y;
-        
+
         // and then added to the closed list
         closedTable[x][y] = 1;
-        
+
         // If this field has the same coordinates as the goal, the goal has been found.
         if (positionsAreEqual(smallestFScoreField.position, goalPosition)) {
             return { pathFound: true, nextNode: reconstruct_path(smallestFScoreField) };
         }
-        
+
         //bottom neighbour
         if (y + 1 < obstaclesTable.length && obstaclesTable[x][y + 1] == 0 && closedTable[x][y + 1] == 0) {
             let neighbour = new Node({ x: x, y: y + 1 }, smallestFScoreField.gCost + 1, smallestFScoreField, goalPosition);
             openList.enqueue(neighbour, neighbour.fCost);
         }
-        
+
         //upper neighbour
         if (y - 1 >= 0 && obstaclesTable[x][y - 1] == 0 && closedTable[x][y - 1] == 0) {
             let neighbour = new Node({ x: x, y: y - 1 }, smallestFScoreField.gCost + 1, smallestFScoreField, goalPosition);
             openList.enqueue(neighbour, neighbour.fCost);
         }
-        
+
         //right neighbour
         if (x + 1 < obstaclesTable.length && obstaclesTable[x + 1][y] == 0 && closedTable[x + 1][y] == 0) {
             let neighbour = new Node({ x: x + 1, y: y }, smallestFScoreField.gCost + 1, smallestFScoreField, goalPosition);
             openList.enqueue(neighbour, neighbour.fCost);
         }
-        
+
         //left neighbour
         if (x - 1 >= 0 && obstaclesTable[x - 1][y] == 0 && closedTable[x - 1][y] == 0) {
             let neighbour = new Node({ x: x - 1, y: y }, smallestFScoreField.gCost + 1, smallestFScoreField, goalPosition);
@@ -1234,7 +1234,7 @@ function removeSnakeFromMatrix(aiSerpentPart, playField) {
 }
 function removeSnakePart(aiSerpentPart, playField) {
     if (aiSerpentPart.x < playField.fields.length && aiSerpentPart.y < playField.fields.length)
-    playField.fields[aiSerpentPart.x][aiSerpentPart.y] = 0;
+        playField.fields[aiSerpentPart.x][aiSerpentPart.y] = 0;
 }
 function addSnakeToMatrix(aiSerpentPart, playField) {
     for (var i = 0; i < aiSerpentPart.serpentPart.length; i++) {
@@ -1243,7 +1243,7 @@ function addSnakeToMatrix(aiSerpentPart, playField) {
 }
 function addSnakePart(aiSerpentPart, playField) {
     if (aiSerpentPart.x < playField.fields.length && aiSerpentPart.y < playField.fields.length)
-    playField.fields[aiSerpentPart.x][aiSerpentPart.y] = 1;
+        playField.fields[aiSerpentPart.x][aiSerpentPart.y] = 1;
 }
 /* ----  add/Remove section end ---- */
 
@@ -1252,59 +1252,64 @@ function addSnakePart(aiSerpentPart, playField) {
 /* ----  movement section  ---- */
 function movement(serpentPlayer, aiSerpents, playGroundLevel, items, sound) {
     //console.log("movement", items);
-    moveKISerpent(aiSerpents, playGroundLevel, items, sound);
+    moveAiSerpents(aiSerpents, playGroundLevel, items, sound);
     // console.log("movementafterki", items);
     moveSerpent(serpentPlayer, playGroundLevel, items, sound);
 }
-function moveKISerpent(aiSerpents, playField, items, sound) {
-    
-    // console.log("itemPosition", itemPosition);
-    for (let i = 0; i < aiSerpents.length; i++) {
-        if ( (aiSerpents[i].nextGoal == null) || (aiSerpents[i].nextGoal == undefined) || (playField.fields[aiSerpents[i].nextGoal.x][aiSerpents[i].nextGoal.y] != aiSerpents[i].nextGoal.objectID)) {
-            let chooseItem = null;
-            chooseItem = items[getRandomIntInclusive(0, items.length - 1)];
-            aiSerpents[i].nextGoal.objectID = chooseItem.id;
-            aiSerpents[i].nextGoal.x = chooseItem.gridx; 
-            aiSerpents[i].nextGoal.y =  chooseItem.gridy;
-            console.log("items", items, "chosenItem", chooseItem, "objectID", playField.fields[aiSerpents[i].nextGoal.x][aiSerpents[i].nextGoal.y]);
-            //console.log("playField.fields", playField.fields);
-            //console.log("NEXT GOAL", aiSerpents[i].nextGoal);
-        }
-        /* TODO: OBSTACLESTABLE GENERIEREN */
-        let testPlayfield = new playground();
-        console.log("x Ai Serpent", aiSerpents[i].serpentParts[1].x, aiSerpents[i].serpentParts[1].y);
-        testPlayfield.fields[aiSerpents[i].serpentParts[1].x][aiSerpents[i].serpentParts[1].y] = 1;
-        let nextMovement = calculateNextMove(testPlayfield.fields, { x: aiSerpents[i].serpentParts[0].x, y: aiSerpents[i].serpentParts[0].y }, { x: aiSerpents[i].nextGoal.x, y: aiSerpents[i].nextGoal.y });
-        if (nextMovement != undefined ) {
-            aiSerpents[i].OldDx = aiSerpents[i].dx;
-            aiSerpents[i].OldDy = aiSerpents[i].dy;
 
-                /* change direction for animation head */
-                if (nextMovement.dy == -1 )
-                    aiSerpents[i].serpentParts[0].currentPointOfView = aiSerpents[i].serpentParts[0].PointOfView.north;
-                else if (nextMovement.dy == +1 )
-                    aiSerpents[i].serpentParts[0].currentPointOfView = aiSerpents[i].serpentParts[0].PointOfView.south;
-                else if (nextMovement.dx == -1 )
-                    aiSerpents[i].serpentParts[0].currentPointOfView = aiSerpents[i].serpentParts[0].PointOfView.west;
-                else if (nextMovement.dx == +1 )
-                    aiSerpents[i].serpentParts[0].currentPointOfView = aiSerpents[i].serpentParts[0].PointOfView.east;
-               
-                    /* change direction for animation body */
-                if (    (aiSerpents[i].OldDx == + 1 && aiSerpents[i].serpentParts[0].currentPointOfView == aiSerpents[i].serpentParts[0].PointOfView.north) 
-                    ||  (aiSerpents[i].OldDy == + 1 && aiSerpents[i].serpentParts[0].currentPointOfView == aiSerpents[i].serpentParts[0].PointOfView.east) 
-                    ||  (aiSerpents[i].OldDx == - 1 && aiSerpents[i].serpentParts[0].currentPointOfView == aiSerpents[i].serpentParts[0].PointOfView.south)
-                    ||  (aiSerpents[i].OldDy == - 1 && aiSerpents[i].serpentParts[0].currentPointOfView == aiSerpents[i].serpentParts[0].PointOfView.west) ) {
-                    aiSerpents[i].serpentParts[0].currentCorner = 1;
-                }
-                else {
-                    aiSerpents[i].serpentParts[0].currentCorner = 2;
-                }
-                
-                /* set movement */
-                aiSerpents[i].dx = nextMovement.dx;
-                aiSerpents[i].dy = nextMovement.dy;
-                
+function getTargetPosition(aiSerpent, items, playField) {
+    let targetStillExists = (playField.fields[aiSerpent.nextTarget.x][aiSerpent.nextTarget.y] == aiSerpent.nextTarget.objectID) ? true : false;
+    if (!targetStillExists)
+        aiSerpent.nextTarget = generateNewRandomTarget(items);
+    return { x: aiSerpent.nextTarget.x, y: aiSerpent.nextTarget.y };
+}
+
+function generateNewRandomTarget(items) {
+    let randomInt = getRandomIntInclusive(0, items.length - 1);
+    let newTarget = items[randomInt];
+    return { objectID: newTarget.id, x: newTarget.gridx, y: newTarget.gridy };
+}
+
+function createObstacleTable(aiSerpent) {
+    let obstaclesTable = new playground();
+    obstaclesTable.fields[aiSerpent.serpentParts[1].x][aiSerpent.serpentParts[1].y] = 1;
+    return obstaclesTable;
+}
+
+function moveAiSerpents(aiSerpents, playField, items, sound) {
+    for (let i = 0; i < aiSerpents.length; i++) {
+        let nextTargetPosition = getTargetPosition(aiSerpents[i], items, playField);
+        let obstaclesTable = createObstacleTable(aiSerpents[i]);
+
+        let nextMovement = calculateNextMove(obstaclesTable.fields, { x: aiSerpents[i].serpentParts[0].x, y: aiSerpents[i].serpentParts[0].y }, { x: nextTargetPosition.x, y: nextTargetPosition.y });
+
+        aiSerpents[i].OldDx = aiSerpents[i].dx;
+        aiSerpents[i].OldDy = aiSerpents[i].dy;
+
+        /* change direction for animation head */
+        if (nextMovement.dy == -1)
+            aiSerpents[i].serpentParts[0].currentPointOfView = aiSerpents[i].serpentParts[0].PointOfView.north;
+        else if (nextMovement.dy == +1)
+            aiSerpents[i].serpentParts[0].currentPointOfView = aiSerpents[i].serpentParts[0].PointOfView.south;
+        else if (nextMovement.dx == -1)
+            aiSerpents[i].serpentParts[0].currentPointOfView = aiSerpents[i].serpentParts[0].PointOfView.west;
+        else if (nextMovement.dx == +1)
+            aiSerpents[i].serpentParts[0].currentPointOfView = aiSerpents[i].serpentParts[0].PointOfView.east;
+
+        /* change direction for animation body */
+        if ((aiSerpents[i].OldDx == + 1 && aiSerpents[i].serpentParts[0].currentPointOfView == aiSerpents[i].serpentParts[0].PointOfView.north)
+            || (aiSerpents[i].OldDy == + 1 && aiSerpents[i].serpentParts[0].currentPointOfView == aiSerpents[i].serpentParts[0].PointOfView.east)
+            || (aiSerpents[i].OldDx == - 1 && aiSerpents[i].serpentParts[0].currentPointOfView == aiSerpents[i].serpentParts[0].PointOfView.south)
+            || (aiSerpents[i].OldDy == - 1 && aiSerpents[i].serpentParts[0].currentPointOfView == aiSerpents[i].serpentParts[0].PointOfView.west)) {
+            aiSerpents[i].serpentParts[0].currentCorner = 1;
         }
+        else {
+            aiSerpents[i].serpentParts[0].currentCorner = 2;
+        }
+
+        /* set movement */
+        aiSerpents[i].dx = nextMovement.dx;
+        aiSerpents[i].dy = nextMovement.dy;
 
         removeSnakeFromMatrix(aiSerpents[i], playField);
         moveSerpent(aiSerpents[i], playField, items, sound);
@@ -1327,12 +1332,12 @@ function moveSerpent(serpent, playField, items, sound) {
     // Add the new head to the beginning of snake body
     serpent.serpentParts.unshift(newHead);
     // removes the last part of the serpent from playground
+    
     const chasEatenFood = hasEatenFood(serpent, items, playField, sound);
-    if (chasEatenFood){
-        
-           console.log("eaten!!", newHead);
-           generateNewItem(1, items, playField);
-           playField.addToPlayground(serpent.serpentParts[0].x, serpent.serpentParts[0].y, 1);
+    if (chasEatenFood) {
+
+        console.log("eaten!!", newHead);
+        generateNewItem(1, items, playField);
     }
     else {
         // Remove the last part of snake body
@@ -1341,10 +1346,11 @@ function moveSerpent(serpent, playField, items, sound) {
         serpent.serpentParts.pop();
     }
 }
+
 function generateNewItem(ObjectType, itemlist, playField) {
     // if food
     if (ObjectType == 1) {
-        var newFood = new item(1, "food", getRandomIntInclusive(3, 17), getRandomIntInclusive(3, 17), globalassets.clover); 
+        var newFood = new item(1, "food", getRandomIntInclusive(3, 17), getRandomIntInclusive(3, 17), globalassets.clover);
         itemlist.push(newFood);
         playField.addToPlayground(newFood.gridx, newFood.gridy, 1);
         console.log("food generated", newFood, itemlist);
@@ -1359,20 +1365,20 @@ function generateNewItem(ObjectType, itemlist, playField) {
         var newBomb = new item(3, "bomb", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.bomb);
         itemlist.push(newBomb);
         playField.addToPlayground(newBomb.gridx, newBomb.gridy, 1);
-        console.log("newBomb generated", newBomb, itemlist);       
+        console.log("newBomb generated", newBomb, itemlist);
     }
     else if (ObjectType == 4) {
         var newBook = new item(4, "book", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.book);
         itemlist.push(newBook);
         playField.addToPlayground(newBook.gridx, newBook.gridy, 1);
-        console.log("newBook generated", newBook, itemlist);       
-    } 
+        console.log("newBook generated", newBook, itemlist);
+    }
     else if (ObjectType == 5) {
         var newFeather = new item(5, "feather", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.feather);
         itemlist.push(newFeather);
         playField.addToPlayground(newFeather.gridx, newFeather.gridy, 1);
-        console.log("newFeather generated", newFeather, itemlist);       
-    }         
+        console.log("newFeather generated", newFeather, itemlist);
+    }
 }
 /* ----  movement section end ---- */
 
@@ -1435,8 +1441,7 @@ function animations(serpentPlayer) {
 
 
 /* ----  soundeffect section  ---- */
-function eatFoodSoundeffect (eatSound)
-{   
+function eatFoodSoundeffect(eatSound) {
     eatSound.pause();
     eatSound.currentTime = 0;
     eatSound.play();
@@ -1464,21 +1469,21 @@ function getRandomIntInclusive(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 function invertColors(imageData) {
-    for (var i = 0; i < imageData.data.length; i+= 4) {
-      imageData.data[i] = imageData.data[i] ^ 255; // Invert Red
-      imageData.data[i+1] = imageData.data[i+1] ^ 255; // Invert Green
-      imageData.data[i+2] = imageData.data[i+2] ^ 255; // Invert Blue
+    for (var i = 0; i < imageData.data.length; i += 4) {
+        imageData.data[i] = imageData.data[i] ^ 255; // Invert Red
+        imageData.data[i + 1] = imageData.data[i + 1] ^ 255; // Invert Green
+        imageData.data[i + 2] = imageData.data[i + 2] ^ 255; // Invert Blue
     }
     return imageData;
-  }
-  function invertColors2(data) {
+}
+function invertColors2(data) {
     for (let i = 0; i < data.length; i += 4) {
         data[i] = 255 - data[i];
-        data[i+1] = 255 - data[i+1];
-        data[i+2] = 255 - data[i+2];
-        data[i+3] = 255;
-      }
+        data[i + 1] = 255 - data[i + 1];
+        data[i + 2] = 255 - data[i + 2];
+        data[i + 3] = 255;
+    }
     return data;
-  }
+}
 /* ---- help functions section end  */
 
