@@ -51,7 +51,7 @@ var objects = [
     "snake_mid_r",
     "snake_end_r",
     "snake_downright_r",
-    "snake_downleft_r",  
+    "snake_downleft_r",
     "snake_head1",
     "snake_head2",
     "snake_head3",
@@ -337,11 +337,11 @@ class LevelConfig {
 
         for (let i = 0; i <= 0; i++) {
             if (i == 0)
-                this.aiSerpents[i] = new serpent(i + 7, getRandomIntInclusive(3, 19), getRandomIntInclusive(3, 19), this.serpentSpritesBlue, 3);  
-            if (i == 1)        
+                this.aiSerpents[i] = new serpent(i + 7, getRandomIntInclusive(3, 19), getRandomIntInclusive(3, 19), this.serpentSpritesBlue, 3);
+            if (i == 1)
                 this.aiSerpents[i] = new serpent(i + 7, getRandomIntInclusive(3, 19), getRandomIntInclusive(3, 19), this.serpentSpriteRed, 3);
-            else 
-                this.aiSerpents[i] = new serpent(i + 7, getRandomIntInclusive(3, 19), getRandomIntInclusive(3, 19), this.serpentSpritesBlue, 3); 
+            else
+                this.aiSerpents[i] = new serpent(i + 7, getRandomIntInclusive(3, 19), getRandomIntInclusive(3, 19), this.serpentSpritesBlue, 3);
 
             /* change color of serpents */
             let ctx = gameField.canvasContext;
@@ -1294,7 +1294,7 @@ function generateNewRandomTarget(items) {
     return { objectID: newTarget.id, x: newTarget.gridx, y: newTarget.gridy };
 }
 
-function createObstacleTable(aiSerpent) {
+function createObstaclesTable(aiSerpent) {
     let obstaclesTable = new playground();
     obstaclesTable.fields[aiSerpent.serpentParts[1].x][aiSerpent.serpentParts[1].y] = 1;
     return obstaclesTable;
@@ -1302,10 +1302,11 @@ function createObstacleTable(aiSerpent) {
 
 function moveAiSerpents(aiSerpents, playField, items, sound) {
     for (let i = 0; i < aiSerpents.length; i++) {
-        let nextTargetPosition = getTargetPosition(aiSerpents[i], items, playField);
-        let obstaclesTable = createObstacleTable(aiSerpents[i]);
+        const obstaclesTable = createObstaclesTable(aiSerpents[i]);
+        const serpentHeadPosition = { x: aiSerpents[i].serpentParts[0].x, y: aiSerpents[i].serpentParts[0].y };
+        const nextTargetPosition = getTargetPosition(aiSerpents[i], items, playField);
 
-        let nextMovement = calculateNextMove(obstaclesTable.fields, { x: aiSerpents[i].serpentParts[0].x, y: aiSerpents[i].serpentParts[0].y }, { x: nextTargetPosition.x, y: nextTargetPosition.y });
+        const nextMovement = calculateNextMove(obstaclesTable.fields, serpentHeadPosition, nextTargetPosition);
 
         aiSerpents[i].OldDx = aiSerpents[i].dx;
         aiSerpents[i].OldDy = aiSerpents[i].dy;
@@ -1347,7 +1348,7 @@ function moveSerpent(serpent, playField, items, sound) {
     // Add the new head to the beginning of snake body
     serpent.serpentParts.unshift(newHead);
     // removes the last part of the serpent from playground
-    
+
     const chasEatenFood = hasEatenFood(serpent, items, playField, sound);
     if (chasEatenFood) {
         console.log("eaten!!", newHead);
