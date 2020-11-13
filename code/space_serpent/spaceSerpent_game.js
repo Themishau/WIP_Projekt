@@ -275,7 +275,7 @@ class serpent {
             this.width = gridSizex,
             this.height = gridSizey,
             this.animation = new serpentSpritesheet(0, spritesheet),
-            this.dx = 1,  /* speed x */
+            this.dx = 0,  /* speed x */
             this.dy = 0,   /* speed y */
             this.OldDx = 1,
             this.OldDy = 0,
@@ -1336,7 +1336,7 @@ function moveAiSerpents(aiSerpents, playField, items, sound) {
         aiSerpents[i].dx = nextMovement.dx;
         aiSerpents[i].dy = nextMovement.dy;
 
-        removeSnakeFromMatrix(aiSerpents[i], playField);
+        //removeSnakeFromMatrix(aiSerpents[i], playField);
         moveSerpent(aiSerpents[i], playField, items, sound);
     }
 
@@ -1347,7 +1347,6 @@ function moveSerpent(serpent, playField, items, sound) {
     newHead.currentPointOfView = serpent.serpentParts[0].currentPointOfView;
     // Add the new head to the beginning of snake body
     serpent.serpentParts.unshift(newHead);
-    // removes the last part of the serpent from playground
 
     const chasEatenFood = hasEatenFood(serpent, items, playField, sound);
     if (chasEatenFood) {
@@ -1356,8 +1355,6 @@ function moveSerpent(serpent, playField, items, sound) {
     }
     else {
         // Remove the last part of snake body
-        playField.removeFromPlayground(serpent.serpentParts[serpent.serpentParts.length - 1].x, serpent.serpentParts[serpent.serpentParts.length - 1].y);
-        // serpent.serpentParts[serpent.serpentParts.length - 1].removeFromPlayground();
         serpent.serpentParts.pop();
     }
 }
