@@ -18,3 +18,56 @@ html {
     background-repeat: repeat;
   }
 
+.title {
+    position: relative;
+    margin-top: 2vh;
+    margin-left: 5vw;
+    margin-right: 5vw;
+    
+    width: relative;
+    height: 15vh;
+    
+    border: 5px;
+    border-style:  solid;
+    border-color: white;
+
+    text-align: center;
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 2vw;
+    font-style: initial;
+    color: white;
+
+    
+}
+
+.container {
+    position: relative;
+    margin-top: 10px;
+    margin-left: 5vw;
+    margin-right: 5vw;
+
+    width: relative;
+    height: 70vh;
+
+    border: 3px;
+    border-style:  solid;
+    border-color: white;
+    text-align: center;
+}
+button {
+    position: relative;
+    margin-top: 15px;
+
+    width: 15vw;
+    height: 10vh;
+
+    border-color: rgb(201, 195, 195);
+    border-width: 5px;
+
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 5vh;
+
+}
+
