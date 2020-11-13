@@ -1314,15 +1314,6 @@ function moveAiSerpents(aiSerpents, playField, items, sound) {
         removeSnakeFromMatrix(aiSerpents[i], playField);
         moveSerpent(aiSerpents[i], playField, items, sound);
     }
-    /*
-    dx = 10 * nextMovement.dx;
-    dy = 10 * nextMovement.dy;
-    console.log("next: removeSnakeFromMatrix");
-    console.log("next: move_snake");
-    move_snake();
-    console.log("next: addSnakeToMatrix");
-    addSnakeToMatrix();
-    */
 
 }
 function moveSerpent(serpent, playField, items, sound) {
