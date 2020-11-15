@@ -8,9 +8,10 @@ var kupA = false;
 var kdownA = false;
 var int = 1;
 /* grid size scale */
-var gridSizeScale = 50;
-var gridSizey = 50;
-var gridSizex = 50;
+var gridSizeScale = 40;
+var gridSizey = 40; // 1000 / gridSizeScale = 
+var gridSizex = 40; // 1000 % gridSizeScale
+var gridfield = 25;
 /* object_table */
 var objectTable = {
     empty: 0, // empty
@@ -70,13 +71,16 @@ var objects = [
 ];
 /* soundEffects table */
 var soundEffects = [
-    "Explosion1.wav",
-    "Explosion2.wav",
-    "Explosion3.wav",
-    "Explosion4.wav",
-    "Explosion5.wav",
     "Explosion6.wav",
+    "wibl001.wav",
+    "Debris1.wav",
+    "blip003.wav",
+    "blip001.wav",
     "Touch.wav",
+    "ThrustLow.wav",
+    "Rustle1.wav",
+    "Decompression.wav",
+    "WaterSplash.wav",
     "VictoryBig.wav",
     "VictorySmall.wav",
     "Wind.wav",
@@ -305,7 +309,7 @@ class LevelConfig {
             //this.obstacleTable = null;
             this.aiSerpents = [],
             this.itemlist = [],
-            this.sound;
+            this.sound = [];
         //this.foodList = []
         // this.loadRessources(objects, soundEffects, this.loadLevel);
     }
@@ -316,7 +320,13 @@ class LevelConfig {
         this.serpentSpriteRed = [assets.snake_head_r_1, assets.snake_head_r_2, assets.snake_head_r_3, assets.snake_mid_r, assets.snake_downleft_r, assets.snake_downright_r, assets.snake_end_r];
         this.playGroundLevel = new playground(0, assets.serpent_sprite, assets.bg_Jupiter);
         this.serpent_sprite = assets.serpent_sprite;
-        this.sound = assets.Touch;
+        this.sound[0] = assets.Touch;
+        this.sound[1] = assets.blip003;
+        this.sound[2] = assets.Wind;
+        this.sound[3] = assets.blip001;
+        this.sound[4] = assets.wibl001;
+        this.sound[5] = assets.VictoryBig;
+        console.log("sounds", this.sound);
         this.sound.volume = 0.1;
         //this.obstacleTable = new playground(1, null, null);
         this.bg_universe = assets.spr_planet02;
@@ -324,24 +334,24 @@ class LevelConfig {
         this.playGroundLevel.bgsound.volume = 0.1;
         this.playGroundLevel.bgsound.loop = true;
         this.serpentPlayer = new serpent(6, 5, 5, this.serpentSprites, 3);
-        this.itemlist[0] = new item(1, "food", getRandomIntInclusive(3, 17), getRandomIntInclusive(3, 17), assets.clover);
-        this.itemlist[1] = new item(1, "food", getRandomIntInclusive(3, 17), getRandomIntInclusive(3, 17), assets.clover);
-        this.itemlist[2] = new item(1, "food", getRandomIntInclusive(3, 17), getRandomIntInclusive(3, 17), assets.clover);
-        // this.itemlist[3] = new item(2, "backpack", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.backpack);
-        // this.itemlist[4] = new item(3, "bomb", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.bomb);
-        // this.itemlist[5] = new item(4, "book", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.book);
-        // this.itemlist[6] = new item(5, "feather", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.feather);
+        this.itemlist[0] = new item(1, "food", getRandomIntInclusive(3, gridfield - 3), getRandomIntInclusive(3, gridfield - 3), assets.clover);
+        this.itemlist[1] = new item(1, "food", getRandomIntInclusive(3, gridfield - 3), getRandomIntInclusive(3, gridfield - 3), assets.clover);
+        this.itemlist[2] = new item(1, "food", getRandomIntInclusive(3, gridfield - 3), getRandomIntInclusive(3, gridfield - 3), assets.clover);
+        this.itemlist[3] = new item(2, "backpack", getRandomIntInclusive(1, gridfield - 3), getRandomIntInclusive(1, gridfield - 3), assets.backpack);
+        this.itemlist[4] = new item(3, "bomb", getRandomIntInclusive(1, gridfield - 3), getRandomIntInclusive(1, gridfield - 3), assets.bomb);
+        this.itemlist[5] = new item(4, "book", getRandomIntInclusive(1, gridfield - 3), getRandomIntInclusive(1, gridfield - 3), assets.book);
+        this.itemlist[6] = new item(5, "feather", getRandomIntInclusive(1, gridfield - 3), getRandomIntInclusive(1, gridfield - 3), assets.feather);
         for (let i = 0; i < this.itemlist.length; i++) {
             this.playGroundLevel.addToPlayground(this.itemlist[i].gridx, this.itemlist[i].gridy, this.itemlist[i].id);
         }
 
-        for (let i = 0; i <= 0; i++) {
+        for (let i = 0; i <= 2; i++) {
             if (i == 0)
-                this.aiSerpents[i] = new serpent(i + 7, getRandomIntInclusive(3, 19), getRandomIntInclusive(3, 19), this.serpentSpritesBlue, 3);
+                this.aiSerpents[i] = new serpent(i + 7, getRandomIntInclusive(3, gridfield - 3), getRandomIntInclusive(3, gridfield - 3), this.serpentSpritesBlue, 3);
             if (i == 1)
-                this.aiSerpents[i] = new serpent(i + 7, getRandomIntInclusive(3, 19), getRandomIntInclusive(3, 19), this.serpentSpriteRed, 3);
+                this.aiSerpents[i] = new serpent(i + 7, getRandomIntInclusive(3, gridfield - 3), getRandomIntInclusive(3, gridfield - 3), this.serpentSpriteRed, 3);
             else
-                this.aiSerpents[i] = new serpent(i + 7, getRandomIntInclusive(3, 19), getRandomIntInclusive(3, 19), this.serpentSpritesBlue, 3);
+                this.aiSerpents[i] = new serpent(i + 7, getRandomIntInclusive(3, gridfield - 3), getRandomIntInclusive(3, gridfield - 3), this.serpentSpritesBlue, 3);
 
             /* change color of serpents */
             let ctx = gameField.canvasContext;
@@ -468,7 +478,6 @@ class level {
             kspace = true;
         }
         if ((playerDx != levelConfig.serpentPlayer.dx) && (playerDy != levelConfig.serpentPlayer.dy)) {
-            console.log("CORNERDRIFT");
             document.dispatchEvent(new CustomEvent("onChangeDirection", {
                 detail: {
                     oldDeltax: playerDx,
@@ -485,7 +494,7 @@ class level {
         /* direction changedListener */
         document.addEventListener("onChangeDirection", function (event) {
             var levelConfig = getCurrentLevelConfig();
-            console.log(" changed corner", levelConfig);
+            //console.log(" changed corner", levelConfig);
             /* changing direction to the left */
             if ((event.detail.playerDeltax > 0) && (event.detail.oldDeltay > 0)
                 || (event.detail.playerDeltay < 0) && (event.detail.oldDeltax > 0)
@@ -514,6 +523,15 @@ class level {
         if (window.onkeydown == null && window.onkeyup == null) {
             window.onkeydown = this.KeyDownEvent;
             window.onkeyup = this.KeyUpEvent;
+        }
+        //easy win condition
+        if(this.levelConfig.serpentPlayer.foodEaten == 5)
+        {
+            this.levelConfig.playGroundLevel.bgsound.pause();
+            victorySoundeffect(this.levelConfig.sound);
+            let gameMode = getGameInstance();
+            console.log("this state is: ", gameMode);
+            gameMode.push(new WinScreen("WinScreen"));
         }
         //console.log(this.levelConfig.playGroundLevel.fields);
         update(this.levelConfig.serpentPlayer, this.levelConfig.aiSerpents, this.levelConfig.playGroundLevel, this.levelConfig.itemlist, this.levelConfig.sound);
@@ -679,6 +697,86 @@ class PauseMenu {
     onResume() {
     };
 }
+class WinScreen {
+    constructor(name) {
+        this.name = name // Just to identify the State
+        this.canvas = getContext(),
+            this.dimensions = getGameDimensions(),
+            this.backgroundColor = "#000",
+            this.mainText = "You Won! Press Enter To Enter Next Level!",
+            this.textColor = "rgb(0,0,0)", // Starts with black
+            this.colorsArray = [], // our fade values
+            this.colorIndex = 0;
+        this.angle = 0;
+        this.update = function () {
+            // update values
+            if (this.colorIndex == this.colorsArray.length) {
+                this.colorIndex = 0;
+            }
+            this.textColor = "rgb(" + this.colorsArray[this.colorIndex] + "," + this.colorsArray[this.colorIndex] + "," + this.colorsArray[this.colorIndex] + ")";
+            this.colorIndex++;
+        };
+    }
+    onEnter() {
+        var i = 1, l = 100, values = [];
+        for (i; i <= l; i++) {
+            values.push(Math.round(Math.sin(Math.PI * i / 100) * 255));
+        }
+        this.colorsArray = values;
+
+        // When the Enter key is pressed go to the next state
+        window.onkeydown = function (e) {
+            var keyCode = e.keyCode;
+            if (keyCode === 27) {
+                // Go to next State
+                var gameMode = getGameInstance();
+                console.log("this state is: ", gameMode);
+                let levelConfig = new LevelConfig("level0", globalassets);
+                levelConfig.StartLoading();
+                gameMode.push(new level("level0", levelConfig));
+            }
+        };
+    };
+    onExit() {
+        // clear the keydown event
+        window.onkeydown = null;
+        console.log(" WinScreen Menu EVENT IS DELETED");
+
+    };
+
+    render() {
+        this.canvas.clearRect(0, 0, this.dimensions.width, this.dimensions.height)
+        this.angle += 1 * Math.PI / 180; // rotation speed
+        this.canvas.save();
+        // redraw
+        this.canvas.translate(0, 0);
+        this.canvas.rotate(this.angle);
+        this.canvas.fillStyle = this.backgroundColor;
+        this.canvas.fillColor = this.backgroundColor;
+        this.canvas.fillRect(100 / -2, 100 / -2, 100, 100);
+        this.canvas.fillStyle = this.textColor;
+        this.canvas.font = "24pt Courier";
+        this.canvas.fillText(this.mainText, 350, 350);
+        this.canvas.restore();
+
+
+        /*
+        this.canvas.clearRect(0,0,this.dimensions.width,this.dimensions.height)
+        this.canvas.beginPath();
+        this.canvas.fillStyle = this.backgroundColor;
+        this.canvas.fillColor = this.backgroundColor;
+        this.canvas.fillRect(0,0,this.dimensions.width,this.dimensions.height);
+        this.canvas.fillStyle = this.textColor;
+        this.canvas.font = "24pt Courier";
+        this.canvas.fillText(this.mainText, 120, 100);
+        */
+    };
+    onPause() {
+
+    };
+    onResume() {
+    };
+}
 class StateList {
     constructor() {
         this.states = []
@@ -741,7 +839,6 @@ class StateStack {
             state.onResume();
         }
     };
-
 }
 /* ----  state machine section end ---- */
 
@@ -1099,26 +1196,7 @@ function drawKiSerpent(aiSerpents) {
     }
 }
 // created this function for visualization reasons
-function drawBackground(bg_stars, bg_universe, serpentPlayer) {
-    /*
-    var groundx = 0;
-    var groundy = 0;
-    
-    for (var column = 0; column <= playGroundLevel.fields.length; column++) {
-        for (var row = 0; row <= playGroundLevel.fields.length; row++) {
-            gameField.canvasContext.beginPath();
-            //gameField.canvasContext.fillStyle = "grey";
-            gameField.canvasContext.fillRect(groundx, groundy, gridSizex, gridSizey);
-            //gameField.canvasContext.strokeStyle = "grey";
-            gameField.canvasContext.strokeRect(groundx, groundy, gridSizex, gridSizey);
-            gameField.canvasContext.closePath();
-            groundx += gridSizeScale;
-            // console.log(column, row, groundy, groundx);
-        }
-        groundx = 0;
-        groundy += gridSizeScale;
-    }
-    */
+function drawBackground(bg_stars, bg_universe) {
     gameField.canvasContext.drawImage(bg_universe, 50, 0);
     gameField.canvasContext.drawImage(bg_stars, 0, 0);
 }
@@ -1280,26 +1358,22 @@ function movement(serpentPlayer, aiSerpents, playGroundLevel, items, sound) {
     // console.log("movementafterki", items);
     moveSerpent(serpentPlayer, playGroundLevel, items, sound);
 }
-
 function getTargetPosition(aiSerpent, items, playField) {
     let targetStillExists = (playField.fields[aiSerpent.nextTarget.x][aiSerpent.nextTarget.y] == aiSerpent.nextTarget.objectID) ? true : false;
     if (!targetStillExists)
         aiSerpent.nextTarget = generateNewRandomTarget(items);
     return { x: aiSerpent.nextTarget.x, y: aiSerpent.nextTarget.y };
 }
-
 function generateNewRandomTarget(items) {
     let randomInt = getRandomIntInclusive(0, items.length - 1);
     let newTarget = items[randomInt];
     return { objectID: newTarget.id, x: newTarget.gridx, y: newTarget.gridy };
 }
-
 function createObstaclesTable(aiSerpent) {
     let obstaclesTable = new playground();
     obstaclesTable.fields[aiSerpent.serpentParts[1].x][aiSerpent.serpentParts[1].y] = 1;
     return obstaclesTable;
 }
-
 function moveAiSerpents(aiSerpents, playField, items, sound) {
     for (let i = 0; i < aiSerpents.length; i++) {
         const obstaclesTable = createObstaclesTable(aiSerpents[i]);
@@ -1349,48 +1423,47 @@ function moveSerpent(serpent, playField, items, sound) {
     serpent.serpentParts.unshift(newHead);
 
     const chasEatenFood = hasEatenFood(serpent, items, playField, sound);
+    const chasEatenItem = hasEatenItem(serpent, items, playField, sound);
     if (chasEatenFood) {
-        console.log("eaten!!", newHead);
         generateNewItem(1, items, playField);
     }
-    else {
+    else if (chasEatenItem){
         // Remove the last part of snake body
+        generateNewItem(getRandomIntInclusive(2,5), items, playField);
         serpent.serpentParts.pop();
     }
+    else 
+        serpent.serpentParts.pop();
 }
 
 function generateNewItem(ObjectType, itemlist, playField) {
     // if food
     if (ObjectType == 1) {
-        var newFood = new item(1, "food", getRandomIntInclusive(3, 17), getRandomIntInclusive(3, 17), globalassets.clover);
+        var newFood = new item(1, "food", getRandomIntInclusive(3, gridfield - 3), getRandomIntInclusive(3, gridfield - 3), globalassets.clover);
         itemlist.push(newFood);
         playField.addToPlayground(newFood.gridx, newFood.gridy, 1);
-        console.log("food generated", newFood, itemlist);
     }
     else if (ObjectType == 2) {
-        var newBackpack = new item(2, "backpack", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.backpack);
+        var newBackpack = new item(2, "backpack", getRandomIntInclusive(3, gridfield - 3), getRandomIntInclusive(3, gridfield - 3), globalassets.backpack);
         itemlist.push(newBackpack);
-        playField.addToPlayground(newBackpack.gridx, newBackpack.gridy, 1);
-        console.log("backpack generated", newBackpack, itemlist);
+        playField.addToPlayground(newBackpack.gridx, newBackpack.gridy, 2);
     }
     else if (ObjectType == 3) {
-        var newBomb = new item(3, "bomb", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.bomb);
+        var newBomb = new item(3, "bomb", getRandomIntInclusive(3, gridfield - 3), getRandomIntInclusive(3, gridfield - 3), globalassets.bomb);
         itemlist.push(newBomb);
-        playField.addToPlayground(newBomb.gridx, newBomb.gridy, 1);
-        console.log("newBomb generated", newBomb, itemlist);
+        playField.addToPlayground(newBomb.gridx, newBomb.gridy, 3);
     }
     else if (ObjectType == 4) {
-        var newBook = new item(4, "book", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.book);
+        var newBook = new item(4, "book", getRandomIntInclusive(3, gridfield - 3), getRandomIntInclusive(3, gridfield - 3), globalassets.book);
         itemlist.push(newBook);
-        playField.addToPlayground(newBook.gridx, newBook.gridy, 1);
-        console.log("newBook generated", newBook, itemlist);
+        playField.addToPlayground(newBook.gridx, newBook.gridy, 4);
     }
     else if (ObjectType == 5) {
-        var newFeather = new item(5, "feather", getRandomIntInclusive(1, 19), getRandomIntInclusive(1, 19), assets.feather);
+        var newFeather = new item(5, "feather", getRandomIntInclusive(3, gridfield - 3), getRandomIntInclusive(3, gridfield - 3), globalassets.feather);
         itemlist.push(newFeather);
-        playField.addToPlayground(newFeather.gridx, newFeather.gridy, 1);
-        console.log("newFeather generated", newFeather, itemlist);
+        playField.addToPlayground(newFeather.gridx, newFeather.gridy, 5);
     }
+    //console.log("newItem generated", itemlist);
 }
 /* ----  movement section end ---- */
 
@@ -1420,16 +1493,80 @@ function hasEatenFood(serpent, items, playField, sound) {
             // return if true 
             if (chasEatenFood) {
                 eatFoodSoundeffect(sound);
+                serpent.foodEaten++;
                 playField.removeFromPlayground(items[i].gridx, items[i].gridy);
-                console.log("vorsplice", items, i);
                 items.splice(i, 1);
-                console.log("nachsplice", items, i);
+                //console.log("chasEatenFood", items);
                 return chasEatenFood;
             }
         }
     }
     return false;
 }
+
+function hasEatenItem(serpent, items, playField, sound) {
+    for (let i = 0; i < items.length; i++) {
+        var chasEatenItem;
+
+        if (items[i].id == 2 && items[i] != null && items[i] != undefined) {
+            // console.log("eatenfood", serpent.serpentParts[0].x, items[i].gridx);
+            chasEatenItem = serpent.serpentParts[0].x === items[i].gridx && serpent.serpentParts[0].y === items[i].gridy;
+            // return if true 
+            if (chasEatenItem) {
+                eatBackpackSoundeffect(sound);
+                playField.removeFromPlayground(items[i].gridx, items[i].gridy);
+                serpent.inventory.push(items[i]);
+                items.splice(i, 1);
+                //console.log("chasEatenFood", items);
+                return chasEatenItem;
+            }
+        }
+        else if (items[i].id == 3 && items[i] != null && items[i] != undefined) {
+            // console.log("eatenfood", serpent.serpentParts[0].x, items[i].gridx);
+            chasEatenItem = serpent.serpentParts[0].x === items[i].gridx && serpent.serpentParts[0].y === items[i].gridy;
+            // return if true 
+            if (chasEatenItem) {
+                eatBombSoundeffect(sound);
+                //serpent.foodEaten++;
+                playField.removeFromPlayground(items[i].gridx, items[i].gridy);
+                serpent.inventory.push(items[i]);
+                items.splice(i, 1);
+                //console.log("chasEatenFood", items);
+                return chasEatenItem;
+            }
+        }
+        else if (items[i].id == 4 && items[i] != null && items[i] != undefined) {
+            // console.log("eatenfood", serpent.serpentParts[0].x, items[i].gridx);
+            chasEatenItem = serpent.serpentParts[0].x === items[i].gridx && serpent.serpentParts[0].y === items[i].gridy;
+            // return if true 
+            if (chasEatenItem) {
+                eatBookSoundeffect(sound);
+                //serpent.foodEaten++;
+                playField.removeFromPlayground(items[i].gridx, items[i].gridy);
+                serpent.inventory.push(items[i]);
+                items.splice(i, 1);
+                //console.log("chasEatenFood", items);
+                return chasEatenItem;
+            }
+        }
+        else if (items[i].id == 5 && items[i] != null && items[i] != undefined) {
+            // console.log("eatenfood", serpent.serpentParts[0].x, items[i].gridx);
+            chasEatenItem = serpent.serpentParts[0].x === items[i].gridx && serpent.serpentParts[0].y === items[i].gridy;
+            // return if true 
+            if (chasEatenItem) {
+                eatFeatherSoundeffect(sound);
+                //serpent.foodEaten++;
+                playField.removeFromPlayground(items[i].gridx, items[i].gridy);
+                serpent.inventory.push(items[i]);
+                items.splice(i, 1);
+                //console.log("chasEatenFood", items);
+                return chasEatenItem;
+            }
+        }
+    }
+    return false;
+}
+
 
 /* ----  animation section  ---- */
 function animationPlayer(serpentPlayer) {
@@ -1453,11 +1590,37 @@ function animations(serpentPlayer) {
 
 
 /* ----  soundeffect section  ---- */
-function eatFoodSoundeffect(eatSound) {
-    eatSound.pause();
-    eatSound.currentTime = 0;
-    eatSound.play();
+function eatFoodSoundeffect(eatFoodSound) {
+    eatFoodSound[0].pause();
+    eatFoodSound[0].currentTime = 0;
+    eatFoodSound[0].play();
 }
+function eatFeatherSoundeffect(eatFeatherSound) {
+    eatFeatherSound[4].pause();
+    eatFeatherSound[4].currentTime = 0;
+    eatFeatherSound[4].play();
+}
+function eatBombSoundeffect(eatBombSound) {
+    eatBombSound[1].pause();
+    eatBombSound[1].currentTime = 0;
+    eatBombSound[1].play();
+}
+function eatBackpackSoundeffect(eatBackpackSound) {
+    eatBackpackSound[2].pause();
+    eatBackpackSound[2].currentTime = 0;
+    eatBackpackSound[2].play();
+}
+function eatBookSoundeffect(eatBookSound) {
+    eatBookSound[3].pause();
+    eatBookSound[3].currentTime = 0;
+    eatBookSound[3].play();
+}
+function victorySoundeffect(victorySound) {
+    victorySound[5].pause();
+    victorySound[5].currentTime = 0;
+    victorySound[5].play();
+}
+
 /* ----  soundeffect section  ---- */
 function cleanUp() {
 }
