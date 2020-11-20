@@ -1676,7 +1676,7 @@ function movement(serpentPlayer, aiSerpents, playGroundLevel, items, sound) {
     //console.log("movement", items);
     moveAiSerpents(aiSerpents, playGroundLevel, items, sound);
     // console.log("movementafterki", items);
-    moveSerpent(serpentPlayer, playGroundLevel, items, sound);
+    movePlayer(serpentPlayer, playGroundLevel, items, sound);
 }
 function getTargetPosition(aiSerpent, items, playField) {
     let targetStillExists = (playField.fields[aiSerpent.nextTarget.x][aiSerpent.nextTarget.y] == aiSerpent.nextTarget.objectID) ? true : false;
@@ -1735,6 +1735,16 @@ function moveAiSerpents(aiSerpents, playField, items, sound) {
     }
 
 }
+
+function movePlayer(serpent, playField, items, sound)
+{
+    let nextXPosition = serpent.serpentParts[0].x + serpent.dx;
+    let nextYPositon = serpent.serpentParts[0].y + serpent.dy;
+    let leavesPlayfield = (nextXPosition < 0 || nextXPosition >= playField.xSize) || (nextYPositon < 0 || nextYPositon >= playField.ySize) ? true: false;
+    if (!leavesPlayfield)
+        moveSerpent(serpent, playField, items, sound);
+}
+
 function moveSerpent(serpent, playField, items, sound) {
     // Create the new Snake's head
     var newHead = new serpentPart(serpent.serpentParts[0].x + serpent.dx, serpent.serpentParts[0].y + serpent.dy);
