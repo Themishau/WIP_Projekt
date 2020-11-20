@@ -1019,7 +1019,7 @@ class WinScreen {
     };
     update() {
         // update values
-        this.menuconfig.backgroundImageY = moveBackground(this.menuconfig.backgroundImageY, this.menuconfig.scrollSpeedBackground);
+        this.menuconfig.backgroundImageY = moveMenuBackground(this.menuconfig.backgroundImageY, this.menuconfig.scrollSpeedBackground);
     };
     addToButtons() {
         console.log(this.levelConfig.serpentPlayer.foodEaten, this.levelConfig.aiSerpents[0].foodEaten);
@@ -1475,7 +1475,6 @@ function drawBackground(bg_stars, playGroundImage) {
         groundy += gridSizeScale;
     }
     */
-    // gameField.canvasContext.drawImage(playGroundImage.bg_img[playGroundImage.currentImage], playGroundImage.bg_imgCurrentX, 0);
     gameField.canvasContext.drawImage(playGroundImage.bg_img[playGroundImage.currentImage], playGroundImage.bg_imgCurrentX, 0, playGroundImage.currentCanvasX, playGroundImage.currentCanvasY);
     gameField.canvasContext.drawImage(bg_stars, -1 * playGroundImage.bg_imgCurrentX, 0);
 }
@@ -1488,15 +1487,15 @@ function moveMenuBackground(backgroundY, speed){
 }
 
 function moveLevelBackground(image){
-    image.changeCurrentX(image.bg_imgCurrentX + image.scrollSpeedBackground, image.currentCanvasX - image.scrollSpeedBackground, image.currentCanvasY - image.scrollSpeedBackground);
+    image.changeCurrentX(image.bg_imgCurrentX + image.scrollSpeedBackground + 3, image.currentCanvasX - image.scrollSpeedBackground, image.currentCanvasY - image.scrollSpeedBackground);
     if(image.bg_imgCurrentX >= 800){
         if (image.currentImage > 6) {
             image.changeCurrentImage(0); 
-            image.changeCurrentX(0, 1000, 1000);
+            image.changeCurrentX(-300, 1000, 1000);
         }
         else  {
             image.changeCurrentImage(image.currentImage + 1);
-            image.changeCurrentX(0, 1000, 1000);
+            image.changeCurrentX(-300, 1000, 1000);
         }
     }
 }
