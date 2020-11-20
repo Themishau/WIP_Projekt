@@ -291,21 +291,61 @@ class serpent {
     }
 }
 
+class MenuConfig {  constructor(name) {
+    /* ---- init some variables ---- */
+        this.name = name,
+        this.serpentSprites = [],
+        this.sound = [],
+        this.scrollSpeedBackground = 1;
+        this.backgroundColor = "#000",
+        this.mainText = "Space Serpent",
+        this.backgroundImageY = 0,
+        this.backgroundImage = new Image(),
+        this.scrollSound = new Audio, 
+        this.textColor = "rgb(0,0,0)", // Starts with black
+        this.colorsArray = [], // our fade values
+        this.colorIndex = 0,
+        this.textColorSelected = "rgb(0,0,0)",
+        this.colorsArraySelected = [], // our fade values
+        this.colorIndexSelected = 0
+
+    //this.foodList = []
+    // this.loadRessources(objects, soundEffects, this.loadLevel);
+    }   
+    loadLevel(assets) {
+       
+        this.serpentSprites = [assets.snake_head1, assets.snake_head_b_1, assets.snake_head_r_1];
+        this.sound[0] = assets.Touch;
+        this.sound[1] = assets.blip003;
+        this.sound[2] = assets.Wind;
+        this.sound[3] = assets.blip001;
+        this.sound[4] = assets.wibl001;
+        this.sound[5] = assets.VictoryBig;
+        this.sound.volume = 0.1;
+        this.backgroundImage = assets.bg_stars;
+        this.scrollSound = assets.Touch;
+    }
+    StartLoading = function () {
+        this.loadLevel(globalassets);
+    }
+}
 /* ----  state machine section  ---- */
 class LevelConfig {
-    constructor(name) {
+    constructor(name, levelOption) {
         /* ---- init some variables ---- */
-        this.name = name,
+            this.name = name,
+            this.levelOption = levelOption,
             this.bg_image = new Image(),
             this.img = new Image(),
             this.bg_universe = new Image(),
             this.bg_stars = new Image(),
-            this.serpentSprites = [],
+            this.serpentSpritesGreen = [],
             this.serpentSpritesBlue = [],
             this.serpentSpriteRed = [],
+            this.serpent_sprites = [],
             this.playGroundLevel,
             this.serpentPlayer,
-            this.serpent_sprite, // for testing
+
             //this.obstacleTable = null;
             this.aiSerpents = [],
             this.itemlist = [],
@@ -315,9 +355,30 @@ class LevelConfig {
     }
     loadLevel(assets) {
         console.log("assets", assets);
-        this.serpentSprites = [assets.snake_head1, assets.snake_head2, assets.snake_head3, assets.snake_mid, assets.snake_downleft, assets.snake_downright, assets.snake_end];
-        this.serpentSpritesBlue = [assets.snake_head_b_1, assets.snake_head_b_2, assets.snake_head_b_3, assets.snake_mid_b, assets.snake_downleft_b, assets.snake_downright_b, assets.snake_end_b];
-        this.serpentSpriteRed = [assets.snake_head_r_1, assets.snake_head_r_2, assets.snake_head_r_3, assets.snake_mid_r, assets.snake_downleft_r, assets.snake_downright_r, assets.snake_end_r];
+        if (this.levelOption.playGroundSize == 2){
+            gridSizeScale = 20;
+            gridSizey = 20; // 1000 / gridSizeScale = 
+            gridSizex = 20; // 1000 % gridSizeScale
+            gridfield = 50;
+        }
+        else if(this.levelOption.playGroundSize == 1) {
+            gridSizeScale = 40;
+            gridSizey = 40; // 1000 / gridSizeScale = 
+            gridSizex = 40; // 1000 % gridSizeScale
+            gridfield = 25;
+        }
+        else if(this.levelOption.playGroundSize == 0) {
+            gridSizeScale = 50;
+            gridSizey = 50; // 1000 / gridSizeScale = 
+            gridSizex = 50; // 1000 % gridSizeScale
+            gridfield = 20;
+        }
+        this.serpent_sprites[0] = [assets.snake_head1, assets.snake_head2, assets.snake_head3, assets.snake_mid, assets.snake_downleft, assets.snake_downright, assets.snake_end]; // for testing
+        this.serpent_sprites[1] = [assets.snake_head_b_1, assets.snake_head_b_2, assets.snake_head_b_3, assets.snake_mid_b, assets.snake_downleft_b, assets.snake_downright_b, assets.snake_end_b]; 
+        this.serpent_sprites[2] = [assets.snake_head_r_1, assets.snake_head_r_2, assets.snake_head_r_3, assets.snake_mid_r, assets.snake_downleft_r, assets.snake_downright_r, assets.snake_end_r];
+        this.serpentSpritesGreen = this.serpent_sprites[0];
+        this.serpentSpritesBlue = this.serpent_sprites[1];
+        this.serpentSpriteRed = this.serpent_sprites[2];
         this.playGroundLevel = new playground(0, assets.serpent_sprite, assets.bg_Jupiter);
         this.serpent_sprite = assets.serpent_sprite;
         this.sound[0] = assets.Touch;
@@ -333,7 +394,7 @@ class LevelConfig {
         this.bg_stars = assets.bg_stars;
         this.playGroundLevel.bgsound.volume = 0.1;
         this.playGroundLevel.bgsound.loop = true;
-        this.serpentPlayer = new serpent(6, 5, 5, this.serpentSprites, 3);
+        this.serpentPlayer = new serpent(6, 5, 5, this.serpent_sprites[this.levelOption.serpentSpriteColor], 3);
         this.itemlist[0] = new item(1, "food", getRandomIntInclusive(3, gridfield - 3), getRandomIntInclusive(3, gridfield - 3), assets.clover);
         this.itemlist[1] = new item(1, "food", getRandomIntInclusive(3, gridfield - 3), getRandomIntInclusive(3, gridfield - 3), assets.clover);
         this.itemlist[2] = new item(1, "food", getRandomIntInclusive(3, gridfield - 3), getRandomIntInclusive(3, gridfield - 3), assets.clover);
@@ -341,11 +402,12 @@ class LevelConfig {
         this.itemlist[4] = new item(3, "bomb", getRandomIntInclusive(1, gridfield - 3), getRandomIntInclusive(1, gridfield - 3), assets.bomb);
         this.itemlist[5] = new item(4, "book", getRandomIntInclusive(1, gridfield - 3), getRandomIntInclusive(1, gridfield - 3), assets.book);
         this.itemlist[6] = new item(5, "feather", getRandomIntInclusive(1, gridfield - 3), getRandomIntInclusive(1, gridfield - 3), assets.feather);
+
         for (let i = 0; i < this.itemlist.length; i++) {
             this.playGroundLevel.addToPlayground(this.itemlist[i].gridx, this.itemlist[i].gridy, this.itemlist[i].id);
         }
 
-        for (let i = 0; i <= 2; i++) {
+        for (let i = 0; i <= this.levelOption.aiEnemys - 1; i++) {
             if (i == 0)
                 this.aiSerpents[i] = new serpent(i + 7, getRandomIntInclusive(3, gridfield - 3), getRandomIntInclusive(3, gridfield - 3), this.serpentSpritesBlue, 3);
             if (i == 1)
@@ -354,17 +416,32 @@ class LevelConfig {
                 this.aiSerpents[i] = new serpent(i + 7, getRandomIntInclusive(3, gridfield - 3), getRandomIntInclusive(3, gridfield - 3), this.serpentSpritesBlue, 3);
 
             /* change color of serpents */
+            /*
             let ctx = gameField.canvasContext;
             let imgData = ctx.getImageData(0, 0, this.aiSerpents[i].width, this.aiSerpents[i].height);
             console.log("beforecolorchange", imgData);
             imgData = invertColors(imgData);
             console.log("aftercolorchange", imgData);
             ctx.putImageData(imgData, 0, 0);
+            */
             // console.log(aiSerpents[i], aiSerpents[i].angle);
         }
     }
     StartLoading = function () {
         this.loadLevel(globalassets);
+    }
+}
+/* settings like difficulty the player can choose from */
+class LevelOption {
+    constructor(name, playGroundSize, aiEnemys, serpentSpriteColor, backGround, itemSlots) {
+        /* ---- init some variables ---- */
+        this.name = name,
+            this.backGround = backGround,
+            this.playGroundSize = playGroundSize,
+            this.serpentSpriteColor = serpentSpriteColor, // for testing
+            //this.obstacleTable = null;
+            this.aiEnemys = aiEnemys,
+            this.itemSlots = itemSlots
     }
 }
 class EmptyState {
@@ -379,9 +456,25 @@ class EmptyState {
     onPause() { };
     onResume() { };
 }
+class MenuButton {
+    constructor(name, text, img, buttonX, buttonY, buttonWidth, buttonHeight, font, fillStyle) {
+        /* ---- init some variables ---- */
+            this.name = name,
+            this.text = text,
+            this.img = [],
+            this.img = img,
+            this.buttonX = buttonX, // for testing
+            this.buttonY = buttonY,
+            this.buttonWidth = buttonWidth,
+            this.buttonHeight = buttonHeight,
+            this.font = font,
+            this.fillStyle = fillStyle
+    }
+}
 class level {
-    constructor(name, levelConfig) {
+    constructor(name, levelConfig, menuconfig) {
         this.name = name;
+        this.menuconfig = menuconfig;
         this.levelConfig = levelConfig;
         /* keyboard listener */
         window.onkeydown = null;
@@ -531,7 +624,8 @@ class level {
             victorySoundeffect(this.levelConfig.sound);
             let gameMode = getGameInstance();
             console.log("this state is: ", gameMode);
-            gameMode.push(new WinScreen("WinScreen"));
+            console.log("menu", this.menuconfig);
+            gameMode.push(new WinScreen("WinScreen", this.levelConfig, this.currentOption, this.menuconfig));
         }
         //console.log(this.levelConfig.playGroundLevel.fields);
         update(this.levelConfig.serpentPlayer, this.levelConfig.aiSerpents, this.levelConfig.playGroundLevel, this.levelConfig.itemlist, this.levelConfig.sound);
@@ -560,44 +654,106 @@ class level {
     };
 }
 class MainMenu {
-    constructor(name) {
+    constructor(name, menuconfig) {
         this.name = name // Just to identify the State
+        this.menuconfig = menuconfig,
         this.canvas = getContext(),
             this.dimensions = getGameDimensions(),
-            this.backgroundColor = "#000",
-            this.mainText = "Press Enter To Start",
-            this.textColor = "rgb(0,0,0)", // Starts with black
-            this.colorsArray = [], // our fade values
-            this.colorIndex = 0;
-        this.update = function () {
-            // update values
-            if (this.colorIndex == this.colorsArray.length) {
-                this.colorIndex = 0;
-            }
-            this.textColor = "rgb(" + this.colorsArray[this.colorIndex] + "," + this.colorsArray[this.colorIndex] + "," + this.colorsArray[this.colorIndex] + ")";
-            this.colorIndex++;
-        };
+            this.buttons = [],
+            this.selectedButton = 1,
+            this.currentOption = [],
+            this.currentOption[0] = 0,
+            this.currentOption[1] = 1,
+            this.currentOption[2] = 0
+            
     }
     onEnter() {
+        console.log(this.menuconfig);
+        this.addToButtons();
         let i = 1, l = 100, values = [];
         for (i; i <= l; i++) {
             values.push(Math.round(Math.sin(Math.PI * i / 100) * 255));
         }
-        this.colorsArray = values;
+        let j = 1, m = 10, valuesSelected = [];
+        for (j; j <= m; j++) {
+            valuesSelected.push(Math.round(Math.sin(Math.PI * j / 10) * 255));
+        }
+        this.menuconfig.colorsArraySelected = valuesSelected;
+        this.menuconfig.colorsArray = values;
 
         // When the Enter key is pressed go to the next state
         window.onkeydown = function (e) {
+            let stateData = getStateData();
             let keyCode = e.keyCode;
-            if (keyCode === 13) {
+            if ((keyCode === 13 ) && (stateData.selectedButton === 4) ) {
                 // Go to next State
                 let gameMode = getGameInstance();
-                let levelConfig = new LevelConfig("level0", globalassets);
+                console.log("options", stateData.currentOption[2], stateData.currentOption[1], stateData.currentOption[0], stateData.menuconfig);
+                let levelConfig = new LevelConfig("level1", new LevelOption ("Level1", stateData.currentOption[2], stateData.currentOption[1], stateData.currentOption[0], null, null, null));
                 levelConfig.StartLoading();
-                gameMode.push(new level("level0", levelConfig));
+                gameMode.push(new level("level1", levelConfig, stateData.menuconfig));
                 /** Note that this does not remove the current state
                  *  from the list. it just adds Level1State on top of it.
                  */
             }
+            // left
+            else if (keyCode === 37 ){
+                if (stateData.selectedButton == 1){
+                    stateData.currentOption[0] --;
+                    if (stateData.currentOption[0] < 0)
+                        stateData.currentOption[0] = 2; 
+            
+                }
+                else if (stateData.selectedButton == 2){
+                    stateData.currentOption[1] --;
+                    if (stateData.currentOption[1] < 1) 
+                        stateData.currentOption[1] = 1;
+                
+                        stateData.buttons[6].text = stateData.currentOption[1];
+                }
+                else if (stateData.selectedButton == 3){
+                    stateData.currentOption[2] --;
+                    if (stateData.currentOption[2] < 0) 
+                        stateData.currentOption[2] = 0;                      
+                    
+                }
+            }
+            // right
+            else if (keyCode === 39 ){
+                if (stateData.selectedButton == 1){
+                    stateData.currentOption[0] ++;
+                    if (stateData.currentOption[0] > 2)  
+                        stateData.currentOption[0] = 0; 
+                }
+                else if (stateData.selectedButton == 2){
+                    stateData.currentOption[1] ++;
+                    if (stateData.currentOption[1] > 5) 
+                        stateData.currentOption[1] = 5;
+                        
+                        stateData.buttons[6].text = stateData.currentOption[1];
+                }
+                else if (stateData.selectedButton == 3){
+                    stateData.currentOption[2] ++;
+                    if (stateData.currentOption[2] > 2) 
+                        stateData.currentOption[2] = 2;
+                    
+                }
+            }
+            // up
+            else if (keyCode === 38 ){
+                stateData.selectedButton --;
+                if (stateData.selectedButton < 1) 
+                 stateData.selectedButton = 4;                 
+            }
+            // down
+            else if (keyCode === 40 ){
+                stateData.selectedButton ++;
+                if (stateData.selectedButton > 4)  
+                    stateData.selectedButton = 1;   
+            }
+            stateData.menuconfig.scrollSound.pause();
+            stateData.menuconfig.scrollSound.currentTime = 0;
+            stateData.menuconfig.scrollSound.play();
         };
     };
     onExit() {
@@ -607,16 +763,64 @@ class MainMenu {
     };
     render() {
         // redraw
-        console.log("menu");
         this.canvas.clearRect(0, 0, this.dimensions.width, this.dimensions.height)
         this.canvas.beginPath();
-        this.canvas.fillStyle = this.backgroundColor;
-        this.canvas.fillColor = this.backgroundColor;
+        if (this.menuconfig.colorIndex == this.menuconfig.colorsArray.length) {
+            this.menuconfig.colorIndex = 0;
+        }
+        this.menuconfig.textColor = "rgb(" + this.menuconfig.colorsArray[this.menuconfig.colorIndex] + "," + this.menuconfig.colorsArray[this.menuconfig.colorIndex] + "," + this.menuconfig.colorsArray[this.menuconfig.colorIndex] + ")";
+        this.menuconfig.colorIndex++;
+        this.canvas.fillStyle = this.menuconfig.backgroundColor;
+        this.canvas.fillColor = this.menuconfig.backgroundColor;
         this.canvas.fillRect(0, 0, this.dimensions.width, this.dimensions.height);
-        this.canvas.fillStyle = this.textColor;
-        this.canvas.font = "24pt Courier";
-        this.canvas.fillText(this.mainText, 120, 100);
+        this.canvas.fillStyle = this.menuconfig.textColor;
+        this.canvas.drawImage(this.menuconfig.backgroundImage, 0, this.menuconfig.backgroundImageY);
+        this.canvas.font = "40pt Courier";
+        this.canvas.fillText(this.menuconfig.mainText,  this.dimensions.width / 2 - 225, 200);
+        this.canvas.strokeStyle = "blue";
+        this.canvas.strokeRect(this.dimensions.width / 2 - 265, 150, 500, 100);
+        this.canvas.beginPath();
+        for (let i = 0; i < 5; i++) {
+            if (i == this.selectedButton) {
+                if (this.menuconfig.colorIndexSelected == this.menuconfig.colorsArraySelected.length) {
+                    this.menuconfig.colorIndexSelected = 0;
+                }
+                this.menuconfig.textColorSelected = "rgb(" + this.menuconfig.colorsArraySelected[this.menuconfig.colorIndexSelected] / 3 + "," + this.menuconfig.colorsArraySelected[this.menuconfig.colorIndexSelected] + "," + this.menuconfig.colorsArraySelected[this.menuconfig.colorIndexSelected] / 2 + ")";
+                this.menuconfig.colorIndexSelected++;
+                this.canvas.font = this.buttons[i].font;
+                this.canvas.fillStyle = this.menuconfig.textColorSelected;
+                this.canvas.fillText(this.buttons[i].text,  this.buttons[i].buttonX, this.buttons[i].buttonY);
+                this.canvas.closePath();
+                // console.log(this.menuconfig.serpentSprites);
+            }
+            else {
+                this.canvas.beginPath();
+                this.canvas.fillStyle = this.buttons[i].fillStyle;
+                this.canvas.font = this.buttons[i].font;
+                this.canvas.fillText(this.buttons[i].text,  this.buttons[i].buttonX, this.buttons[i].buttonY);
+            }
+        } 
+        
+        this.canvas.drawImage(this.buttons[5].img[this.currentOption[0]], this.buttons[5].buttonX, this.buttons[5].buttonY); 
+        this.canvas.fillText(this.buttons[6].text, this.buttons[6].buttonX, this.buttons[6].buttonY);
+        this.canvas.fillText(this.buttons[7].text[this.currentOption[2]],  this.buttons[7].buttonX, this.buttons[7].buttonY);
     };
+    update () {
+        // update values
+        this.menuconfig.backgroundImageY = moveBackground(this.menuconfig.backgroundImageY, this.menuconfig.scrollSpeedBackground);
+    };
+    addToButtons() {
+        console.log(this.menuconfig.serpentSprites);
+        this.buttons.push(new MenuButton("Credit", "Copyright (c) 2020 KaBra, MaSiPi, MaZa", null, 500, 970, 100, 50,"14pt Courier", "white"));
+        this.buttons.push(new MenuButton("ChoosePlayer", "choose Player:", null, 150, 500, 100, 50, "20pt Courier", "white"));
+        this.buttons.push(new MenuButton("Enemies", "Enemies: ", null, 150, 600, 100, 50, "20pt Courier", "white"));
+        this.buttons.push(new MenuButton("playfieldsize", "Field Size", null, 150, 700, 100, 50, "20pt Courier", "white"));
+        this.buttons.push(new MenuButton("startText", "Start Game", null, 450, 800, 100, 50, "20pt Courier", "white"));
+        this.buttons.push(new MenuButton("Player", "Player:", this.menuconfig.serpentSprites, 450, 470, 100, 50, "20pt Courier", "white"));
+        this.buttons.push(new MenuButton("Enemy", 1, null, 450, 600, 100, 50, "20pt Courier", "white"));
+        this.buttons.push(new MenuButton("fieldSize", ["small", "normal", "big"], null, 450, 700, 100, 50, "20pt Courier", "white"));
+    };
+
 }
 class PauseMenu {
     constructor(name) {
@@ -698,45 +902,109 @@ class PauseMenu {
     };
 }
 class WinScreen {
-    constructor(name) {
+    constructor(name, levelConfig, currentOption, menuconfig) {
         this.name = name // Just to identify the State
         this.canvas = getContext(),
-            this.dimensions = getGameDimensions(),
-            this.backgroundColor = "#000",
-            this.mainText = "You Won! Press Enter To Enter Next Level!",
-            this.textColor = "rgb(0,0,0)", // Starts with black
-            this.colorsArray = [], // our fade values
-            this.colorIndex = 0;
-        this.angle = 0;
-        this.update = function () {
-            // update values
-            if (this.colorIndex == this.colorsArray.length) {
-                this.colorIndex = 0;
-            }
-            this.textColor = "rgb(" + this.colorsArray[this.colorIndex] + "," + this.colorsArray[this.colorIndex] + "," + this.colorsArray[this.colorIndex] + ")";
-            this.colorIndex++;
-        };
+        this.dimensions = getGameDimensions(),
+        this.menuconfig = menuconfig,
+        this.canvas = getContext(),
+        this.dimensions = getGameDimensions(),
+        this.buttons = [],
+        this.selectedButton = 1,
+        this.currentOption = currentOption,
+        this.levelConfig = levelConfig
+
     }
     onEnter() {
-        var i = 1, l = 100, values = [];
+        console.log(this.menuconfig);
+        this.addToButtons();
+        let i = 1, l = 100, values = [];
         for (i; i <= l; i++) {
             values.push(Math.round(Math.sin(Math.PI * i / 100) * 255));
         }
-        this.colorsArray = values;
+        let j = 1, m = 10, valuesSelected = [];
+        for (j; j <= m; j++) {
+            valuesSelected.push(Math.round(Math.sin(Math.PI * j / 10) * 255));
+        }
+        this.menuconfig.colorsArraySelected = valuesSelected;
+        this.menuconfig.colorsArray = values;
 
         // When the Enter key is pressed go to the next state
         window.onkeydown = function (e) {
-            var keyCode = e.keyCode;
-            if (keyCode === 27) {
+            let stateData = getStateData();
+            let keyCode = e.keyCode;
+            if ((keyCode === 13 ) && (stateData.selectedButton === 4) ) {
                 // Go to next State
-                var gameMode = getGameInstance();
-                console.log("this state is: ", gameMode);
-                let levelConfig = new LevelConfig("level0", globalassets);
-                levelConfig.StartLoading();
-                gameMode.push(new level("level0", levelConfig));
+                let gameMode = getGameInstance();
+                let levelConfig = getCurrentLevelConfig();
+                let newlevelconfig = new LevelConfig("level1", new LevelOption ("Level1", levelConfig.levelOption.playGroundSize, levelConfig.levelOption.aiEnemys, levelConfig.levelOption.serpentSpriteColor, null, null, null)); 
+                newlevelconfig.StartLoading();
+                gameMode.push(new level("level2", newlevelconfig, stateData.menuconfig));
+                /** Note that this does not remove the current state
+                 *  from the list. it just adds Level1State on top of it.
+                 */
             }
+            // left
+            else if (keyCode === 37 ){
+                if (stateData.selectedButton == 1){
+                    stateData.currentOption[0] --;
+                    if (stateData.currentOption[0] < 0)
+                        stateData.currentOption[0] = 2; 
+            
+                }
+                else if (stateData.selectedButton == 2){
+                    stateData.currentOption[1] --;
+                    if (stateData.currentOption[1] < 1) 
+                        stateData.currentOption[1] = 1;
+                
+                      //  stateData.buttons[6].text = stateData.currentOption[1];
+                }
+                else if (stateData.selectedButton == 3){
+                    stateData.currentOption[2] --;
+                    if (stateData.currentOption[2] < 0) 
+                        stateData.currentOption[2] = 0;                      
+                    
+                }
+            }
+            // right
+            else if (keyCode === 39 ){
+                if (stateData.selectedButton == 1){
+                    stateData.currentOption[0] ++;
+                    if (stateData.currentOption[0] > 2)  
+                        stateData.currentOption[0] = 0; 
+                }
+                else if (stateData.selectedButton == 2){
+                    stateData.currentOption[1] ++;
+                    if (stateData.currentOption[1] > 5) 
+                        stateData.currentOption[1] = 5;
+                        
+                        // stateData.buttons[6].text = stateData.currentOption[1];
+                }
+                else if (stateData.selectedButton == 3){
+                    stateData.currentOption[2] ++;
+                    if (stateData.currentOption[2] > 2) 
+                        stateData.currentOption[2] = 2;
+                    
+                }
+            }
+            // up
+            else if (keyCode === 38 ){
+                stateData.selectedButton --;
+                if (stateData.selectedButton < 1) 
+                 stateData.selectedButton = 4;                 
+            }
+            // down
+            else if (keyCode === 40 ){
+                stateData.selectedButton ++;
+                if (stateData.selectedButton > 4)  
+                    stateData.selectedButton = 1;   
+            }
+            stateData.menuconfig.scrollSound.pause();
+            stateData.menuconfig.scrollSound.currentTime = 0;
+            stateData.menuconfig.scrollSound.play();
         };
-    };
+    };    
+
     onExit() {
         // clear the keydown event
         window.onkeydown = null;
@@ -745,36 +1013,57 @@ class WinScreen {
     };
 
     render() {
-        this.canvas.clearRect(0, 0, this.dimensions.width, this.dimensions.height)
-        this.angle += 1 * Math.PI / 180; // rotation speed
-        this.canvas.save();
         // redraw
-        this.canvas.translate(0, 0);
-        this.canvas.rotate(this.angle);
-        this.canvas.fillStyle = this.backgroundColor;
-        this.canvas.fillColor = this.backgroundColor;
-        this.canvas.fillRect(100 / -2, 100 / -2, 100, 100);
-        this.canvas.fillStyle = this.textColor;
-        this.canvas.font = "24pt Courier";
-        this.canvas.fillText(this.mainText, 350, 350);
-        this.canvas.restore();
-
-
-        /*
-        this.canvas.clearRect(0,0,this.dimensions.width,this.dimensions.height)
+        this.canvas.clearRect(0, 0, this.dimensions.width, this.dimensions.height)
         this.canvas.beginPath();
-        this.canvas.fillStyle = this.backgroundColor;
-        this.canvas.fillColor = this.backgroundColor;
-        this.canvas.fillRect(0,0,this.dimensions.width,this.dimensions.height);
-        this.canvas.fillStyle = this.textColor;
-        this.canvas.font = "24pt Courier";
-        this.canvas.fillText(this.mainText, 120, 100);
-        */
+        if (this.menuconfig.colorIndex == this.menuconfig.colorsArray.length) {
+            this.menuconfig.colorIndex = 0;
+        }
+        this.menuconfig.textColor = "rgb(" + this.menuconfig.colorsArray[this.menuconfig.colorIndex] + "," + this.menuconfig.colorsArray[this.menuconfig.colorIndex] + "," + this.menuconfig.colorsArray[this.menuconfig.colorIndex] + ")";
+        this.menuconfig.colorIndex++;
+        this.canvas.fillStyle = this.menuconfig.backgroundColor;
+        this.canvas.fillColor = this.menuconfig.backgroundColor;
+        this.canvas.fillRect(0, 0, this.dimensions.width, this.dimensions.height);
+        this.canvas.fillStyle = this.menuconfig.textColor;
+        this.canvas.drawImage(this.menuconfig.backgroundImage, 0, this.menuconfig.backgroundImageY);
+        this.canvas.font = "40pt Courier";
+        this.canvas.fillText(this.menuconfig.mainText,  this.dimensions.width / 2 - 225, 200);
+        this.canvas.strokeStyle = "blue";
+        this.canvas.strokeRect(this.dimensions.width / 2 - 265, 150, 500, 100);
+        this.canvas.beginPath();
+        for (let i = 0; i < 5; i++) {
+            if (i == this.selectedButton) {
+                if (this.menuconfig.colorIndexSelected == this.menuconfig.colorsArraySelected.length) {
+                    this.menuconfig.colorIndexSelected = 0;
+                }
+                this.menuconfig.textColorSelected = "rgb(" + this.menuconfig.colorsArraySelected[this.menuconfig.colorIndexSelected] / 3 + "," + this.menuconfig.colorsArraySelected[this.menuconfig.colorIndexSelected] + "," + this.menuconfig.colorsArraySelected[this.menuconfig.colorIndexSelected] / 2 + ")";
+                this.menuconfig.colorIndexSelected++;
+                this.canvas.font = this.buttons[i].font;
+                this.canvas.fillStyle = this.menuconfig.textColorSelected;
+                this.canvas.fillText(this.buttons[i].text,  this.buttons[i].buttonX, this.buttons[i].buttonY);
+                this.canvas.closePath();
+                // console.log(this.menuconfig.serpentSprites);
+            }
+            else {
+                this.canvas.beginPath();
+                this.canvas.fillStyle = this.buttons[i].fillStyle;
+                this.canvas.font = this.buttons[i].font;
+                this.canvas.fillText(this.buttons[i].text,  this.buttons[i].buttonX, this.buttons[i].buttonY);
+            }
+        } 
+        this.canvas.fillText(this.buttons[5].text, this.buttons[5].buttonX, this.buttons[5].buttonY);
     };
-    onPause() {
-
+    update () {
+        // update values
+        this.menuconfig.backgroundImageY = moveBackground(this.menuconfig.backgroundImageY, this.menuconfig.scrollSpeedBackground);
     };
-    onResume() {
+    addToButtons() {
+        this.buttons.push(new MenuButton("Credit", "Copyright (c) 2020 KaBra, MaSiPi, MaZa", null, 500, 970, 100, 50,"14pt Courier", "white"));
+        this.buttons.push(new MenuButton("Food eaten", "Food Eaten", null, 150, 500, 100, 50, "20pt Courier", "white"));
+        this.buttons.push(new MenuButton("Enemy's Highscore", "Enemy's Highscore", null, 150, 600, 100, 50, "20pt Courier", "white"));
+        this.buttons.push(new MenuButton("playfieldsize", "Field Size", null, 150, 700, 100, 50, "20pt Courier", "white"));
+        this.buttons.push(new MenuButton("startText", "Start Game", null, 450, 800, 100, 50, "20pt Courier", "white"));
+        this.buttons.push(new MenuButton("Player", this.levelConfig.serpentPlayer.foodEaten, 450, 470, 100, 50, "20pt Courier", "white"));
     };
 }
 class StateList {
@@ -797,7 +1086,9 @@ class StateStack {
         this.states = new StateList();
 
         /* adds an empty state to prevent errors */
-        this.push(new EmptyState());
+        this.push(new EmptyState("empty"));
+        /* start loading assets*/
+        loadFromFiles(objects, soundEffects, loadAssets);
     }
 
     update() {
@@ -860,9 +1151,11 @@ var gameField = {
         this.gameMode.update();
         this.gameMode.render();
     },
-    startGame: function () {
+    startGame: async function () {
         //loadRessources();
-        this.gameMode.push(new MainMenu());
+        let mainMenu = new MainMenu("MainMenu", new MenuConfig("MainMenu"));
+        mainMenu.menuconfig.StartLoading();
+        this.gameMode.push(mainMenu);
         //this.gameMode.push(new level0());
         this.fpsInterval = setInterval(this.update.bind(this), this.timer);
     },
@@ -951,19 +1244,19 @@ window.onload = function () {
     window.getContextElement = function () {
         return gameField.canvasContext;
     };
-
+    window.getStateData = function () {
+        var gamemode = getGameInstance();
+        var StateData = gamemode.states.top();
+        return StateData;
+    };
     window.getCurrentLevelConfig = function () {
         var gamemode = getGameInstance();
         var levelData = gamemode.states.top();
         return levelData.levelConfig;
     };
     /***** GAME STARTS HERE *****/
-
-    window.loadRessources = function () {
-        loadFromFiles(objects, soundEffects, loadAssets);
-    }
-    loadRessources();
-    gameField.init();
+     sleep(2000);
+     gameField.init();
 }
 /* ----  global function section for gameField end  ---- */
 
@@ -1197,8 +1490,35 @@ function drawKiSerpent(aiSerpents) {
 }
 // created this function for visualization reasons
 function drawBackground(bg_stars, bg_universe) {
+    /*
+    var groundx = 0;
+    var groundy = 0;
+    
+    for (var column = 0; column <= playGroundLevel.fields.length; column++) {
+        for (var row = 0; row <= playGroundLevel.fields.length; row++) {
+            gameField.canvasContext.beginPath();
+            //gameField.canvasContext.fillStyle = "grey";
+            gameField.canvasContext.fillRect(groundx, groundy, gridSizex, gridSizey);
+            //gameField.canvasContext.strokeStyle = "grey";
+            gameField.canvasContext.strokeRect(groundx, groundy, gridSizex, gridSizey);
+            gameField.canvasContext.closePath();
+            groundx += gridSizeScale;
+            // console.log(column, row, groundy, groundx);
+        }
+        groundx = 0;
+        groundy += gridSizeScale;
+    }
+    */
+
     gameField.canvasContext.drawImage(bg_universe, 50, 0);
     gameField.canvasContext.drawImage(bg_stars, 0, 0);
+}
+function moveBackground(backgroundY, speed){
+    backgroundY -= speed;
+    if(backgroundY == -1 * gameField.canvas_height){
+        backgroundY = 0;
+    }
+    return backgroundY;
 }
 function draw(bg_stars, bg_universe, serpentPlayer, itemlist, aiSerpents) {
     drawBackground(bg_stars, bg_universe, serpentPlayer);
@@ -1660,5 +1980,12 @@ function invertColors2(data) {
     }
     return data;
 }
+function sleep(milliseconds) {
+    const date = Date.now();
+    let currentDate = null;
+    do {
+      currentDate = Date.now();
+    } while (currentDate - date < milliseconds);
+  }
 /* ---- help functions section end  */
 
