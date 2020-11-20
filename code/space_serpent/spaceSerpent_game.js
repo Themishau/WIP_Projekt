@@ -12,6 +12,7 @@ var gridSizeScale = 40;
 var gridSizey = 40; // 1000 / gridSizeScale = 
 var gridSizex = 40; // 1000 % gridSizeScale
 var gridfield = 25;
+
 /* object_table */
 var objectTable = {
     empty: 0, // empty
@@ -241,8 +242,22 @@ class playground {
             this.ySize = gameField.canvas.height / gridSizeScale,
             this.fields = [],
             this.bg_img = bg_img,
+            this.bg_imgCurrentX = 50,
+            this.currentCanvasX = 1000,
+            this.currentCanvasY = 1000,
+            this.scrollSpeedBackground = 2,
+            this.currentImage = 0,
             this.bgsound = bgsound,
             this.resetPlayground()
+    }
+    changeCurrentImage(imageNumber){
+        this.currentImage = imageNumber;
+        // console.log(this.bg_img[this.currentImage]);
+    }
+    changeCurrentX(x, cX, cY){
+        this.bg_imgCurrentX = x;
+        this.currentCanvasX = cX;
+        this.currentCanvasY = cY;
     }
 
 
@@ -345,6 +360,7 @@ class LevelConfig {
             this.serpentSpriteRed = [],
             this.serpent_sprites = [],
             this.playGroundLevel,
+            this.backGroundSprites, 
             this.serpentPlayer,
 
             //this.obstacleTable = null;
@@ -380,7 +396,8 @@ class LevelConfig {
         this.serpentSpritesGreen = this.serpent_sprites[0];
         this.serpentSpritesBlue = this.serpent_sprites[1];
         this.serpentSpriteRed = this.serpent_sprites[2];
-        this.playGroundLevel = new playground(0, assets.serpent_sprite, assets.bg_Jupiter);
+        this.backGroundSprites = [assets.spr_planet01, assets.spr_planet02, assets.spr_planet03, assets.spr_planet04, assets.spr_planet05, assets.spr_planet06, assets.spr_planet07];
+        this.playGroundLevel = new playground(0, this.backGroundSprites, assets.bg_Jupiter);
         this.serpent_sprite = assets.serpent_sprite;
         this.sound[0] = assets.Touch;
         this.sound[1] = assets.blip003;
@@ -391,7 +408,7 @@ class LevelConfig {
         console.log("sounds", this.sound);
         this.sound.volume = 0.1;
         //this.obstacleTable = new playground(1, null, null);
-        this.bg_universe = assets.spr_planet02;
+        // this.bg_universe = assets.spr_planet02;
         this.bg_stars = assets.bg_stars;
         this.playGroundLevel.bgsound.volume = 0.1;
         this.playGroundLevel.bgsound.loop = true;
@@ -628,6 +645,7 @@ class level {
             gameMode.push(new WinScreen("WinScreen", this.levelConfig, this.currentOption, this.menuconfig));
         }
         //console.log(this.levelConfig.playGroundLevel.fields);
+        moveLevelBackground(this.levelConfig.playGroundLevel);
         update(this.levelConfig.serpentPlayer, this.levelConfig.aiSerpents, this.levelConfig.playGroundLevel, this.levelConfig.itemlist, this.levelConfig.sound);
         animations(this.levelConfig.serpentPlayer);
 
@@ -636,7 +654,7 @@ class level {
     render() {
         gameField.canvasContext.clearRect(0, 0, gameField.canvas.width, gameField.canvas.height);
         // console.log("stars", this.levelConfig.bg_stars, "bg", this.levelConfig.serpent_sprite, "serpent", this.levelConfig.serpentPlayer, "itemlist", this.levelConfig.itemlist, "aiserpent", this.levelConfig.aiSerpents);
-        draw(this.levelConfig.bg_stars, this.levelConfig.bg_universe, this.levelConfig.serpentPlayer, this.levelConfig.itemlist, this.levelConfig.aiSerpents);
+        draw(this.levelConfig.bg_stars, this.levelConfig.playGroundLevel, this.levelConfig.serpentPlayer, this.levelConfig.itemlist, this.levelConfig.aiSerpents);
     };
     onPause() {
         window.onkeydown = null;
@@ -807,7 +825,7 @@ class MainMenu {
     };
     update() {
         // update values
-        this.menuconfig.backgroundImageY = moveBackground(this.menuconfig.backgroundImageY, this.menuconfig.scrollSpeedBackground);
+        this.menuconfig.backgroundImageY = moveMenuBackground(this.menuconfig.backgroundImageY, this.menuconfig.scrollSpeedBackground);
     };
     addToButtons() {
         console.log(this.menuconfig.serpentSprites);
@@ -905,14 +923,14 @@ class WinScreen {
     constructor(name, levelConfig, currentOption, menuconfig) {
         this.name = name // Just to identify the State
         this.canvas = getContext(),
-            this.dimensions = getGameDimensions(),
-            this.menuconfig = menuconfig,
-            this.canvas = getContext(),
-            this.dimensions = getGameDimensions(),
-            this.buttons = [],
-            this.selectedButton = 1,
-            this.currentOption = currentOption,
-            this.levelConfig = levelConfig
+        this.dimensions = getGameDimensions(),
+        this.menuconfig = menuconfig,
+        this.canvas = getContext(),
+        this.dimensions = getGameDimensions(),
+        this.buttons = [],
+        this.selectedButton = 4,
+        this.currentOption = currentOption,
+        this.levelConfig = levelConfig
 
     }
     onEnter() {
@@ -943,61 +961,6 @@ class WinScreen {
                 /** Note that this does not remove the current state
                  *  from the list. it just adds Level1State on top of it.
                  */
-            }
-            // left
-            else if (keyCode === 37) {
-                if (stateData.selectedButton == 1) {
-                    stateData.currentOption[0]--;
-                    if (stateData.currentOption[0] < 0)
-                        stateData.currentOption[0] = 2;
-
-                }
-                else if (stateData.selectedButton == 2) {
-                    stateData.currentOption[1]--;
-                    if (stateData.currentOption[1] < 1)
-                        stateData.currentOption[1] = 1;
-
-                    //  stateData.buttons[6].text = stateData.currentOption[1];
-                }
-                else if (stateData.selectedButton == 3) {
-                    stateData.currentOption[2]--;
-                    if (stateData.currentOption[2] < 0)
-                        stateData.currentOption[2] = 0;
-
-                }
-            }
-            // right
-            else if (keyCode === 39) {
-                if (stateData.selectedButton == 1) {
-                    stateData.currentOption[0]++;
-                    if (stateData.currentOption[0] > 2)
-                        stateData.currentOption[0] = 0;
-                }
-                else if (stateData.selectedButton == 2) {
-                    stateData.currentOption[1]++;
-                    if (stateData.currentOption[1] > 5)
-                        stateData.currentOption[1] = 5;
-
-                    // stateData.buttons[6].text = stateData.currentOption[1];
-                }
-                else if (stateData.selectedButton == 3) {
-                    stateData.currentOption[2]++;
-                    if (stateData.currentOption[2] > 2)
-                        stateData.currentOption[2] = 2;
-
-                }
-            }
-            // up
-            else if (keyCode === 38) {
-                stateData.selectedButton--;
-                if (stateData.selectedButton < 1)
-                    stateData.selectedButton = 4;
-            }
-            // down
-            else if (keyCode === 40) {
-                stateData.selectedButton++;
-                if (stateData.selectedButton > 4)
-                    stateData.selectedButton = 1;
             }
             stateData.menuconfig.scrollSound.pause();
             stateData.menuconfig.scrollSound.currentTime = 0;
@@ -1032,7 +995,7 @@ class WinScreen {
         this.canvas.strokeRect(this.dimensions.width / 2 - 265, 150, 500, 100);
         this.canvas.beginPath();
         for (let i = 0; i < 5; i++) {
-            if (i == this.selectedButton) {
+            if (i == 4) {
                 if (this.menuconfig.colorIndexSelected == this.menuconfig.colorsArraySelected.length) {
                     this.menuconfig.colorIndexSelected = 0;
                 }
@@ -1052,18 +1015,21 @@ class WinScreen {
             }
         }
         this.canvas.fillText(this.buttons[5].text, this.buttons[5].buttonX, this.buttons[5].buttonY);
+        this.canvas.fillText(this.buttons[6].text, this.buttons[6].buttonX, this.buttons[6].buttonY);
     };
     update() {
         // update values
         this.menuconfig.backgroundImageY = moveBackground(this.menuconfig.backgroundImageY, this.menuconfig.scrollSpeedBackground);
     };
     addToButtons() {
-        this.buttons.push(new MenuButton("Credit", "Copyright (c) 2020 KaBra, MaSiPi, MaZa", null, 500, 970, 100, 50, "14pt Courier", "white"));
+        console.log(this.levelConfig.serpentPlayer.foodEaten, this.levelConfig.aiSerpents[0].foodEaten);
+        this.buttons.push(new MenuButton("Credit", "Copyright (c) 2020 KaBra, MaSiPi, MaZa", null, 500, 970, 100, 50,"14pt Courier", "white"));
         this.buttons.push(new MenuButton("Food eaten", "Food Eaten", null, 150, 500, 100, 50, "20pt Courier", "white"));
         this.buttons.push(new MenuButton("Enemy's Highscore", "Enemy's Highscore", null, 150, 600, 100, 50, "20pt Courier", "white"));
         this.buttons.push(new MenuButton("playfieldsize", "Field Size", null, 150, 700, 100, 50, "20pt Courier", "white"));
         this.buttons.push(new MenuButton("startText", "Start Game", null, 450, 800, 100, 50, "20pt Courier", "white"));
-        this.buttons.push(new MenuButton("Player", this.levelConfig.serpentPlayer.foodEaten, 450, 470, 100, 50, "20pt Courier", "white"));
+        this.buttons.push(new MenuButton("Food Eaten Player", this.levelConfig.serpentPlayer.foodEaten, null, 450, 500, 100, 50, "20pt Courier", "white"));
+        this.buttons.push(new MenuButton("Food Eaten Player", this.levelConfig.aiSerpents[0].foodEaten, null, 450, 600, 100, 50, "20pt Courier", "white"));
     };
 }
 class StateList {
@@ -1489,7 +1455,7 @@ function drawKiSerpent(aiSerpents) {
     }
 }
 // created this function for visualization reasons
-function drawBackground(bg_stars, bg_universe) {
+function drawBackground(bg_stars, playGroundImage) {
     /*
     var groundx = 0;
     var groundy = 0;
@@ -1509,19 +1475,33 @@ function drawBackground(bg_stars, bg_universe) {
         groundy += gridSizeScale;
     }
     */
-
-    gameField.canvasContext.drawImage(bg_universe, 50, 0);
-    gameField.canvasContext.drawImage(bg_stars, 0, 0);
+    // gameField.canvasContext.drawImage(playGroundImage.bg_img[playGroundImage.currentImage], playGroundImage.bg_imgCurrentX, 0);
+    gameField.canvasContext.drawImage(playGroundImage.bg_img[playGroundImage.currentImage], playGroundImage.bg_imgCurrentX, 0, playGroundImage.currentCanvasX, playGroundImage.currentCanvasY);
+    gameField.canvasContext.drawImage(bg_stars, -1 * playGroundImage.bg_imgCurrentX, 0);
 }
-function moveBackground(backgroundY, speed) {
+function moveMenuBackground(backgroundY, speed){
     backgroundY -= speed;
     if (backgroundY == -1 * gameField.canvas_height) {
         backgroundY = 0;
     }
     return backgroundY;
 }
-function draw(bg_stars, bg_universe, serpentPlayer, itemlist, aiSerpents) {
-    drawBackground(bg_stars, bg_universe, serpentPlayer);
+
+function moveLevelBackground(image){
+    image.changeCurrentX(image.bg_imgCurrentX + image.scrollSpeedBackground, image.currentCanvasX - image.scrollSpeedBackground, image.currentCanvasY - image.scrollSpeedBackground);
+    if(image.bg_imgCurrentX >= 800){
+        if (image.currentImage > 6) {
+            image.changeCurrentImage(0); 
+            image.changeCurrentX(0, 1000, 1000);
+        }
+        else  {
+            image.changeCurrentImage(image.currentImage + 1);
+            image.changeCurrentX(0, 1000, 1000);
+        }
+    }
+}
+function draw(bg_stars, playGroundImage, serpentPlayer, itemlist, aiSerpents) {
+    drawBackground(bg_stars, playGroundImage, serpentPlayer);
     drawItems(itemlist);
     drawKiSerpent(aiSerpents);
     drawSerpent(serpentPlayer);
@@ -1817,18 +1797,16 @@ function ObjectCollision() {
 }
 function hasEatenFood(serpent, items, playField, sound) {
     for (let i = 0; i < items.length; i++) {
-        // console.log("haseatenfood", items, items[i], i);
         // if item == 1 , food is 1
         if (items[i].id == 1 && items[i] != null && items[i] != undefined) {
-            // console.log("eatenfood", serpent.serpentParts[0].x, items[i].gridx);
+
             const chasEatenFood = serpent.serpentParts[0].x === items[i].gridx && serpent.serpentParts[0].y === items[i].gridy;
             // return if true 
             if (chasEatenFood) {
                 eatFoodSoundeffect(sound);
                 serpent.foodEaten++;
-                //playField.removeFromPlayground(items[i].gridx, items[i].gridy);
+                playField.removeFromPlayground(items[i].gridx, items[i].gridy);
                 items.splice(i, 1);
-                //console.log("chasEatenFood", items);
                 return chasEatenFood;
             }
         }
