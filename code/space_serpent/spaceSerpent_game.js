@@ -291,29 +291,30 @@ class serpent {
     }
 }
 
-class MenuConfig {  constructor(name) {
-    /* ---- init some variables ---- */
+class MenuConfig {
+    constructor(name) {
+        /* ---- init some variables ---- */
         this.name = name,
-        this.serpentSprites = [],
-        this.sound = [],
-        this.scrollSpeedBackground = 1;
+            this.serpentSprites = [],
+            this.sound = [],
+            this.scrollSpeedBackground = 1;
         this.backgroundColor = "#000",
-        this.mainText = "Space Serpent",
-        this.backgroundImageY = 0,
-        this.backgroundImage = new Image(),
-        this.scrollSound = new Audio, 
-        this.textColor = "rgb(0,0,0)", // Starts with black
-        this.colorsArray = [], // our fade values
-        this.colorIndex = 0,
-        this.textColorSelected = "rgb(0,0,0)",
-        this.colorsArraySelected = [], // our fade values
-        this.colorIndexSelected = 0
+            this.mainText = "Space Serpent",
+            this.backgroundImageY = 0,
+            this.backgroundImage = new Image(),
+            this.scrollSound = new Audio,
+            this.textColor = "rgb(0,0,0)", // Starts with black
+            this.colorsArray = [], // our fade values
+            this.colorIndex = 0,
+            this.textColorSelected = "rgb(0,0,0)",
+            this.colorsArraySelected = [], // our fade values
+            this.colorIndexSelected = 0
 
-    //this.foodList = []
-    // this.loadRessources(objects, soundEffects, this.loadLevel);
-    }   
+        //this.foodList = []
+        // this.loadRessources(objects, soundEffects, this.loadLevel);
+    }
     loadLevel(assets) {
-       
+
         this.serpentSprites = [assets.snake_head1, assets.snake_head_b_1, assets.snake_head_r_1];
         this.sound[0] = assets.Touch;
         this.sound[1] = assets.blip003;
@@ -333,7 +334,7 @@ class MenuConfig {  constructor(name) {
 class LevelConfig {
     constructor(name, levelOption) {
         /* ---- init some variables ---- */
-            this.name = name,
+        this.name = name,
             this.levelOption = levelOption,
             this.bg_image = new Image(),
             this.img = new Image(),
@@ -355,26 +356,26 @@ class LevelConfig {
     }
     loadLevel(assets) {
         console.log("assets", assets);
-        if (this.levelOption.playGroundSize == 2){
+        if (this.levelOption.playGroundSize == 2) {
             gridSizeScale = 20;
             gridSizey = 20; // 1000 / gridSizeScale = 
             gridSizex = 20; // 1000 % gridSizeScale
             gridfield = 50;
         }
-        else if(this.levelOption.playGroundSize == 1) {
+        else if (this.levelOption.playGroundSize == 1) {
             gridSizeScale = 40;
             gridSizey = 40; // 1000 / gridSizeScale = 
             gridSizex = 40; // 1000 % gridSizeScale
             gridfield = 25;
         }
-        else if(this.levelOption.playGroundSize == 0) {
+        else if (this.levelOption.playGroundSize == 0) {
             gridSizeScale = 50;
             gridSizey = 50; // 1000 / gridSizeScale = 
             gridSizex = 50; // 1000 % gridSizeScale
             gridfield = 20;
         }
         this.serpent_sprites[0] = [assets.snake_head1, assets.snake_head2, assets.snake_head3, assets.snake_mid, assets.snake_downleft, assets.snake_downright, assets.snake_end]; // for testing
-        this.serpent_sprites[1] = [assets.snake_head_b_1, assets.snake_head_b_2, assets.snake_head_b_3, assets.snake_mid_b, assets.snake_downleft_b, assets.snake_downright_b, assets.snake_end_b]; 
+        this.serpent_sprites[1] = [assets.snake_head_b_1, assets.snake_head_b_2, assets.snake_head_b_3, assets.snake_mid_b, assets.snake_downleft_b, assets.snake_downright_b, assets.snake_end_b];
         this.serpent_sprites[2] = [assets.snake_head_r_1, assets.snake_head_r_2, assets.snake_head_r_3, assets.snake_mid_r, assets.snake_downleft_r, assets.snake_downright_r, assets.snake_end_r];
         this.serpentSpritesGreen = this.serpent_sprites[0];
         this.serpentSpritesBlue = this.serpent_sprites[1];
@@ -459,7 +460,7 @@ class EmptyState {
 class MenuButton {
     constructor(name, text, img, buttonX, buttonY, buttonWidth, buttonHeight, font, fillStyle) {
         /* ---- init some variables ---- */
-            this.name = name,
+        this.name = name,
             this.text = text,
             this.img = [],
             this.img = img,
@@ -618,8 +619,7 @@ class level {
             window.onkeyup = this.KeyUpEvent;
         }
         //easy win condition
-        if(this.levelConfig.serpentPlayer.foodEaten == 5)
-        {
+        if (this.levelConfig.serpentPlayer.foodEaten == 5) {
             this.levelConfig.playGroundLevel.bgsound.pause();
             victorySoundeffect(this.levelConfig.sound);
             let gameMode = getGameInstance();
@@ -657,7 +657,7 @@ class MainMenu {
     constructor(name, menuconfig) {
         this.name = name // Just to identify the State
         this.menuconfig = menuconfig,
-        this.canvas = getContext(),
+            this.canvas = getContext(),
             this.dimensions = getGameDimensions(),
             this.buttons = [],
             this.selectedButton = 1,
@@ -665,7 +665,7 @@ class MainMenu {
             this.currentOption[0] = 0,
             this.currentOption[1] = 1,
             this.currentOption[2] = 0
-            
+
     }
     onEnter() {
         console.log(this.menuconfig);
@@ -685,11 +685,11 @@ class MainMenu {
         window.onkeydown = function (e) {
             let stateData = getStateData();
             let keyCode = e.keyCode;
-            if ((keyCode === 13 ) && (stateData.selectedButton === 4) ) {
+            if ((keyCode === 13) && (stateData.selectedButton === 4)) {
                 // Go to next State
                 let gameMode = getGameInstance();
                 console.log("options", stateData.currentOption[2], stateData.currentOption[1], stateData.currentOption[0], stateData.menuconfig);
-                let levelConfig = new LevelConfig("level1", new LevelOption ("Level1", stateData.currentOption[2], stateData.currentOption[1], stateData.currentOption[0], null, null, null));
+                let levelConfig = new LevelConfig("level1", new LevelOption("Level1", stateData.currentOption[2], stateData.currentOption[1], stateData.currentOption[0], null, null, null));
                 levelConfig.StartLoading();
                 gameMode.push(new level("level1", levelConfig, stateData.menuconfig));
                 /** Note that this does not remove the current state
@@ -697,59 +697,59 @@ class MainMenu {
                  */
             }
             // left
-            else if (keyCode === 37 ){
-                if (stateData.selectedButton == 1){
-                    stateData.currentOption[0] --;
+            else if (keyCode === 37) {
+                if (stateData.selectedButton == 1) {
+                    stateData.currentOption[0]--;
                     if (stateData.currentOption[0] < 0)
-                        stateData.currentOption[0] = 2; 
-            
+                        stateData.currentOption[0] = 2;
+
                 }
-                else if (stateData.selectedButton == 2){
-                    stateData.currentOption[1] --;
-                    if (stateData.currentOption[1] < 1) 
+                else if (stateData.selectedButton == 2) {
+                    stateData.currentOption[1]--;
+                    if (stateData.currentOption[1] < 1)
                         stateData.currentOption[1] = 1;
-                
-                        stateData.buttons[6].text = stateData.currentOption[1];
+
+                    stateData.buttons[6].text = stateData.currentOption[1];
                 }
-                else if (stateData.selectedButton == 3){
-                    stateData.currentOption[2] --;
-                    if (stateData.currentOption[2] < 0) 
-                        stateData.currentOption[2] = 0;                      
-                    
+                else if (stateData.selectedButton == 3) {
+                    stateData.currentOption[2]--;
+                    if (stateData.currentOption[2] < 0)
+                        stateData.currentOption[2] = 0;
+
                 }
             }
             // right
-            else if (keyCode === 39 ){
-                if (stateData.selectedButton == 1){
-                    stateData.currentOption[0] ++;
-                    if (stateData.currentOption[0] > 2)  
-                        stateData.currentOption[0] = 0; 
+            else if (keyCode === 39) {
+                if (stateData.selectedButton == 1) {
+                    stateData.currentOption[0]++;
+                    if (stateData.currentOption[0] > 2)
+                        stateData.currentOption[0] = 0;
                 }
-                else if (stateData.selectedButton == 2){
-                    stateData.currentOption[1] ++;
-                    if (stateData.currentOption[1] > 5) 
+                else if (stateData.selectedButton == 2) {
+                    stateData.currentOption[1]++;
+                    if (stateData.currentOption[1] > 5)
                         stateData.currentOption[1] = 5;
-                        
-                        stateData.buttons[6].text = stateData.currentOption[1];
+
+                    stateData.buttons[6].text = stateData.currentOption[1];
                 }
-                else if (stateData.selectedButton == 3){
-                    stateData.currentOption[2] ++;
-                    if (stateData.currentOption[2] > 2) 
+                else if (stateData.selectedButton == 3) {
+                    stateData.currentOption[2]++;
+                    if (stateData.currentOption[2] > 2)
                         stateData.currentOption[2] = 2;
-                    
+
                 }
             }
             // up
-            else if (keyCode === 38 ){
-                stateData.selectedButton --;
-                if (stateData.selectedButton < 1) 
-                 stateData.selectedButton = 4;                 
+            else if (keyCode === 38) {
+                stateData.selectedButton--;
+                if (stateData.selectedButton < 1)
+                    stateData.selectedButton = 4;
             }
             // down
-            else if (keyCode === 40 ){
-                stateData.selectedButton ++;
-                if (stateData.selectedButton > 4)  
-                    stateData.selectedButton = 1;   
+            else if (keyCode === 40) {
+                stateData.selectedButton++;
+                if (stateData.selectedButton > 4)
+                    stateData.selectedButton = 1;
             }
             stateData.menuconfig.scrollSound.pause();
             stateData.menuconfig.scrollSound.currentTime = 0;
@@ -776,7 +776,7 @@ class MainMenu {
         this.canvas.fillStyle = this.menuconfig.textColor;
         this.canvas.drawImage(this.menuconfig.backgroundImage, 0, this.menuconfig.backgroundImageY);
         this.canvas.font = "40pt Courier";
-        this.canvas.fillText(this.menuconfig.mainText,  this.dimensions.width / 2 - 225, 200);
+        this.canvas.fillText(this.menuconfig.mainText, this.dimensions.width / 2 - 225, 200);
         this.canvas.strokeStyle = "blue";
         this.canvas.strokeRect(this.dimensions.width / 2 - 265, 150, 500, 100);
         this.canvas.beginPath();
@@ -789,7 +789,7 @@ class MainMenu {
                 this.menuconfig.colorIndexSelected++;
                 this.canvas.font = this.buttons[i].font;
                 this.canvas.fillStyle = this.menuconfig.textColorSelected;
-                this.canvas.fillText(this.buttons[i].text,  this.buttons[i].buttonX, this.buttons[i].buttonY);
+                this.canvas.fillText(this.buttons[i].text, this.buttons[i].buttonX, this.buttons[i].buttonY);
                 this.canvas.closePath();
                 // console.log(this.menuconfig.serpentSprites);
             }
@@ -797,21 +797,21 @@ class MainMenu {
                 this.canvas.beginPath();
                 this.canvas.fillStyle = this.buttons[i].fillStyle;
                 this.canvas.font = this.buttons[i].font;
-                this.canvas.fillText(this.buttons[i].text,  this.buttons[i].buttonX, this.buttons[i].buttonY);
+                this.canvas.fillText(this.buttons[i].text, this.buttons[i].buttonX, this.buttons[i].buttonY);
             }
-        } 
-        
-        this.canvas.drawImage(this.buttons[5].img[this.currentOption[0]], this.buttons[5].buttonX, this.buttons[5].buttonY); 
+        }
+
+        this.canvas.drawImage(this.buttons[5].img[this.currentOption[0]], this.buttons[5].buttonX, this.buttons[5].buttonY);
         this.canvas.fillText(this.buttons[6].text, this.buttons[6].buttonX, this.buttons[6].buttonY);
-        this.canvas.fillText(this.buttons[7].text[this.currentOption[2]],  this.buttons[7].buttonX, this.buttons[7].buttonY);
+        this.canvas.fillText(this.buttons[7].text[this.currentOption[2]], this.buttons[7].buttonX, this.buttons[7].buttonY);
     };
-    update () {
+    update() {
         // update values
         this.menuconfig.backgroundImageY = moveBackground(this.menuconfig.backgroundImageY, this.menuconfig.scrollSpeedBackground);
     };
     addToButtons() {
         console.log(this.menuconfig.serpentSprites);
-        this.buttons.push(new MenuButton("Credit", "Copyright (c) 2020 KaBra, MaSiPi, MaZa", null, 500, 970, 100, 50,"14pt Courier", "white"));
+        this.buttons.push(new MenuButton("Credit", "Copyright (c) 2020 KaBra, MaSiPi, MaZa", null, 500, 970, 100, 50, "14pt Courier", "white"));
         this.buttons.push(new MenuButton("ChoosePlayer", "choose Player:", null, 150, 500, 100, 50, "20pt Courier", "white"));
         this.buttons.push(new MenuButton("Enemies", "Enemies: ", null, 150, 600, 100, 50, "20pt Courier", "white"));
         this.buttons.push(new MenuButton("playfieldsize", "Field Size", null, 150, 700, 100, 50, "20pt Courier", "white"));
@@ -905,14 +905,14 @@ class WinScreen {
     constructor(name, levelConfig, currentOption, menuconfig) {
         this.name = name // Just to identify the State
         this.canvas = getContext(),
-        this.dimensions = getGameDimensions(),
-        this.menuconfig = menuconfig,
-        this.canvas = getContext(),
-        this.dimensions = getGameDimensions(),
-        this.buttons = [],
-        this.selectedButton = 1,
-        this.currentOption = currentOption,
-        this.levelConfig = levelConfig
+            this.dimensions = getGameDimensions(),
+            this.menuconfig = menuconfig,
+            this.canvas = getContext(),
+            this.dimensions = getGameDimensions(),
+            this.buttons = [],
+            this.selectedButton = 1,
+            this.currentOption = currentOption,
+            this.levelConfig = levelConfig
 
     }
     onEnter() {
@@ -933,11 +933,11 @@ class WinScreen {
         window.onkeydown = function (e) {
             let stateData = getStateData();
             let keyCode = e.keyCode;
-            if ((keyCode === 13 ) && (stateData.selectedButton === 4) ) {
+            if ((keyCode === 13) && (stateData.selectedButton === 4)) {
                 // Go to next State
                 let gameMode = getGameInstance();
                 let levelConfig = getCurrentLevelConfig();
-                let newlevelconfig = new LevelConfig("level1", new LevelOption ("Level1", levelConfig.levelOption.playGroundSize, levelConfig.levelOption.aiEnemys, levelConfig.levelOption.serpentSpriteColor, null, null, null)); 
+                let newlevelconfig = new LevelConfig("level1", new LevelOption("Level1", levelConfig.levelOption.playGroundSize, levelConfig.levelOption.aiEnemys, levelConfig.levelOption.serpentSpriteColor, null, null, null));
                 newlevelconfig.StartLoading();
                 gameMode.push(new level("level2", newlevelconfig, stateData.menuconfig));
                 /** Note that this does not remove the current state
@@ -945,65 +945,65 @@ class WinScreen {
                  */
             }
             // left
-            else if (keyCode === 37 ){
-                if (stateData.selectedButton == 1){
-                    stateData.currentOption[0] --;
+            else if (keyCode === 37) {
+                if (stateData.selectedButton == 1) {
+                    stateData.currentOption[0]--;
                     if (stateData.currentOption[0] < 0)
-                        stateData.currentOption[0] = 2; 
-            
+                        stateData.currentOption[0] = 2;
+
                 }
-                else if (stateData.selectedButton == 2){
-                    stateData.currentOption[1] --;
-                    if (stateData.currentOption[1] < 1) 
+                else if (stateData.selectedButton == 2) {
+                    stateData.currentOption[1]--;
+                    if (stateData.currentOption[1] < 1)
                         stateData.currentOption[1] = 1;
-                
-                      //  stateData.buttons[6].text = stateData.currentOption[1];
+
+                    //  stateData.buttons[6].text = stateData.currentOption[1];
                 }
-                else if (stateData.selectedButton == 3){
-                    stateData.currentOption[2] --;
-                    if (stateData.currentOption[2] < 0) 
-                        stateData.currentOption[2] = 0;                      
-                    
+                else if (stateData.selectedButton == 3) {
+                    stateData.currentOption[2]--;
+                    if (stateData.currentOption[2] < 0)
+                        stateData.currentOption[2] = 0;
+
                 }
             }
             // right
-            else if (keyCode === 39 ){
-                if (stateData.selectedButton == 1){
-                    stateData.currentOption[0] ++;
-                    if (stateData.currentOption[0] > 2)  
-                        stateData.currentOption[0] = 0; 
+            else if (keyCode === 39) {
+                if (stateData.selectedButton == 1) {
+                    stateData.currentOption[0]++;
+                    if (stateData.currentOption[0] > 2)
+                        stateData.currentOption[0] = 0;
                 }
-                else if (stateData.selectedButton == 2){
-                    stateData.currentOption[1] ++;
-                    if (stateData.currentOption[1] > 5) 
+                else if (stateData.selectedButton == 2) {
+                    stateData.currentOption[1]++;
+                    if (stateData.currentOption[1] > 5)
                         stateData.currentOption[1] = 5;
-                        
-                        // stateData.buttons[6].text = stateData.currentOption[1];
+
+                    // stateData.buttons[6].text = stateData.currentOption[1];
                 }
-                else if (stateData.selectedButton == 3){
-                    stateData.currentOption[2] ++;
-                    if (stateData.currentOption[2] > 2) 
+                else if (stateData.selectedButton == 3) {
+                    stateData.currentOption[2]++;
+                    if (stateData.currentOption[2] > 2)
                         stateData.currentOption[2] = 2;
-                    
+
                 }
             }
             // up
-            else if (keyCode === 38 ){
-                stateData.selectedButton --;
-                if (stateData.selectedButton < 1) 
-                 stateData.selectedButton = 4;                 
+            else if (keyCode === 38) {
+                stateData.selectedButton--;
+                if (stateData.selectedButton < 1)
+                    stateData.selectedButton = 4;
             }
             // down
-            else if (keyCode === 40 ){
-                stateData.selectedButton ++;
-                if (stateData.selectedButton > 4)  
-                    stateData.selectedButton = 1;   
+            else if (keyCode === 40) {
+                stateData.selectedButton++;
+                if (stateData.selectedButton > 4)
+                    stateData.selectedButton = 1;
             }
             stateData.menuconfig.scrollSound.pause();
             stateData.menuconfig.scrollSound.currentTime = 0;
             stateData.menuconfig.scrollSound.play();
         };
-    };    
+    };
 
     onExit() {
         // clear the keydown event
@@ -1027,7 +1027,7 @@ class WinScreen {
         this.canvas.fillStyle = this.menuconfig.textColor;
         this.canvas.drawImage(this.menuconfig.backgroundImage, 0, this.menuconfig.backgroundImageY);
         this.canvas.font = "40pt Courier";
-        this.canvas.fillText(this.menuconfig.mainText,  this.dimensions.width / 2 - 225, 200);
+        this.canvas.fillText(this.menuconfig.mainText, this.dimensions.width / 2 - 225, 200);
         this.canvas.strokeStyle = "blue";
         this.canvas.strokeRect(this.dimensions.width / 2 - 265, 150, 500, 100);
         this.canvas.beginPath();
@@ -1040,7 +1040,7 @@ class WinScreen {
                 this.menuconfig.colorIndexSelected++;
                 this.canvas.font = this.buttons[i].font;
                 this.canvas.fillStyle = this.menuconfig.textColorSelected;
-                this.canvas.fillText(this.buttons[i].text,  this.buttons[i].buttonX, this.buttons[i].buttonY);
+                this.canvas.fillText(this.buttons[i].text, this.buttons[i].buttonX, this.buttons[i].buttonY);
                 this.canvas.closePath();
                 // console.log(this.menuconfig.serpentSprites);
             }
@@ -1048,17 +1048,17 @@ class WinScreen {
                 this.canvas.beginPath();
                 this.canvas.fillStyle = this.buttons[i].fillStyle;
                 this.canvas.font = this.buttons[i].font;
-                this.canvas.fillText(this.buttons[i].text,  this.buttons[i].buttonX, this.buttons[i].buttonY);
+                this.canvas.fillText(this.buttons[i].text, this.buttons[i].buttonX, this.buttons[i].buttonY);
             }
-        } 
+        }
         this.canvas.fillText(this.buttons[5].text, this.buttons[5].buttonX, this.buttons[5].buttonY);
     };
-    update () {
+    update() {
         // update values
         this.menuconfig.backgroundImageY = moveBackground(this.menuconfig.backgroundImageY, this.menuconfig.scrollSpeedBackground);
     };
     addToButtons() {
-        this.buttons.push(new MenuButton("Credit", "Copyright (c) 2020 KaBra, MaSiPi, MaZa", null, 500, 970, 100, 50,"14pt Courier", "white"));
+        this.buttons.push(new MenuButton("Credit", "Copyright (c) 2020 KaBra, MaSiPi, MaZa", null, 500, 970, 100, 50, "14pt Courier", "white"));
         this.buttons.push(new MenuButton("Food eaten", "Food Eaten", null, 150, 500, 100, 50, "20pt Courier", "white"));
         this.buttons.push(new MenuButton("Enemy's Highscore", "Enemy's Highscore", null, 150, 600, 100, 50, "20pt Courier", "white"));
         this.buttons.push(new MenuButton("playfieldsize", "Field Size", null, 150, 700, 100, 50, "20pt Courier", "white"));
@@ -1255,8 +1255,8 @@ window.onload = function () {
         return levelData.levelConfig;
     };
     /***** GAME STARTS HERE *****/
-     sleep(2000);
-     gameField.init();
+    sleep(2000);
+    gameField.init();
 }
 /* ----  global function section for gameField end  ---- */
 
@@ -1513,9 +1513,9 @@ function drawBackground(bg_stars, bg_universe) {
     gameField.canvasContext.drawImage(bg_universe, 50, 0);
     gameField.canvasContext.drawImage(bg_stars, 0, 0);
 }
-function moveBackground(backgroundY, speed){
+function moveBackground(backgroundY, speed) {
     backgroundY -= speed;
-    if(backgroundY == -1 * gameField.canvas_height){
+    if (backgroundY == -1 * gameField.canvas_height) {
         backgroundY = 0;
     }
     return backgroundY;
@@ -1557,7 +1557,7 @@ function calculateNextMove(obstaclesTable, currentPosition, itemPosition) {
             return { dx: 0, dy: -1 };
         }
     }
-    // if a Star can not find a valid path, an adjacent free field will be chosen
+    // if aStar can not find a valid path, an adjacent free field will be chosen
     else {
         if (currentPosition.y + 1 < obstaclesTable.length && obstaclesTable[currentPosition.x][currentPosition.y + 1] == 0) {
             //move down!
@@ -1606,7 +1606,7 @@ function aStar(obstaclesTable, goalPosition, startPosition) {
 
     // If there are no more entries in the openList, this means that the algorithm has visited
     // all possible fields without finding the goal along its path.
-    for (let index = 0; !openList.isEmpty() && index < obstaclesTable.length * obstaclesTable.length * obstaclesTable.length; index++) {
+    for (let index = 0; !openList.isEmpty() && index < obstaclesTable.length * obstaclesTable.length; index++) {
         // The field with the shortest estimated costs (FCosts) towards the goal is removed from the open list
         var smallestFScoreField = openList.dequeue().element;
 
@@ -1647,28 +1647,6 @@ function aStar(obstaclesTable, goalPosition, startPosition) {
     }
     return { pathFound: false, nextNode: null };
 }
-
-/* ----  add/Remove section  ---- */
-function removeSnakeFromMatrix(aiSerpentPart, playField) {
-    for (var i = 0; i < aiSerpentPart.serpentParts.length; i++) {
-        removeSnakePart(aiSerpentPart.serpentParts[i], playField)
-    }
-}
-function removeSnakePart(aiSerpentPart, playField) {
-    if (aiSerpentPart.x < playField.fields.length && aiSerpentPart.y < playField.fields.length)
-        playField.fields[aiSerpentPart.x][aiSerpentPart.y] = 0;
-}
-function addSnakeToMatrix(aiSerpentPart, playField) {
-    for (var i = 0; i < aiSerpentPart.serpentPart.length; i++) {
-        addSnakePart(aiSerpentPart.serpentPart[i], playField)
-    }
-}
-function addSnakePart(aiSerpentPart, playField) {
-    if (aiSerpentPart.x < playField.fields.length && aiSerpentPart.y < playField.fields.length)
-        playField.fields[aiSerpentPart.x][aiSerpentPart.y] = 1;
-}
-/* ----  add/Remove section end ---- */
-
 /* ----  AI section end ---- */
 
 /* ----  movement section  ---- */
@@ -1689,14 +1667,20 @@ function generateNewRandomTarget(items) {
     let newTarget = items[randomInt];
     return { objectID: newTarget.id, x: newTarget.gridx, y: newTarget.gridy };
 }
-function createObstaclesTable(aiSerpent) {
+function createObstaclesTable(aiSerpent, playField) {
     let obstaclesTable = new playground();
+    for (var column = 0; column < obstaclesTable.xSize; column++) {
+        for (var row = 0; row < obstaclesTable.ySize; row++) {
+            if (playField.fields[column][row] >= 6 && playField.fields[column][row]!= aiSerpent.id)
+                obstaclesTable.fields[column][row] = 1;
+        }
+    }
     obstaclesTable.fields[aiSerpent.serpentParts[1].x][aiSerpent.serpentParts[1].y] = 1;
     return obstaclesTable;
 }
 function moveAiSerpents(aiSerpents, playField, items, sound) {
     for (let i = 0; i < aiSerpents.length; i++) {
-        const obstaclesTable = createObstaclesTable(aiSerpents[i]);
+        const obstaclesTable = createObstaclesTable(aiSerpents[i], playField);
         const serpentHeadPosition = { x: aiSerpents[i].serpentParts[0].x, y: aiSerpents[i].serpentParts[0].y };
         const nextTargetPosition = getTargetPosition(aiSerpents[i], items, playField);
 
@@ -1736,18 +1720,22 @@ function moveAiSerpents(aiSerpents, playField, items, sound) {
 
 }
 
-function movePlayer(serpent, playField, items, sound)
-{
+function movePlayer(serpent, playField, items, sound) {
     let nextXPosition = serpent.serpentParts[0].x + serpent.dx;
     let nextYPositon = serpent.serpentParts[0].y + serpent.dy;
-    let leavesPlayfield = (nextXPosition < 0 || nextXPosition >= playField.xSize) || (nextYPositon < 0 || nextYPositon >= playField.ySize) ? true: false;
-    if (!leavesPlayfield)
-        moveSerpent(serpent, playField, items, sound);
+    let leavesPlayfield = (nextXPosition < 0 || nextXPosition >= playField.xSize) || (nextYPositon < 0 || nextYPositon >= playField.ySize) ? true : false;
+
+    if (!leavesPlayfield) {
+        let touchesEnemySerpent = (playField.fields[nextXPosition][nextYPositon] >= 7) ? true : false;
+        if (!touchesEnemySerpent)
+            moveSerpent(serpent, playField, items, sound);
+    }
 }
 
 function moveSerpent(serpent, playField, items, sound) {
     // Create the new Snake's head
     var newHead = new serpentPart(serpent.serpentParts[0].x + serpent.dx, serpent.serpentParts[0].y + serpent.dy);
+
     newHead.currentPointOfView = serpent.serpentParts[0].currentPointOfView;
     // Add the new head to the beginning of snake body
     serpent.serpentParts.unshift(newHead);
@@ -1757,39 +1745,53 @@ function moveSerpent(serpent, playField, items, sound) {
     if (chasEatenFood) {
         generateNewItem(1, items, playField);
     }
-    else if (chasEatenItem){
+    else if (chasEatenItem) {
         // Remove the last part of snake body
-        generateNewItem(getRandomIntInclusive(2,5), items, playField);
+        generateNewItem(getRandomIntInclusive(2, 5), items, playField);
         serpent.serpentParts.pop();
     }
-    else 
+    else
         serpent.serpentParts.pop();
+
+    playField.addToPlayground(newHead.x, newHead.y, serpent.id);
+    let lastSerpentPart = serpent.serpentParts[serpent.serpentParts.length-1];
+    playField.removeFromPlayground(lastSerpentPart.x, lastSerpentPart.y);
+}
+
+function generateRandomPosition(playField) {
+    let randomPosition = { x: getRandomIntInclusive(3, gridfield - 3), y: getRandomIntInclusive(3, gridfield - 3) }
+    if (playField.fields[randomPosition.x][randomPosition.y] != 0) {
+        generateRandomPosition(playField);
+    }
+    return randomPosition;
 }
 
 function generateNewItem(ObjectType, itemlist, playField) {
-    // if food
+
+    let randomPosition = generateRandomPosition(playField);
+
     if (ObjectType == 1) {
-        var newFood = new item(1, "food", getRandomIntInclusive(3, gridfield - 3), getRandomIntInclusive(3, gridfield - 3), globalassets.clover);
+        var newFood = new item(1, "food", randomPosition.x, randomPosition.y, globalassets.clover);
         itemlist.push(newFood);
         playField.addToPlayground(newFood.gridx, newFood.gridy, 1);
     }
     else if (ObjectType == 2) {
-        var newBackpack = new item(2, "backpack", getRandomIntInclusive(3, gridfield - 3), getRandomIntInclusive(3, gridfield - 3), globalassets.backpack);
+        var newBackpack = new item(2, "backpack", randomPosition.x, randomPosition.y, globalassets.backpack);
         itemlist.push(newBackpack);
         playField.addToPlayground(newBackpack.gridx, newBackpack.gridy, 2);
     }
     else if (ObjectType == 3) {
-        var newBomb = new item(3, "bomb", getRandomIntInclusive(3, gridfield - 3), getRandomIntInclusive(3, gridfield - 3), globalassets.bomb);
+        var newBomb = new item(3, "bomb", randomPosition.x, randomPosition.y, globalassets.bomb);
         itemlist.push(newBomb);
         playField.addToPlayground(newBomb.gridx, newBomb.gridy, 3);
     }
     else if (ObjectType == 4) {
-        var newBook = new item(4, "book", getRandomIntInclusive(3, gridfield - 3), getRandomIntInclusive(3, gridfield - 3), globalassets.book);
+        var newBook = new item(4, "book", randomPosition.x, randomPosition.y, globalassets.book);
         itemlist.push(newBook);
         playField.addToPlayground(newBook.gridx, newBook.gridy, 4);
     }
     else if (ObjectType == 5) {
-        var newFeather = new item(5, "feather", getRandomIntInclusive(3, gridfield - 3), getRandomIntInclusive(3, gridfield - 3), globalassets.feather);
+        var newFeather = new item(5, "feather", randomPosition.x, randomPosition.y, globalassets.feather);
         itemlist.push(newFeather);
         playField.addToPlayground(newFeather.gridx, newFeather.gridy, 5);
     }
@@ -1824,7 +1826,7 @@ function hasEatenFood(serpent, items, playField, sound) {
             if (chasEatenFood) {
                 eatFoodSoundeffect(sound);
                 serpent.foodEaten++;
-                playField.removeFromPlayground(items[i].gridx, items[i].gridy);
+                //playField.removeFromPlayground(items[i].gridx, items[i].gridy);
                 items.splice(i, 1);
                 //console.log("chasEatenFood", items);
                 return chasEatenFood;
@@ -1844,7 +1846,7 @@ function hasEatenItem(serpent, items, playField, sound) {
             // return if true 
             if (chasEatenItem) {
                 eatBackpackSoundeffect(sound);
-                playField.removeFromPlayground(items[i].gridx, items[i].gridy);
+                //playField.removeFromPlayground(items[i].gridx, items[i].gridy);
                 serpent.inventory.push(items[i]);
                 items.splice(i, 1);
                 //console.log("chasEatenFood", items);
@@ -1994,8 +1996,8 @@ function sleep(milliseconds) {
     const date = Date.now();
     let currentDate = null;
     do {
-      currentDate = Date.now();
+        currentDate = Date.now();
     } while (currentDate - date < milliseconds);
-  }
+}
 /* ---- help functions section end  */
 
