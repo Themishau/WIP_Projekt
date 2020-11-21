@@ -243,13 +243,14 @@ class playground {
             this.fields = [],
             this.bg_img = bg_img,
             this.angle = 0,
-            this.bg_imgCurrentX = 50,
+            this.bg_imgCurrentX = 0,
             this.currentCanvasX = 1000,
             this.currentCanvasY = 1000,
             this.scrollSpeedBackground = 2,
+            this.scrollAcce = 2;
             this.scrollDirection = [-1, 1],
-            this.bg_starCurrentX = getRandomIntInclusive(-50,500),
-            this.bg_starCurrentY = getRandomIntInclusive(-50,500),
+            this.bg_starCurrentX = getRandomIntInclusive(-50,50),
+            this.bg_starCurrentY = getRandomIntInclusive(-50,50),
 
             this.bg_starScrollSpeedBackground = 3,            
             this.currentImage = 0,
@@ -1486,22 +1487,35 @@ function drawBackground(bg_stars, playGroundImage) {
         groundy += gridSizeScale;
     }
     */
-    playGroundImage.angle = playGroundImage.angle - 0.5 * Math.PI / 180;
+    playGroundImage.angle = playGroundImage.angle - 1 * Math.PI / 180;
     var ctx = null;
     ctx = gameField.canvasContext;
     ctx.save();
 
-    ctx.translate(-playGroundImage.bg_imgCurrentX + 884 / 2,  playGroundImage.bg_imgCurrentX + 884 / 2);
+    ctx.translate(playGroundImage.bg_imgCurrentX + 884 / 2,  playGroundImage.bg_imgCurrentX + 884 / 2);
+    ctx.rotate(playGroundImage.angle);
+    ctx.drawImage(playGroundImage.bg_img[playGroundImage.currentImage + 1],
+                 0,
+                 0,
+                 884,
+                 884,
+                 100 / - 2,
+                 300 / -2,
+                 playGroundImage.bg_imgCurrentX,
+                 playGroundImage.bg_imgCurrentX
+    );
+
+    ctx.translate(playGroundImage.bg_imgCurrentX + 884 / 2,  playGroundImage.bg_imgCurrentX + 884 / 2);
     ctx.rotate(playGroundImage.angle);
     ctx.drawImage(playGroundImage.bg_img[playGroundImage.currentImage],
                  0,
                  0,
                  884,
                  884,
-                 400 / - 2,
-                 400 / -2,
-                 884,
-                 884
+                 500 / - 2,
+                 300 / -2,
+                 playGroundImage.bg_imgCurrentX * 2,
+                 playGroundImage.bg_imgCurrentX * 2
     );
     gameField.canvasContext.drawImage(bg_stars,
         0,
@@ -1519,10 +1533,10 @@ function drawBackground(bg_stars, playGroundImage) {
     gameField.canvasContext.drawImage(bg_stars,
                                      playGroundImage.bg_starCurrentX,
                                      playGroundImage.bg_starCurrentY,
-                                        2560,
-                                        2560,
-                                      0,
-                                      0,
+                                     1800,
+                                     1800,
+                                      -1230,
+                                      -1230,
                                       3500,
                                       3500
     );
@@ -1540,25 +1554,27 @@ function moveMenuBackground(backgroundY, speed){
 }
 
 function moveLevelBackground(image){
-    image.changeCurrentX(image.bg_imgCurrentX + image.scrollSpeedBackground + 3, image.currentCanvasX - image.scrollSpeedBackground, image.currentCanvasY - image.scrollSpeedBackground);
+    image.changeCurrentX(image.bg_imgCurrentX + image.scrollSpeedBackground + image.scrollAcce , image.currentCanvasX - image.scrollSpeedBackground, image.currentCanvasY - image.scrollSpeedBackground);
     image.changeCurrentbgStarX(image.bg_starCurrentX + image.bg_starScrollSpeedBackground,image.bg_starCurrentY + image.bg_starScrollSpeedBackground)
-    if(image.bg_imgCurrentX >= 1000 || image.bg_imgCurrentX <= -1000){
+    if(image.bg_imgCurrentX >= 2000 || image.bg_imgCurrentX <= -2000){
         if (image.currentImage > 5) {
             image.scrollSpeedBackground = image.scrollDirection[getRandomIntInclusive(0,1)] * image.scrollSpeedBackground;
+            image.scrollAcce = 2 * image.scrollDirection[getRandomIntInclusive(0,1)];
             image.changeCurrentImage(0); 
-            image.changeCurrentX(-1000, 1000, 1000);
+            image.changeCurrentX(0, getRandomIntInclusive(-50,500), getRandomIntInclusive(-50,500));
+            console.log(image.bg_imgCurrentX);
 
         }
         else  {
             image.scrollSpeedBackground = image.scrollDirection[getRandomIntInclusive(0,1)];   
             image.changeCurrentImage(image.currentImage + 1);
-            image.changeCurrentX(-1000, 1000, 1000);
+            image.changeCurrentX(0,  getRandomIntInclusive(-50,500),  getRandomIntInclusive(-50,500));
 
         }
     }
-    if(image.bg_starCurrentX >= 1230 || image.bg_starCurrentX <= -1230){
+    if(image.bg_starCurrentX >= 800 || image.bg_starCurrentX <= -800){
             image.bg_starScrollSpeedBackground = image.scrollDirection[getRandomIntInclusive(0,1)] * image.bg_starScrollSpeedBackground;
-            image.changeCurrentbgStarX(getRandomIntInclusive(-50,500), getRandomIntInclusive(-50,500));
+            image.changeCurrentbgStarX(getRandomIntInclusive(-50,50), getRandomIntInclusive(-50,500));
             console.log(image.bg_starCurrentX, image.bg_starCurrentX);
     }
 }
