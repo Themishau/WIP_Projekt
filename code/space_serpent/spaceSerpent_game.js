@@ -242,10 +242,16 @@ class playground {
             this.ySize = gameField.canvas.height / gridSizeScale,
             this.fields = [],
             this.bg_img = bg_img,
+            this.angle = 0,
             this.bg_imgCurrentX = 50,
             this.currentCanvasX = 1000,
             this.currentCanvasY = 1000,
             this.scrollSpeedBackground = 2,
+            this.scrollDirection = [-1, +1],
+            this.bg_starCurrentX = getRandomIntInclusive(-50,500),
+            this.bg_starCurrentY = getRandomIntInclusive(-50,500),
+
+            this.bg_starScrollSpeedBackground = 2,            
             this.currentImage = 0,
             this.bgsound = bgsound,
             this.resetPlayground()
@@ -258,6 +264,11 @@ class playground {
         this.bg_imgCurrentX = x;
         this.currentCanvasX = cX;
         this.currentCanvasY = cY;
+    }
+    changeCurrentbgStarX(x, y){
+        this.bg_starCurrentX = x;
+        this.bg_starCurrentY = y
+
     }
 
 
@@ -1019,7 +1030,7 @@ class WinScreen {
     };
     update() {
         // update values
-        this.menuconfig.backgroundImageY = moveBackground(this.menuconfig.backgroundImageY, this.menuconfig.scrollSpeedBackground);
+        this.menuconfig.backgroundImageY = moveMenuBackground(this.menuconfig.backgroundImageY, this.menuconfig.scrollSpeedBackground);
     };
     addToButtons() {
         console.log(this.levelConfig.serpentPlayer.foodEaten, this.levelConfig.aiSerpents[0].foodEaten);
@@ -1475,9 +1486,50 @@ function drawBackground(bg_stars, playGroundImage) {
         groundy += gridSizeScale;
     }
     */
-    // gameField.canvasContext.drawImage(playGroundImage.bg_img[playGroundImage.currentImage], playGroundImage.bg_imgCurrentX, 0);
-    gameField.canvasContext.drawImage(playGroundImage.bg_img[playGroundImage.currentImage], playGroundImage.bg_imgCurrentX, 0, playGroundImage.currentCanvasX, playGroundImage.currentCanvasY);
-    gameField.canvasContext.drawImage(bg_stars, -1 * playGroundImage.bg_imgCurrentX, 0);
+    playGroundImage.angle = playGroundImage.angle - 0.5 * Math.PI / 180;
+    var ctx = null;
+    ctx = gameField.canvasContext;
+    ctx.save();
+
+    ctx.translate(-playGroundImage.bg_imgCurrentX + 884 / 2,  playGroundImage.bg_imgCurrentX + 884 / 2);
+    ctx.rotate(playGroundImage.angle);
+    ctx.drawImage(playGroundImage.bg_img[playGroundImage.currentImage],
+                 0,
+                 0,
+                 884,
+                 884,
+                 400 / - 2,
+                 400 / -2,
+                 884,
+                 884
+    );
+    gameField.canvasContext.drawImage(bg_stars,
+        0,
+        0,
+        playGroundImage.bg_starCurrentX,
+        playGroundImage.bg_starCurrentY,
+        884 / - 2,
+        884 / -2,
+        800 + playGroundImage.bg_starCurrentX,
+        800 + playGroundImage.bg_starCurrentY,
+);
+    //ctx.drawImage(playGroundImage.bg_img[playGroundImage.currentImage], playGroundImage.bg_imgCurrentX, 0, playGroundImage.currentCanvasX, playGroundImage.currentCanvasY);
+    ctx.restore();
+
+    gameField.canvasContext.drawImage(bg_stars,
+                                     playGroundImage.bg_starCurrentX,
+                                     playGroundImage.bg_starCurrentY,
+                                        2560,
+                                        2560,
+                                      0,
+                                      0,
+                                      3500,
+                                      3500
+    );
+    //console.log(bg_stars, playGroundImage.bg_starCurrentX, playGroundImage.bg_starCurrentY);
+    //playGroundImage.bg_starCurrentX,
+    //playGroundImage.bg_starCurrentY,
+
 }
 function moveMenuBackground(backgroundY, speed){
     backgroundY -= speed;
@@ -1488,16 +1540,26 @@ function moveMenuBackground(backgroundY, speed){
 }
 
 function moveLevelBackground(image){
-    image.changeCurrentX(image.bg_imgCurrentX + image.scrollSpeedBackground, image.currentCanvasX - image.scrollSpeedBackground, image.currentCanvasY - image.scrollSpeedBackground);
-    if(image.bg_imgCurrentX >= 800){
+    image.changeCurrentX(image.bg_imgCurrentX + image.scrollSpeedBackground + 3, image.currentCanvasX - image.scrollSpeedBackground, image.currentCanvasY - image.scrollSpeedBackground);
+    image.changeCurrentbgStarX(image.bg_starCurrentX + image.bg_starScrollSpeedBackground,image.bg_starCurrentY + image.bg_starScrollSpeedBackground)
+    if(image.bg_imgCurrentX >= 1000 || image.bg_imgCurrentX <= -1000){
         if (image.currentImage > 6) {
+            image.scrollSpeedBackground = image.scrollDirection[getRandomIntInclusive(0,1)];
             image.changeCurrentImage(0); 
-            image.changeCurrentX(0, 1000, 1000);
+            image.changeCurrentX(-1000, 1000, 1000);
+
         }
         else  {
+            image.scrollSpeedBackground = image.scrollDirection[getRandomIntInclusive(0,1)];   
             image.changeCurrentImage(image.currentImage + 1);
-            image.changeCurrentX(0, 1000, 1000);
+            image.changeCurrentX(-1000, 1000, 1000);
+
         }
+    }
+    if(image.bg_starCurrentX >= 2560 || image.bg_starCurrentX <= -2560){
+            image.bg_starScrollSpeedBackground = image.bg_starScrollSpeedBackground[getRandomIntInclusive(0,1)];
+            image.changeCurrentbgStarX(0,getRandomIntInclusive(-50,500), getRandomIntInclusive(-50,500));
+
     }
 }
 function draw(bg_stars, playGroundImage, serpentPlayer, itemlist, aiSerpents) {
