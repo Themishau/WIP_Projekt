@@ -247,11 +247,11 @@ class playground {
             this.currentCanvasX = 1000,
             this.currentCanvasY = 1000,
             this.scrollSpeedBackground = 2,
-            this.scrollDirection = [-1, +1],
+            this.scrollDirection = [-1, 1],
             this.bg_starCurrentX = getRandomIntInclusive(-50,500),
             this.bg_starCurrentY = getRandomIntInclusive(-50,500),
 
-            this.bg_starScrollSpeedBackground = 2,            
+            this.bg_starScrollSpeedBackground = 3,            
             this.currentImage = 0,
             this.bgsound = bgsound,
             this.resetPlayground()
@@ -1543,8 +1543,8 @@ function moveLevelBackground(image){
     image.changeCurrentX(image.bg_imgCurrentX + image.scrollSpeedBackground + 3, image.currentCanvasX - image.scrollSpeedBackground, image.currentCanvasY - image.scrollSpeedBackground);
     image.changeCurrentbgStarX(image.bg_starCurrentX + image.bg_starScrollSpeedBackground,image.bg_starCurrentY + image.bg_starScrollSpeedBackground)
     if(image.bg_imgCurrentX >= 1000 || image.bg_imgCurrentX <= -1000){
-        if (image.currentImage > 6) {
-            image.scrollSpeedBackground = image.scrollDirection[getRandomIntInclusive(0,1)];
+        if (image.currentImage > 5) {
+            image.scrollSpeedBackground = image.scrollDirection[getRandomIntInclusive(0,1)] * image.scrollSpeedBackground;
             image.changeCurrentImage(0); 
             image.changeCurrentX(-1000, 1000, 1000);
 
@@ -1556,10 +1556,10 @@ function moveLevelBackground(image){
 
         }
     }
-    if(image.bg_starCurrentX >= 2560 || image.bg_starCurrentX <= -2560){
-            image.bg_starScrollSpeedBackground = image.bg_starScrollSpeedBackground[getRandomIntInclusive(0,1)];
-            image.changeCurrentbgStarX(0,getRandomIntInclusive(-50,500), getRandomIntInclusive(-50,500));
-
+    if(image.bg_starCurrentX >= 1230 || image.bg_starCurrentX <= -1230){
+            image.bg_starScrollSpeedBackground = image.scrollDirection[getRandomIntInclusive(0,1)] * image.bg_starScrollSpeedBackground;
+            image.changeCurrentbgStarX(getRandomIntInclusive(-50,500), getRandomIntInclusive(-50,500));
+            console.log(image.bg_starCurrentX, image.bg_starCurrentX);
     }
 }
 function draw(bg_stars, playGroundImage, serpentPlayer, itemlist, aiSerpents) {
