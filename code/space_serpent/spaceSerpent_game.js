@@ -1096,6 +1096,8 @@ class AfterGameScreen {
                 stateData.menuconfig.selectSound.play();
                 let gameMode = getGameInstance();
                 let levelConfig = getCurrentLevelConfig();
+                stateData.menuconfig.afterGameScreenMusic.pause();
+                stateData.menuconfig.afterGameScreenMusic.currentTime = 0;
                 let newlevelconfig = new LevelConfig("level" + (levelConfig.level + 1), levelConfig.level + 1, new LevelOption("level" + (levelConfig.level + 1), levelConfig.levelOption.playGroundSize, levelConfig.levelOption.aiEnemys, levelConfig.levelOption.serpentSpriteColor, null, null, null));
                 newlevelconfig.StartLoading();
                 gameMode.push(new level("level" + (levelConfig.level + 1), newlevelconfig, stateData.menuconfig));
