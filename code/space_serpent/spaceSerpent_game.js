@@ -565,9 +565,13 @@ class level {
         window.onkeyup = null;
         window.onDirectionChanged = null;
         /* animations */
-        this.frame = 0;
+        this.globalDeltaLast = Date.now();
+        this.globalDeltaNow = Date.now();
+        this.globalDelta = 0;
+        this.currentDeltaFrame = 0;
+        this.speed = getGameDeltaTime();
         this.animationInterval = 0;
-        this.animationdelay = 10;
+        this.animationdelay = 100;
         this.obstacleTable;
 
 
@@ -738,8 +742,19 @@ class level {
             gameMode.push(new AfterGameScreen("AfterGameScreen", this.levelConfig, this.currentOption, this.menuconfig));
         }
         //console.log(this.levelConfig.playGroundLevel.fields);
+        
         moveLevelBackground(this.levelConfig.playGroundLevel);
-        update(this.levelConfig.serpentPlayer, this.levelConfig.aiSerpents, this.levelConfig.playGroundLevel, this.levelConfig.itemlist, this.levelConfig.sound);
+        this.globalDeltaLast = this.globalDeltaNow;
+        this.globalDeltaNow = Date.now();
+        this.globalDelta = this.globalDeltaNow - this.globalDeltaLast;
+        this.currentDeltaFrame += round10((this.globalDelta * this.speed), -1);
+        //console.log(this.globalDelta, this.speed, this.globalDelta * this.speed, this.currentDeltaFrame);
+        // if (Math.ceil(this.currentDeltaFrame) == 1) {
+        //console.log("jetziger wert: ", this.currentDeltaFrame, "addiere: ", (this.globalDelta * this.speed) ,"round10: ", round10((this.globalDelta * this.speed), -1));
+        if (round10((this.currentDeltaFrame), -1) >= 1) {
+            this.currentDeltaFrame = 0;       
+            update(this.levelConfig.serpentPlayer, this.levelConfig.aiSerpents, this.levelConfig.playGroundLevel, this.levelConfig.itemlist, this.levelConfig.sound);
+        }
         animations(this.levelConfig.serpentPlayer);
 
     };
@@ -1090,13 +1105,14 @@ class AfterGameScreen {
         // When the Enter key is pressed go to the next state
         window.onkeydown = function (e) {
             let stateData = getStateData();
+            let gameMode = getGameInstance();
             let keyCode = e.keyCode;
             if ((keyCode === 13)) {
                 // Go to next State
                 stateData.menuconfig.selectSound.pause();
                 stateData.menuconfig.selectSound.currentTime = 0;
                 stateData.menuconfig.selectSound.play();
-                let gameMode = getGameInstance();
+                
                 let levelConfig = getCurrentLevelConfig();
                 stateData.menuconfig.afterGameScreenMusic.pause();
                 stateData.menuconfig.afterGameScreenMusic.currentTime = 0;
@@ -1106,6 +1122,17 @@ class AfterGameScreen {
                 /** Note that this does not remove the current state
                  *  from the list. it just adds Level1State on top of it.
                  */
+            }
+            if (keyCode === 32 ) {
+                // Go to next State
+                stateData.menuconfig.selectSound.pause();
+                stateData.menuconfig.selectSound.currentTime = 0;
+                stateData.menuconfig.selectSound.play();
+                stateData.menuconfig.afterGameScreenMusic.pause();
+                stateData.menuconfig.afterGameScreenMusic.currentTime = 0;
+                let mainMenu = new MainMenu("MainMenu", new MenuConfig("MainMenu"));
+                mainMenu.menuconfig.StartLoading();
+                gameMode.push(mainMenu);  
             }
             stateData.menuconfig.scrollSound.pause();
             stateData.menuconfig.scrollSound.currentTime = 0;
@@ -1139,7 +1166,7 @@ class AfterGameScreen {
         this.canvas.font = "64pt Courier";
         this.canvas.fillText(this.menuconfig.mainText, this.dimensions.width / 2 - 225, 200);
         this.canvas.beginPath();
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i <= 4; i++) {
             if (i == 4) {
                 if (this.menuconfig.colorIndexSelected == this.menuconfig.colorsArraySelected.length) {
                     this.menuconfig.colorIndexSelected = 0;
@@ -1159,8 +1186,12 @@ class AfterGameScreen {
                 this.canvas.fillText(this.buttons[i].text, this.buttons[i].buttonX, this.buttons[i].buttonY);
             }
         }
-        this.canvas.fillText(this.buttons[4].text, this.buttons[4].buttonX, this.buttons[4].buttonY);
+        this.canvas.fillStyle = this.buttons[5].fillStyle;
+        this.canvas.font = this.buttons[5].font;
         this.canvas.fillText(this.buttons[5].text, this.buttons[5].buttonX, this.buttons[5].buttonY);
+        this.canvas.fillStyle = this.buttons[6].fillStyle;
+        this.canvas.font = this.buttons[6].font;
+        this.canvas.fillText(this.buttons[6].text, this.buttons[6].buttonX, this.buttons[6].buttonY);
     };
     update() {
         // update values
@@ -1171,9 +1202,10 @@ class AfterGameScreen {
         this.buttons.push(new MenuButton("Credit", "Copyright (c) 2020 KaBra, MaSiPi, MaZa", null, 500, 970, 100, 50,"14pt Courier", "white"));
         this.buttons.push(new MenuButton("Your Score:", "Your Highscore", null, 150, 500, 100, 50, "20pt Courier", "white"));
         this.buttons.push(new MenuButton("Enemy's Highscore:", "Enemy's Highscore", null, 150, 600, 100, 50, "20pt Courier", "white"));
-        this.buttons.push(new MenuButton("startText", "Press Enter To Start Next Round", null, 450, 800, 100, 50, "20pt Courier", "white"));
-        this.buttons.push(new MenuButton("Food Eaten Player", this.levelConfig.serpentPlayer.foodEaten, null, 450, 500, 100, 50, "20pt Courier", "white"));
-        this.buttons.push(new MenuButton("Food Eaten Player", this.levelConfig.highestEnemy, null, 450, 600, 100, 50, "20pt Courier", "white"));
+        this.buttons.push(new MenuButton("startText", "Press Enter To Start Next Round", null, 300, 800, 100, 50, "20pt Courier", "white"));
+        this.buttons.push(new MenuButton("startText", "Or Press Space To Return To Main Menu", null, 300, 850, 100, 50, "20pt Courier", "white"));
+        this.buttons.push(new MenuButton("Food Eaten Player", this.levelConfig.serpentPlayer.foodEaten, null, 500, 500, 100, 50, "20pt Courier", "white"));
+        this.buttons.push(new MenuButton("Food Eaten Player", this.levelConfig.highestEnemy, null, 500, 600, 100, 50, "20pt Courier", "white"));
     };
 }
 class CreditScreen {
@@ -1363,7 +1395,8 @@ var gameField = {
     //then: null,
     //startTime: null,
     timer: null,
-    FPS: 15,
+    FPS: 30,
+    deltaTime: 0,
     fpsInterval: null,
     update: function () {
         this.gameMode.update();
@@ -1393,6 +1426,7 @@ var gameField = {
         this.canvas.width = this.canvas_width;
         this.canvas.height = this.canvas_height;
         this.canvasContext = this.canvas.getContext("2d");
+        this.deltaTime = (0.5 / (1000/this.FPS));
         document.body.insertBefore(this.canvas, document.body.childNodes[0]); // due to some loading issues with images and sprites w want to insert it before
         this.timer = 1000 / this.FPS;
         this.startGame();
@@ -1442,7 +1476,9 @@ window.onload = function () {
     window.getContext = function () {
         return gameField.canvasContext;
     };
-
+    window.getGameDeltaTime = function () {
+        return gameField.deltaTime;
+    };
     window.getGameDimensions = function () {
         return {
             width: gameField.canvas_width,
@@ -1565,11 +1601,11 @@ function drawSerpent(serpentPlayer) {
             if ((serpentPartbefore[0] != serpentPartafter[0]) && (serpentPartbefore[1] != serpentPartafter[1])) {
                 var currentCornerSprite = new Image();
                 if (serpentPlayer.serpentParts[i].currentCorner == 1) {
-                    console.log("links");
+                    //console.log("links");
                     currentCornerSprite = serpentPlayer.animation.spritesheet[5];
                 }
                 else {
-                    console.log("rechts", serpentPlayer.serpentParts[i].currentCorner);
+                    //console.log("rechts", serpentPlayer.serpentParts[i].currentCorner);
                     currentCornerSprite = serpentPlayer.animation.spritesheet[4];
                 }
                 ctx.drawImage(currentCornerSprite,
@@ -2282,7 +2318,7 @@ function animationPlayer(serpentPlayer) {
         serpentPlayer.animation.animationInterval = 0;
         serpentPlayer.animation.currentFrame = 0;
     }
-    serpentPlayer.animation.animationInterval += 10;
+    serpentPlayer.animation.animationInterval += 1;
     // console.log(serpentPlayer.animation.frameSet.length, serpentPlayer.animation.currentFrame, animationInterval);
 }
 function animations(serpentPlayer) {
@@ -2370,5 +2406,35 @@ function sleep(milliseconds) {
         currentDate = Date.now();
     } while (currentDate - date < milliseconds);
 }
+function precise(x) {
+    return Number.parseFloat(x).toPrecision(2);
+  }
+
+  function decimalAdjust(type, value, exp) {
+    // If the exp is undefined or zero...
+    if (typeof exp === 'undefined' || +exp === 0) {
+      return Math[type](value);
+    }
+    value = +value;
+    exp = +exp;
+    // If the value is not a number or the exp is not an integer...
+    if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
+      return NaN;
+    }
+    // Shift
+    value = value.toString().split('e');
+    value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
+    // Shift back
+    value = value.toString().split('e');
+    return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
+  }
+  
+  // Decimal round
+  const round10 = (value, exp) => decimalAdjust('round', value, exp);
+  // Decimal floor
+  const floor10 = (value, exp) => decimalAdjust('floor', value, exp);
+  // Decimal ceil
+  const ceil10 = (value, exp) => decimalAdjust('ceil', value, exp);
 /* ---- help functions section end  */
+
 
