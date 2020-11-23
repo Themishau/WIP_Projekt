@@ -250,36 +250,36 @@ class playground {
             this.bg_img = bg_img,
             this.angle = 0,
             this.anglePlanet2 = 0,
-            this.bg_imgCurrentX = getRandomIntInclusive(-250,300),
-            this.bg_imgCurrentY = getRandomIntInclusive(-250,300),
-            this.currentCanvasX = getRandomIntInclusive(0,1000),
-            this.currentCanvasY = getRandomIntInclusive(0,1000),
+            this.bg_imgCurrentX = getRandomIntInclusive(-250, 300),
+            this.bg_imgCurrentY = getRandomIntInclusive(-250, 300),
+            this.currentCanvasX = getRandomIntInclusive(0, 1000),
+            this.currentCanvasY = getRandomIntInclusive(0, 1000),
             this.bg_imgCurrentTranslate = 2,
-            this.scrollSpeedBackground = getRandomIntInclusive(1,3),
+            this.scrollSpeedBackground = getRandomIntInclusive(1, 3),
             this.scrollAcce = 2;
-            this.scrollDirection = [-1, 1],
-            this.bg_starCurrentX = getRandomIntInclusive(-50,50),
-            this.bg_starCurrentY = getRandomIntInclusive(-50,50),
-            this.bg_starScrollSpeedBackgroundX = getRandomIntInclusive(2,5),
-            this.bg_starScrollSpeedBackgroundY = getRandomIntInclusive(2,4),            
+        this.scrollDirection = [-1, 1],
+            this.bg_starCurrentX = getRandomIntInclusive(-50, 50),
+            this.bg_starCurrentY = getRandomIntInclusive(-50, 50),
+            this.bg_starScrollSpeedBackgroundX = getRandomIntInclusive(2, 5),
+            this.bg_starScrollSpeedBackgroundY = getRandomIntInclusive(2, 4),
             this.currentImage = 0,
             this.bgsound = bgsound,
             this.resetPlayground()
     }
-    changeCurrentImage(imageNumber){
+    changeCurrentImage(imageNumber) {
         this.currentImage = imageNumber;
         // console.log(this.bg_img[this.currentImage]);
     }
-    changeCurrent(x, y, cX, cY){
+    changeCurrent(x, y, cX, cY) {
         this.bg_imgCurrentX = x;
         this.bg_imgCurrentY = y;
         this.currentCanvasX = cX;
         this.currentCanvasY = cY;
     }
-    changeCurrentTranslate () {
+    changeCurrentTranslate() {
         this.bg_imgCurrentTranslate = 2;
     }
-    changeCurrentbgStarX(x, y){
+    changeCurrentbgStarX(x, y) {
         this.bg_starCurrentX = x;
         this.bg_starCurrentY = y;
 
@@ -314,6 +314,7 @@ class serpent {
     constructor(id, x, y, spritesheet, initSnakeParts) {
         this.id = id,
             this.name = "serpent",
+            this.alive = true,
             this.gridx = x, // init the serpents position regarding to the grid ex.: gridSizex = 20 ; x = gridnumber in row n;  25 * 20 = 500 -> the position is x = 500 on the canvas
             this.gridy = y,
             this.width = gridSizex,
@@ -481,6 +482,7 @@ class LevelConfig {
         this.itemlist[5] = new item(4, "book", getRandomIntInclusive(1, gridfield - 3), getRandomIntInclusive(1, gridfield - 3), assets.book);
         this.itemlist[6] = new item(5, "feather", getRandomIntInclusive(1, gridfield - 3), getRandomIntInclusive(1, gridfield - 3), assets.feather);
         */
+
         for (let i = 0; i < this.itemlist.length; i++) {
             this.playGroundLevel.addToPlayground(this.itemlist[i].gridx, this.itemlist[i].gridy, this.itemlist[i].id);
         }
@@ -1058,14 +1060,14 @@ class AfterGameScreen {
     constructor(name, levelConfig, currentOption, menuconfig) {
         this.name = name // Just to identify the State
         this.canvas = getContext(),
-        this.dimensions = getGameDimensions(),
-        this.menuconfig = menuconfig,
-        this.canvas = getContext(),
-        this.dimensions = getGameDimensions(),
-        this.buttons = [],
-        this.selectedButton = 4,
-        this.currentOption = currentOption,
-        this.levelConfig = levelConfig
+            this.dimensions = getGameDimensions(),
+            this.menuconfig = menuconfig,
+            this.canvas = getContext(),
+            this.dimensions = getGameDimensions(),
+            this.buttons = [],
+            this.selectedButton = 4,
+            this.currentOption = currentOption,
+            this.levelConfig = levelConfig
 
     }
     onEnter() {
@@ -1361,7 +1363,7 @@ var gameField = {
     //then: null,
     //startTime: null,
     timer: null,
-    FPS: 10,
+    FPS: 15,
     fpsInterval: null,
     update: function () {
         this.gameMode.update();
@@ -1729,17 +1731,17 @@ function drawBackground(bg_stars, playGroundImage) {
     var ctxPlanet1 = null;
     ctxPlanet1 = gameField.canvasContext;
     ctxPlanet1.save();
-    ctxPlanet1.translate(playGroundImage.bg_imgCurrentX + 442 / playGroundImage.bg_imgCurrentTranslate,  playGroundImage.bg_imgCurrentY + 442 / playGroundImage.bg_imgCurrentTranslate);
+    ctxPlanet1.translate(playGroundImage.bg_imgCurrentX + 442 / playGroundImage.bg_imgCurrentTranslate, playGroundImage.bg_imgCurrentY + 442 / playGroundImage.bg_imgCurrentTranslate);
     ctxPlanet1.rotate(playGroundImage.angle);
     ctxPlanet1.drawImage(playGroundImage.bg_img[playGroundImage.currentImage],
-                 0,
-                 0,
-                 884,
-                 884,
-                 884 / -2,
-                 884 / -2,
-                 playGroundImage.bg_imgCurrentX * 1.75,
-                 playGroundImage.bg_imgCurrentX * 1.75
+        0,
+        0,
+        884,
+        884,
+        884 / -2,
+        884 / -2,
+        playGroundImage.bg_imgCurrentX * 1.75,
+        playGroundImage.bg_imgCurrentX * 1.75
     );
     ctxPlanet1.drawImage(bg_stars,
         0,
@@ -1750,26 +1752,26 @@ function drawBackground(bg_stars, playGroundImage) {
         1000 / 2,
         playGroundImage.bg_imgCurrentX * 2.75,
         playGroundImage.bg_imgCurrentX * 2.75,
-);
+    );
     //ctx.drawImage(playGroundImage.bg_img[playGroundImage.currentImage], playGroundImage.bg_imgCurrentX, 0, playGroundImage.currentCanvasX, playGroundImage.currentCanvasY);
     ctxPlanet1.restore();
-    
+
     playGroundImage.anglePlanet2 = playGroundImage.anglePlanet2 + 1.5 * Math.PI / 180;
     var ctxPlanet2 = null;
     ctxPlanet2 = gameField.canvasContext;
     ctxPlanet2.save();
     playGroundImage.bg_imgCurrentTranslate
-    ctxPlanet2.translate(playGroundImage.bg_imgCurrentX/ playGroundImage.bg_imgCurrentTranslate,  playGroundImage.bg_imgCurrentY/ playGroundImage.bg_imgCurrentTranslate);
+    ctxPlanet2.translate(playGroundImage.bg_imgCurrentX / playGroundImage.bg_imgCurrentTranslate, playGroundImage.bg_imgCurrentY / playGroundImage.bg_imgCurrentTranslate);
     ctxPlanet2.rotate(playGroundImage.anglePlanet2);
     ctxPlanet2.drawImage(playGroundImage.bg_img[playGroundImage.currentImage + 1],
-                 0,
-                 0,
-                 1000,
-                 1000,
-                 1000 / -2,
-                 1000 / -2,
-                 50 + playGroundImage.bg_imgCurrentX * 1.5,
-                 50 + playGroundImage.bg_imgCurrentX * 1.5
+        0,
+        0,
+        1000,
+        1000,
+        1000 / -2,
+        1000 / -2,
+        50 + playGroundImage.bg_imgCurrentX * 1.5,
+        50 + playGroundImage.bg_imgCurrentX * 1.5
     );
     ctxPlanet2.drawImage(bg_stars,
         0,
@@ -1780,26 +1782,26 @@ function drawBackground(bg_stars, playGroundImage) {
         1000 / -2,
         800 + playGroundImage.bg_imgCurrentX * 1.1,
         800 + playGroundImage.bg_imgCurrentX * 1.1,
-);
+    );
     //ctx.drawImage(playGroundImage.bg_img[playGroundImage.currentImage], playGroundImage.bg_imgCurrentX, 0, playGroundImage.currentCanvasX, playGroundImage.currentCanvasY);
     ctxPlanet2.restore();
 
     gameField.canvasContext.drawImage(bg_stars,
-                                     playGroundImage.bg_starCurrentX,
-                                     playGroundImage.bg_starCurrentY,
-                                     1800,
-                                     1800,
-                                      -1230,
-                                      -1230,
-                                      3500,
-                                      3500
+        playGroundImage.bg_starCurrentX,
+        playGroundImage.bg_starCurrentY,
+        1800,
+        1800,
+        -1230,
+        -1230,
+        3500,
+        3500
     );
    //console.log("planet", playGroundImage.bg_imgCurrentX, playGroundImage.bg_imgCurrentY);
     //playGroundImage.bg_starCurrentX,
     //playGroundImage.bg_starCurrentY,
 
 }
-function moveMenuBackground(backgroundY, speed){
+function moveMenuBackground(backgroundY, speed) {
     backgroundY -= speed;
     if (backgroundY == -1 * gameField.canvas_height) {
         backgroundY = 0;
@@ -1807,32 +1809,33 @@ function moveMenuBackground(backgroundY, speed){
     return backgroundY;
 }
 
-function moveLevelBackground(image){
-    image.changeCurrent(image.bg_imgCurrentX + image.scrollSpeedBackground + image.scrollAcce , image.bg_imgCurrentX + image.scrollSpeedBackground + image.scrollAcce * 1.25, image.currentCanvasX - image.scrollSpeedBackground, image.currentCanvasY - image.scrollSpeedBackground);
-    image.changeCurrentbgStarX(image.bg_starCurrentX + image.bg_starScrollSpeedBackgroundX,image.bg_starCurrentY + image.bg_starScrollSpeedBackgroundY)
-    if(image.bg_imgCurrentX == 0 || image.bg_imgCurrentX == 1 || image.bg_imgCurrentX == -1 || image.bg_imgCurrentX == 2 || image.bg_imgCurrentX == -2){
+function moveLevelBackground(image) {
+    image.changeCurrent(image.bg_imgCurrentX + image.scrollSpeedBackground + image.scrollAcce, image.bg_imgCurrentX + image.scrollSpeedBackground + image.scrollAcce * 1.25, image.currentCanvasX - image.scrollSpeedBackground, image.currentCanvasY - image.scrollSpeedBackground);
+    image.changeCurrentbgStarX(image.bg_starCurrentX + image.bg_starScrollSpeedBackgroundX, image.bg_starCurrentY + image.bg_starScrollSpeedBackgroundY)
+    if (image.bg_imgCurrentX == 0 || image.bg_imgCurrentX == 1 || image.bg_imgCurrentX == -1 || image.bg_imgCurrentX == 2 || image.bg_imgCurrentX == -2) {
         if (image.currentImage > 4) {
-            image.scrollSpeedBackground = image.scrollDirection[getRandomIntInclusive(0,1)] * image.scrollSpeedBackground;
-            image.scrollAcce = 1.5 * image.scrollDirection[getRandomIntInclusive(0,1)];
-            image.changeCurrentImage(0); 
-            image.changeCurrent(0, 0, getRandomIntInclusive(-50,500), getRandomIntInclusive(-50,500));
+            image.scrollSpeedBackground = image.scrollDirection[getRandomIntInclusive(0, 1)] * image.scrollSpeedBackground;
+            image.scrollAcce = 1.5 * image.scrollDirection[getRandomIntInclusive(0, 1)];
+            image.changeCurrentImage(0);
+            image.changeCurrent(0, 0, getRandomIntInclusive(-50, 500), getRandomIntInclusive(-50, 500));
             image.changeCurrentTranslate();
             console.log(image.bg_imgCurrentX);
 
         }
-        else  {
-            image.scrollSpeedBackground = image.scrollDirection[getRandomIntInclusive(0,1)];   
-            image.scrollAcce = 1.5 * image.scrollDirection[getRandomIntInclusive(0,1)];
+        else {
+            image.scrollSpeedBackground = image.scrollDirection[getRandomIntInclusive(0, 1)];
+            image.scrollAcce = 1.5 * image.scrollDirection[getRandomIntInclusive(0, 1)];
             image.changeCurrentImage(image.currentImage + 1);
-            image.changeCurrent(0, 0, getRandomIntInclusive(-50,500),  getRandomIntInclusive(-50,500));
+            image.changeCurrent(0, 0, getRandomIntInclusive(-50, 500), getRandomIntInclusive(-50, 500));
             image.changeCurrentTranslate();
             //console.log(image.bg_imgCurrentX);
         }
     }
-    else if(image.bg_imgCurrentX >= 700 || image.bg_imgCurrentX <= -500) {
-        image.scrollSpeedBackground = image.scrollSpeedBackground * -1;   
+    else if (image.bg_imgCurrentX >= 700 || image.bg_imgCurrentX <= -500) {
+        image.scrollSpeedBackground = image.scrollSpeedBackground * -1;
         image.scrollAcce = image.scrollAcce * - 1;
     }
+
 
 
     if(image.bg_starCurrentX >= 1000 || image.bg_starCurrentX <= -1000 || image.bg_starCurrentY >= 1000 || image.bg_starCurrentY <= -1000){
@@ -1859,7 +1862,7 @@ function draw(bg_stars, playGroundImage, serpentPlayer, itemlist, aiSerpents) {
 /* ----  draw section end ---- */
 
 /* ----  AI section  ---- */
-function calculateNextMove(obstaclesTable, currentPosition, itemPosition) {
+function calculateNextMove(obstaclesTable, currentPosition, itemPosition, serpent) {
 
     // aStar is the Pathfinding algorithm used to find a shortest path from the snakehead to the food
     var aStarResult = aStar(obstaclesTable, itemPosition, currentPosition);
@@ -1870,44 +1873,45 @@ function calculateNextMove(obstaclesTable, currentPosition, itemPosition) {
         var nextNode = aStarResult.nextNode;
         if (nextNode.position.x > currentPosition.x) {
             //move right!
-            return { dx: 1, dy: 0 };
+            return {movementIsPossible: true, direction: { dx: 1, dy: 0 }};
         }
         if (nextNode.position.x < currentPosition.x) {
             //move left!
-            return { dx: -1, dy: 0 };
+            return {movementIsPossible: true, direction: { dx: -1, dy: 0 }};
 
         }
         if (nextNode.position.y > currentPosition.y) {
             //move down!
-            return { dx: 0, dy: 1 };
+            return {movementIsPossible: true, direction: { dx: 0, dy: 1 }};
 
         }
         if (nextNode.position.y < currentPosition.y) {
             //move up!
-            return { dx: 0, dy: -1 };
+            return {movementIsPossible: true, direction: { dx: 0, dy: -1 }};
         }
     }
     // if aStar can not find a valid path, an adjacent free field will be chosen
     else {
         if (currentPosition.y + 1 < obstaclesTable.length && obstaclesTable[currentPosition.x][currentPosition.y + 1] == 0) {
             //move down!
-            return { dx: 0, dy: 1 };
+            return {movementIsPossible: true, direction: { dx: 0, dy: 1 }};
         }
 
         if (currentPosition.y - 1 >= 0 && obstaclesTable[currentPosition.x][currentPosition.y - 1] == 0) {
             //move up!
-            return { dx: 0, dy: -1 };
+            return {movementIsPossible: true, direction: { dx: 0, dy: -1 }};
         }
 
         if (currentPosition.x + 1 < obstaclesTable.length && obstaclesTable[currentPosition.x + 1][currentPosition.y] == 0) {
             //move right!
-            return { dx: 1, dy: 0 };
+            return {movementIsPossible: true, direction: { dx: 1, dy: 0 }};
         }
 
         if (currentPosition.x - 1 >= 0 && obstaclesTable[currentPosition.x - 1][currentPosition.y] == 0) {
             //move left!
-            return { dx: -1, dy: 0 };
+            return {movementIsPossible: true, direction: { dx: -1, dy: 0 }};
         }
+        return {movementIsPossible: false, direction: { dx: 1, dy: 0 }};
     }
 }
 function reconstruct_path(current) {
@@ -1920,8 +1924,8 @@ function reconstruct_path(current) {
     }
     return current;
 }
-function positionsAreEqual(fieldA, fieldB) {
-    return fieldA.x == fieldB.x && fieldA.y == fieldB.y;
+function positionsAreEqual(positionA, positionB) {
+    return positionA.x == positionB.x && positionA.y == positionB.y;
 }
 function aStar(obstaclesTable, goalPosition, startPosition) {
     // The closedTable describes, which elements have already been visited by the algorithm
@@ -1936,7 +1940,7 @@ function aStar(obstaclesTable, goalPosition, startPosition) {
 
     // If there are no more entries in the openList, this means that the algorithm has visited
     // all possible fields without finding the goal along its path.
-    for (let index = 0; !openList.isEmpty() && index < obstaclesTable.length * obstaclesTable.length; index++) {
+    for (let index = 0; !openList.isEmpty() && index < (obstaclesTable.length * obstaclesTable.length) * 2; index++) {
         // The field with the shortest estimated costs (FCosts) towards the goal is removed from the open list
         var smallestFScoreField = openList.dequeue().element;
 
@@ -1980,15 +1984,13 @@ function aStar(obstaclesTable, goalPosition, startPosition) {
 /* ----  AI section end ---- */
 
 /* ----  movement section  ---- */
-function movement(serpentPlayer, aiSerpents, playGroundLevel, items, sound) {
-    //console.log("movement", items);
+function moveSerpents(serpentPlayer, aiSerpents, playGroundLevel, items, sound) {
     moveAiSerpents(aiSerpents, playGroundLevel, items, sound);
-    // console.log("movementafterki", items);
     movePlayer(serpentPlayer, playGroundLevel, items, sound);
 }
-function getTargetPosition(aiSerpent, items, playField) {
+function getTargetPosition(aiSerpent, items, playField, serpentHeadPosition) {
     let targetStillExists = (playField.fields[aiSerpent.nextTarget.x][aiSerpent.nextTarget.y] == aiSerpent.nextTarget.objectID) ? true : false;
-    if (!targetStillExists)
+    if (!targetStillExists || positionsAreEqual({x: aiSerpent.nextTarget.x, y: aiSerpent.nextTarget.y}, serpentHeadPosition))
         aiSerpent.nextTarget = generateNewRandomTarget(items);
     return { x: aiSerpent.nextTarget.x, y: aiSerpent.nextTarget.y };
 }
@@ -2001,7 +2003,7 @@ function createObstaclesTable(aiSerpent, playField) {
     let obstaclesTable = new playground();
     for (var column = 0; column < obstaclesTable.xSize; column++) {
         for (var row = 0; row < obstaclesTable.ySize; row++) {
-            if (playField.fields[column][row] >= 6 && playField.fields[column][row]!= aiSerpent.id)
+            if (playField.fields[column][row] >= 6)
                 obstaclesTable.fields[column][row] = 1;
         }
     }
@@ -2010,44 +2012,75 @@ function createObstaclesTable(aiSerpent, playField) {
 }
 function moveAiSerpents(aiSerpents, playField, items, sound) {
     for (let i = 0; i < aiSerpents.length; i++) {
-        const obstaclesTable = createObstaclesTable(aiSerpents[i], playField);
-        const serpentHeadPosition = { x: aiSerpents[i].serpentParts[0].x, y: aiSerpents[i].serpentParts[0].y };
-        const nextTargetPosition = getTargetPosition(aiSerpents[i], items, playField);
+        if (aiSerpents[i].alive) {
 
-        const nextMovement = calculateNextMove(obstaclesTable.fields, serpentHeadPosition, nextTargetPosition);
+            const obstaclesTable = createObstaclesTable(aiSerpents[i], playField);
+            const serpentHeadPosition = { x: aiSerpents[i].serpentParts[0].x, y: aiSerpents[i].serpentParts[0].y };
+            const nextTargetPosition = getTargetPosition(aiSerpents[i], items, playField, serpentHeadPosition);
 
-        aiSerpents[i].OldDx = aiSerpents[i].dx;
-        aiSerpents[i].OldDy = aiSerpents[i].dy;
+            const nextMovement = calculateNextMove(obstaclesTable.fields, serpentHeadPosition, nextTargetPosition, aiSerpents[i]);
 
-        /* change direction for animation head */
-        if (nextMovement.dy == -1)
-            aiSerpents[i].serpentParts[0].currentPointOfView = aiSerpents[i].serpentParts[0].PointOfView.north;
-        else if (nextMovement.dy == +1)
-            aiSerpents[i].serpentParts[0].currentPointOfView = aiSerpents[i].serpentParts[0].PointOfView.south;
-        else if (nextMovement.dx == -1)
-            aiSerpents[i].serpentParts[0].currentPointOfView = aiSerpents[i].serpentParts[0].PointOfView.west;
-        else if (nextMovement.dx == +1)
-            aiSerpents[i].serpentParts[0].currentPointOfView = aiSerpents[i].serpentParts[0].PointOfView.east;
+            if (nextMovement == undefined)
+            {
+                console.log("what");
+            }
 
-        /* change direction for animation body */
-        if ((aiSerpents[i].OldDx == + 1 && aiSerpents[i].serpentParts[0].currentPointOfView == aiSerpents[i].serpentParts[0].PointOfView.north)
-            || (aiSerpents[i].OldDy == + 1 && aiSerpents[i].serpentParts[0].currentPointOfView == aiSerpents[i].serpentParts[0].PointOfView.east)
-            || (aiSerpents[i].OldDx == - 1 && aiSerpents[i].serpentParts[0].currentPointOfView == aiSerpents[i].serpentParts[0].PointOfView.south)
-            || (aiSerpents[i].OldDy == - 1 && aiSerpents[i].serpentParts[0].currentPointOfView == aiSerpents[i].serpentParts[0].PointOfView.west)) {
-            aiSerpents[i].serpentParts[0].currentCorner = 1;
+            if(nextMovement.movementIsPossible == false)
+            {
+                killSerpent(aiSerpents[i], playField);
+                return;
+            }
+
+            aiSerpents[i].OldDx = aiSerpents[i].dx;
+            aiSerpents[i].OldDy = aiSerpents[i].dy;
+
+            /* change direction for animation head */
+            if (nextMovement.direction.dy == -1)
+                aiSerpents[i].serpentParts[0].currentPointOfView = aiSerpents[i].serpentParts[0].PointOfView.north;
+            else if (nextMovement.direction.dy == +1)
+                aiSerpents[i].serpentParts[0].currentPointOfView = aiSerpents[i].serpentParts[0].PointOfView.south;
+            else if (nextMovement.direction.dx == -1)
+                aiSerpents[i].serpentParts[0].currentPointOfView = aiSerpents[i].serpentParts[0].PointOfView.west;
+            else if (nextMovement.direction.dx == +1)
+                aiSerpents[i].serpentParts[0].currentPointOfView = aiSerpents[i].serpentParts[0].PointOfView.east;
+
+            /* change direction for animation body */
+            if ((aiSerpents[i].OldDx == + 1 && aiSerpents[i].serpentParts[0].currentPointOfView == aiSerpents[i].serpentParts[0].PointOfView.north)
+                || (aiSerpents[i].OldDy == + 1 && aiSerpents[i].serpentParts[0].currentPointOfView == aiSerpents[i].serpentParts[0].PointOfView.east)
+                || (aiSerpents[i].OldDx == - 1 && aiSerpents[i].serpentParts[0].currentPointOfView == aiSerpents[i].serpentParts[0].PointOfView.south)
+                || (aiSerpents[i].OldDy == - 1 && aiSerpents[i].serpentParts[0].currentPointOfView == aiSerpents[i].serpentParts[0].PointOfView.west)) {
+                aiSerpents[i].serpentParts[0].currentCorner = 1;
+            }
+            else {
+                aiSerpents[i].serpentParts[0].currentCorner = 2;
+            }
+
+            /* set movement */
+            aiSerpents[i].dx = nextMovement.direction.dx;
+            aiSerpents[i].dy = nextMovement.direction.dy;
+
+            executeSerpentMovement(aiSerpents[i], playField, items, sound);
         }
-        else {
-            aiSerpents[i].serpentParts[0].currentCorner = 2;
-        }
-
-        /* set movement */
-        aiSerpents[i].dx = nextMovement.dx;
-        aiSerpents[i].dy = nextMovement.dy;
-
-        //removeSnakeFromMatrix(aiSerpents[i], playField);
-        moveSerpent(aiSerpents[i], playField, items, sound);
     }
 
+}
+
+function killSerpent(serpent, playField) {
+    serpent.alive = false;
+    //playField auf 0 setzen
+
+    /*
+    for (let serpentPartIndex = 0; serpentPartIndex < serpent.serpentParts.length; serpentPartIndex++) {
+        playField.fields[serpent.serpentParts[serpentPartIndex].x][serpent.serpentParts[serpentPartIndex].y] = 0;
+    }
+    */
+
+    serpent.dx = 0;
+    serpent.dy = 0;
+    //input disablen bei spieler
+    //alive = true/false;
+    //einfreeze mit taste weiter in den nächsten
+    //aus AISerpents entfernen
 }
 
 function movePlayer(serpent, playField, items, sound) {
@@ -2057,101 +2090,55 @@ function movePlayer(serpent, playField, items, sound) {
 
     if (!leavesPlayfield) {
         let touchesEnemySerpent = (playField.fields[nextXPosition][nextYPositon] >= 7) ? true : false;
-        if (!touchesEnemySerpent)
-            moveSerpent(serpent, playField, items, sound);
+        if (!touchesEnemySerpent) {
+            executeSerpentMovement(serpent, playField, items, sound);
+            return;
+        }
     }
+    killSerpent(serpent, playField);
 }
 
-function moveSerpent(serpent, playField, items, sound) {
-    // Create the new Snake's head
+function executeSerpentMovement(serpent, playField, items, sound) {
     var newHead = new serpentPart(serpent.serpentParts[0].x + serpent.dx, serpent.serpentParts[0].y + serpent.dy);
-
     newHead.currentPointOfView = serpent.serpentParts[0].currentPointOfView;
-    // Add the new head to the beginning of snake body
+
     serpent.serpentParts.unshift(newHead);
 
+    for (let serpentPartIndex = 0; serpentPartIndex < serpent.serpentParts.length; serpentPartIndex++) {
+        playField.addToPlayground(serpent.serpentParts[serpentPartIndex].x,serpent.serpentParts[serpentPartIndex].y, serpent.id );
+    }
+
     const chasEatenFood = hasEatenFood(serpent, items, playField, sound);
-    const chasEatenItem = hasEatenItem(serpent, items, playField, sound);
+
     if (chasEatenFood) {
         generateNewItem(1, items, playField);
     }
+    else
+    {
+        let lastSerpentPart = serpent.serpentParts[serpent.serpentParts.length - 1];
+        playField.removeFromPlayground(lastSerpentPart.x, lastSerpentPart.y);
+        serpent.serpentParts.pop();
+    }
+    //const chasEatenItem = hasEatenItem(serpent, items, playField, sound);
+    /*
     else if (chasEatenItem) {
         // Remove the last part of snake body
         generateNewItem(getRandomIntInclusive(2, 5), items, playField);
         serpent.serpentParts.pop();
     }
-    else
-        serpent.serpentParts.pop();
-
-    playField.addToPlayground(newHead.x, newHead.y, serpent.id);
-    let lastSerpentPart = serpent.serpentParts[serpent.serpentParts.length-1];
-    playField.removeFromPlayground(lastSerpentPart.x, lastSerpentPart.y);
+    */
 }
 
-function generateRandomPosition(playField) {
-    let randomPosition = { x: getRandomIntInclusive(3, gridfield - 3), y: getRandomIntInclusive(3, gridfield - 3) }
-    if (playField.fields[randomPosition.x][randomPosition.y] != 0) {
-        generateRandomPosition(playField);
-    }
-    return randomPosition;
-}
 
-function generateNewItem(ObjectType, itemlist, playField) {
-
-    let randomPosition = generateRandomPosition(playField);
-
-    if (ObjectType == 1) {
-        var newFood = new item(1, "food", randomPosition.x, randomPosition.y, globalassets.clover);
-        itemlist.push(newFood);
-        playField.addToPlayground(newFood.gridx, newFood.gridy, 1);
-    }
-    else if (ObjectType == 2) {
-        var newBackpack = new item(2, "backpack", randomPosition.x, randomPosition.y, globalassets.backpack);
-        itemlist.push(newBackpack);
-        playField.addToPlayground(newBackpack.gridx, newBackpack.gridy, 2);
-    }
-    else if (ObjectType == 3) {
-        var newBomb = new item(3, "bomb", randomPosition.x, randomPosition.y, globalassets.bomb);
-        itemlist.push(newBomb);
-        playField.addToPlayground(newBomb.gridx, newBomb.gridy, 3);
-    }
-    else if (ObjectType == 4) {
-        var newBook = new item(4, "book", randomPosition.x, randomPosition.y, globalassets.book);
-        itemlist.push(newBook);
-        playField.addToPlayground(newBook.gridx, newBook.gridy, 4);
-    }
-    else if (ObjectType == 5) {
-        var newFeather = new item(5, "feather", randomPosition.x, randomPosition.y, globalassets.feather);
-        itemlist.push(newFeather);
-        playField.addToPlayground(newFeather.gridx, newFeather.gridy, 5);
-    }
-    //console.log("newItem generated", itemlist);
-}
-/* ----  movement section end ---- */
-
-
-/* ----  update section  ---- */
-function update(serpentPlayer, aiSerpents, playGroundLevel, items, sound) {
-    //generateNewItem(item);
-    updatePlayfieldfields()
-    //console.log(playGroundLevel.fields, items);
-    movement(serpentPlayer, aiSerpents, playGroundLevel, items, sound);
-}
-function updatePlayfieldfields() {
-
-}
-/* ----  update section end  ---- */
-
-function ObjectCollision() {
-    // 
-}
 function hasEatenFood(serpent, items, playField, sound) {
     for (let i = 0; i < items.length; i++) {
+        
+        playField.addToPlayground(items[i].gridx, items[i].gridy, items[i].id);
+        
         // if item == 1 , food is 1
-        if (items[i].id == 1 && items[i] != null && items[i] != undefined) {
+        if (items[i].id == 1) {
+            const chasEatenFood = (serpent.serpentParts[0].x == items[i].gridx && serpent.serpentParts[0].y == items[i].gridy) ? true: false;
 
-            const chasEatenFood = serpent.serpentParts[0].x === items[i].gridx && serpent.serpentParts[0].y === items[i].gridy;
-            // return if true 
             if (chasEatenFood) {
                 eatFoodSoundeffect(sound);
                 serpent.foodEaten++;
@@ -2226,6 +2213,63 @@ function hasEatenItem(serpent, items, playField, sound) {
     }
     return false;
 }
+
+
+function generateRandomPosition(playField) {
+    let randomPosition = { x: getRandomIntInclusive(3, gridfield - 3), y: getRandomIntInclusive(3, gridfield - 3) }
+    if (playField.fields[randomPosition.x][randomPosition.y] != 0) {
+        return generateRandomPosition(playField);
+    }
+    return randomPosition;
+}
+
+function generateNewItem(ObjectType, itemlist, playField) {
+
+    let randomPosition = generateRandomPosition(playField);
+
+    if (ObjectType == 1) {
+        var newFood = new item(1, "food", randomPosition.x, randomPosition.y, globalassets.clover);
+        itemlist.push(newFood);
+        playField.addToPlayground(newFood.gridx, newFood.gridy, 1);
+    }
+    else if (ObjectType == 2) {
+        var newBackpack = new item(2, "backpack", randomPosition.x, randomPosition.y, globalassets.backpack);
+        itemlist.push(newBackpack);
+        playField.addToPlayground(newBackpack.gridx, newBackpack.gridy, 2);
+    }
+    else if (ObjectType == 3) {
+        var newBomb = new item(3, "bomb", randomPosition.x, randomPosition.y, globalassets.bomb);
+        itemlist.push(newBomb);
+        playField.addToPlayground(newBomb.gridx, newBomb.gridy, 3);
+    }
+    else if (ObjectType == 4) {
+        var newBook = new item(4, "book", randomPosition.x, randomPosition.y, globalassets.book);
+        itemlist.push(newBook);
+        playField.addToPlayground(newBook.gridx, newBook.gridy, 4);
+    }
+    else if (ObjectType == 5) {
+        var newFeather = new item(5, "feather", randomPosition.x, randomPosition.y, globalassets.feather);
+        itemlist.push(newFeather);
+        playField.addToPlayground(newFeather.gridx, newFeather.gridy, 5);
+    }
+    //console.log("newItem generated", itemlist);
+}
+/* ----  movement section end ---- */
+
+
+/* ----  update section  ---- */
+function update(serpentPlayer, aiSerpents, playGroundLevel, items, sound) {
+    //generateNewItem(item);
+    updatePlayfieldfields()
+    //console.log(playGroundLevel.fields, items);
+    moveSerpents(serpentPlayer, aiSerpents, playGroundLevel, items, sound);
+}
+function updatePlayfieldfields() {
+
+}
+/* ----  update section end  ---- */
+
+
 
 
 /* ----  animation section  ---- */
