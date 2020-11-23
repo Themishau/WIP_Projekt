@@ -1822,8 +1822,8 @@ function drawBackground(bg_stars, playGroundImage) {
         0,
         1000,
         1000,
-        playGroundImage.bg_imgCurrentX / -2,
-        playGroundImage.bg_imgCurrentX / -2,
+        playGroundImage.bg_imgCurrentX * -2,
+        playGroundImage.bg_imgCurrentX * -2,
         50 + playGroundImage.bg_imgCurrentX * 1.5,
         50 + playGroundImage.bg_imgCurrentX * 1.5
     );
