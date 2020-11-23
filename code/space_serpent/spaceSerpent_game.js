@@ -1165,7 +1165,7 @@ class AfterGameScreen {
     addToButtons() {
         console.log(this.levelConfig.serpentPlayer.foodEaten, this.levelConfig.aiSerpents[0].foodEaten);
         this.buttons.push(new MenuButton("Credit", "Copyright (c) 2020 KaBra, MaSiPi, MaZa", null, 500, 970, 100, 50,"14pt Courier", "white"));
-        this.buttons.push(new MenuButton("Your Score:", "Food Eaten", null, 150, 500, 100, 50, "20pt Courier", "white"));
+        this.buttons.push(new MenuButton("Your Score:", "Your Highscore", null, 150, 500, 100, 50, "20pt Courier", "white"));
         this.buttons.push(new MenuButton("Enemy's Highscore:", "Enemy's Highscore", null, 150, 600, 100, 50, "20pt Courier", "white"));
         this.buttons.push(new MenuButton("startText", "Press Enter To Start Next Round", null, 450, 800, 100, 50, "20pt Courier", "white"));
         this.buttons.push(new MenuButton("Food Eaten Player", this.levelConfig.serpentPlayer.foodEaten, null, 450, 500, 100, 50, "20pt Courier", "white"));
