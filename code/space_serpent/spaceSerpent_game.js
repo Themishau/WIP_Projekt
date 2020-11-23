@@ -68,7 +68,14 @@ var objects = [
     "spr_planet04",
     "spr_planet05",
     "spr_planet06",
-    "spr_planet07"
+    "spr_planet07",
+    "spr_planet08",
+    "spr_planet09",
+    "spr_planet10",
+    "spr_planet11",
+    "spr_planet12",
+    "spr_planet13",
+    "spr_planet14"
 ];
 /* soundEffects table */
 var soundEffects = [
@@ -243,32 +250,33 @@ class playground {
 
     constructor(id, bg_img, bgsound) {
         this.id = id,
-            this.name = "playground",
-            this.xSize = gameField.canvas.width / gridSizeScale,
-            this.ySize = gameField.canvas.height / gridSizeScale,
-            this.fields = [],
-            this.bg_img = bg_img,
-            this.angle = 0,
-            this.anglePlanet2 = 0,
-            this.bg_imgCurrentX = getRandomIntInclusive(-300,500),
-            this.bg_imgCurrentY = getRandomIntInclusive(-300,500),
-            this.currentCanvasX = getRandomIntInclusive(0,1000),
-            this.currentCanvasY = getRandomIntInclusive(0,1000),
-            this.bg_imgCurrentTranslate = 2,
-            this.scrollSpeedBackground = getRandomIntInclusive(1, 3),
-            this.scrollAcce = 2;
-        this.scrollDirection = [-1, 1],
-            this.bg_starCurrentX = getRandomIntInclusive(-50, 50),
-            this.bg_starCurrentY = getRandomIntInclusive(-50, 50),
-            this.bg_starScrollSpeedBackgroundX = getRandomIntInclusive(2, 5),
-            this.bg_starScrollSpeedBackgroundY = getRandomIntInclusive(2, 4),
-            this.currentImage = 0,
-            this.bgsound = bgsound,
-            this.resetPlayground()
+        this.name = "playground",
+        this.xSize = gameField.canvas.width / gridSizeScale,
+        this.ySize = gameField.canvas.height / gridSizeScale,
+        this.fields = [],
+        this.bg_img = bg_img,
+        this.angle = 0,
+        this.anglePlanet2 = 0,
+        this.anglePlanet3 = 0,
+        this.bg_imgCurrentX = getRandomIntInclusive(-300,500),
+        this.bg_imgCurrentY = getRandomIntInclusive(-300,500),
+        this.currentCanvasX = getRandomIntInclusive(0,1000),
+        this.currentCanvasY = getRandomIntInclusive(0,1000),
+        this.bg_imgCurrentTranslate = 2,
+        this.scrollSpeedBackground = getRandomIntInclusive(1, 3),
+        this.scrollAcce = 0.5,
+        this.scrollDirection = [-0.4, 0.4],
+        this.bg_starCurrentX = getRandomIntInclusive(-50, 50),
+        this.bg_starCurrentY = getRandomIntInclusive(-50, 50),
+        this.bg_starScrollSpeedBackgroundX = getRandomIntInclusive(2, 5),
+        this.bg_starScrollSpeedBackgroundY = getRandomIntInclusive(2, 4),
+        this.currentImage = getRandomIntInclusive(0, 11),
+        this.bgsound = bgsound,
+        this.resetPlayground()
     }
     changeCurrentImage(imageNumber) {
         this.currentImage = imageNumber;
-        // console.log(this.bg_img[this.currentImage]);
+        console.log(this.bg_img[this.currentImage]);
     }
     changeCurrent(x, y, cX, cY) {
         this.bg_imgCurrentX = x;
@@ -443,7 +451,21 @@ class LevelConfig {
         this.serpentSpritesGreen = this.serpent_sprites[0];
         this.serpentSpritesBlue = this.serpent_sprites[1];
         this.serpentSpriteRed = this.serpent_sprites[2];
-        this.backGroundSprites = [assets.spr_planet01, assets.spr_planet02, assets.spr_planet03, assets.spr_planet04, assets.spr_planet05, assets.spr_planet06, assets.spr_planet07];
+        this.backGroundSprites = [assets.spr_planet01,
+                                  assets.spr_planet02,
+                                  assets.spr_planet03,
+                                  assets.spr_planet04,
+                                  assets.spr_planet05,
+                                  assets.spr_planet06,
+                                  assets.spr_planet07,
+                                  assets.spr_planet08,
+                                  assets.spr_planet09,
+                                  assets.spr_planet10,
+                                  assets.spr_planet11,
+                                  assets.spr_planet12,
+                                  assets.spr_planet13,
+                                  assets.spr_planet14,
+                                ];
         this.playGroundBGMusic = [assets.bg_Jupiter, assets.underclocked, assets.Jumpshot, assets.Arpanauts];
         this.playGroundLevel = new playground(0, this.backGroundSprites,  this.playGroundBGMusic[getRandomIntInclusive(0, this.playGroundBGMusic.length -1)]);
         this.serpent_sprite = assets.serpent_sprite;
@@ -1472,7 +1494,6 @@ window.onload = function () {
     window.getGameInstance = function () {
         return gameField.gameMode;
     };
-
     window.getContext = function () {
         return gameField.canvasContext;
     };
@@ -1489,12 +1510,10 @@ window.onload = function () {
         gameField.gameMode.pause();
         gameField.pauseGame();
     };
-
     window.resumeGame = function () {
         gameField.resumeGame();
         gameField.gameMode.resume();
     };
-
     window.getContextElement = function () {
         return gameField.canvasContext;
     };
@@ -1767,7 +1786,7 @@ function drawBackground(bg_stars, playGroundImage) {
     var ctxPlanet1 = null;
     ctxPlanet1 = gameField.canvasContext;
     ctxPlanet1.save();
-    ctxPlanet1.translate(playGroundImage.bg_imgCurrentX + 442 / playGroundImage.bg_imgCurrentTranslate, playGroundImage.bg_imgCurrentY + 442 / playGroundImage.bg_imgCurrentTranslate);
+    ctxPlanet1.translate(playGroundImage.bg_imgCurrentX + 500 / playGroundImage.bg_imgCurrentTranslate, playGroundImage.bg_imgCurrentY + 500 / playGroundImage.bg_imgCurrentTranslate);
     ctxPlanet1.rotate(playGroundImage.angle);
     ctxPlanet1.drawImage(playGroundImage.bg_img[playGroundImage.currentImage],
         0,
@@ -1786,25 +1805,25 @@ function drawBackground(bg_stars, playGroundImage) {
         2560,
         1000 / 2,
         1000 / 2,
-        playGroundImage.bg_imgCurrentX * 2.75,
-        playGroundImage.bg_imgCurrentX * 2.75,
+        3500 + playGroundImage.bg_imgCurrentX * 2.75,
+        3500 + playGroundImage.bg_imgCurrentX * 2.75,
     );
     //ctx.drawImage(playGroundImage.bg_img[playGroundImage.currentImage], playGroundImage.bg_imgCurrentX, 0, playGroundImage.currentCanvasX, playGroundImage.currentCanvasY);
     ctxPlanet1.restore();
-    playGroundImage.anglePlanet2 = playGroundImage.anglePlanet2 + 3 * Math.PI / 180;
+    
+    playGroundImage.anglePlanet2 = playGroundImage.anglePlanet2 + 0.9 * Math.PI / 180;
     var ctxPlanet2 = null;
     ctxPlanet2 = gameField.canvasContext;
     ctxPlanet2.save();
-    playGroundImage.bg_imgCurrentTranslate
-    ctxPlanet2.translate(playGroundImage.bg_imgCurrentX / playGroundImage.bg_imgCurrentTranslate, playGroundImage.bg_imgCurrentY / playGroundImage.bg_imgCurrentTranslate);
+    ctxPlanet2.translate( 100 + playGroundImage.currentCanvasX, 100 + playGroundImage.currentCanvasY);
     ctxPlanet2.rotate(playGroundImage.anglePlanet2);
     ctxPlanet2.drawImage(playGroundImage.bg_img[playGroundImage.currentImage + 1],
         0,
         0,
         1000,
         1000,
-        1000 / -2,
-        1000 / -2,
+        playGroundImage.bg_imgCurrentX / -2,
+        playGroundImage.bg_imgCurrentX / -2,
         50 + playGroundImage.bg_imgCurrentX * 1.5,
         50 + playGroundImage.bg_imgCurrentX * 1.5
     );
@@ -1813,13 +1832,56 @@ function drawBackground(bg_stars, playGroundImage) {
         0,
         playGroundImage.bg_imgCurrentX + 1000,
         playGroundImage.bg_imgCurrentX + 1000,
-        1000 / -2,
-        1000 / -2,
+        2000 / -2,
+        2000 / -2,
         800 + playGroundImage.bg_imgCurrentX * 1.1,
         800 + playGroundImage.bg_imgCurrentX * 1.1,
     );
     //ctx.drawImage(playGroundImage.bg_img[playGroundImage.currentImage], playGroundImage.bg_imgCurrentX, 0, playGroundImage.currentCanvasX, playGroundImage.currentCanvasY);
     ctxPlanet2.restore();
+   
+    playGroundImage.anglePlanet3 = playGroundImage.anglePlanet3 + 0.5 * Math.PI / 180;
+    var ctxPlanet3 = null;
+    ctxPlanet3 = gameField.canvasContext;
+    ctxPlanet3.save();
+    ctxPlanet3.translate(playGroundImage.currentCanvasX, playGroundImage.currentCanvasY);
+    ctxPlanet3.rotate(playGroundImage.anglePlanet3);
+    //ctxPlanet3.fillStyle = "red";
+    //ctxPlanet3.fillRect(200 / -2, 200 / -2, 200, 200); 
+    ctxPlanet3.drawImage(playGroundImage.bg_img[playGroundImage.currentImage + 2],
+        0,
+        0,
+        884,
+        884,        
+        playGroundImage.bg_imgCurrentX / -2,
+        playGroundImage.bg_imgCurrentX / -2,
+        300 + playGroundImage.bg_imgCurrentX,
+        300 + playGroundImage.bg_imgCurrentX
+    );
+    /*
+       ctxPlanet3.drawImage(playGroundImage.bg_img[playGroundImage.currentImage + 2],
+        0,
+        0,
+        884 / -2,
+        884 / -2,
+        884,
+        884,        
+        playGroundImage.bg_imgCurrentX * 1.9,
+        playGroundImage.bg_imgCurrentX * 1.9
+    ); 
+    */
+    ctxPlanet3.drawImage(bg_stars,
+        0,
+        0,
+        1800,
+        1800,
+        playGroundImage.bg_imgCurrentX,
+        playGroundImage.bg_imgCurrentX,
+        3500 + playGroundImage.bg_imgCurrentX * 2,
+        3500 + playGroundImage.bg_imgCurrentX * 2,
+    );
+    //ctx.drawImage(playGroundImage.bg_img[playGroundImage.currentImage], playGroundImage.bg_imgCurrentX, 0, playGroundImage.currentCanvasX, playGroundImage.currentCanvasY);
+    ctxPlanet3.restore();
 
     gameField.canvasContext.drawImage(bg_stars,
         playGroundImage.bg_starCurrentX,
@@ -1845,13 +1907,13 @@ function moveMenuBackground(backgroundY, speed) {
 }
 
 function moveLevelBackground(image) {
-    image.changeCurrent(image.bg_imgCurrentX + image.scrollSpeedBackground + image.scrollAcce, image.bg_imgCurrentX + image.scrollSpeedBackground + image.scrollAcce * 1.25, image.currentCanvasX - image.scrollSpeedBackground, image.currentCanvasY - image.scrollSpeedBackground);
+    image.changeCurrent(image.bg_imgCurrentX + image.scrollSpeedBackground + image.scrollAcce, image.bg_imgCurrentX + image.scrollSpeedBackground + image.scrollAcce * 0.75, image.currentCanvasX - image.scrollSpeedBackground, image.currentCanvasY - image.scrollSpeedBackground);
     image.changeCurrentbgStarX(image.bg_starCurrentX + image.bg_starScrollSpeedBackgroundX, image.bg_starCurrentY + image.bg_starScrollSpeedBackgroundY)
     if (image.bg_imgCurrentX == 0 || image.bg_imgCurrentX == 1 || image.bg_imgCurrentX == -1 || image.bg_imgCurrentX == 2 || image.bg_imgCurrentX == -2) {
-        if (image.currentImage > 4) {
+        if (image.currentImage > 10) {
             image.scrollSpeedBackground = image.scrollDirection[getRandomIntInclusive(0, 1)] * image.scrollSpeedBackground;
-            image.scrollAcce = 1.5 * image.scrollDirection[getRandomIntInclusive(0, 1)];
-            image.changeCurrentImage(0);
+            image.scrollAcce = 0.35 * image.scrollDirection[getRandomIntInclusive(0, 1)];
+            image.changeCurrentImage(getRandomIntInclusive(0, 11));
             image.changeCurrent(0, 0, getRandomIntInclusive(-50, 500), getRandomIntInclusive(-50, 500));
             image.changeCurrentTranslate();
             console.log(image.bg_imgCurrentX);
@@ -1859,16 +1921,16 @@ function moveLevelBackground(image) {
         }
         else {
             image.scrollSpeedBackground = image.scrollDirection[getRandomIntInclusive(0, 1)];
-            image.scrollAcce = 1.5 * image.scrollDirection[getRandomIntInclusive(0, 1)];
-            image.changeCurrentImage(image.currentImage + 1);
+            image.scrollAcce = 0.5 * image.scrollDirection[getRandomIntInclusive(0, 1)];
+            image.changeCurrentImage(getRandomIntInclusive(0, 11));
             image.changeCurrent(0, 0, getRandomIntInclusive(-50, 500), getRandomIntInclusive(-50, 500));
             image.changeCurrentTranslate();
             //console.log(image.bg_imgCurrentX);
         }
     }
-    else if (image.bg_imgCurrentX >= 700 || image.bg_imgCurrentX <= -500) {
+    else if (image.bg_imgCurrentX >= 1200 || image.bg_imgCurrentX <= -1500) {
         image.scrollSpeedBackground = image.scrollSpeedBackground * -1;
-        image.scrollAcce = image.scrollAcce * - 1;
+        image.scrollAcce = image.scrollAcce * - 0.25;
     }
 
 
