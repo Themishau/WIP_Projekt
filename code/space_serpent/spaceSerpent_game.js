@@ -250,10 +250,10 @@ class playground {
             this.bg_img = bg_img,
             this.angle = 0,
             this.anglePlanet2 = 0,
-            this.bg_imgCurrentX = getRandomIntInclusive(-250, 300),
-            this.bg_imgCurrentY = getRandomIntInclusive(-250, 300),
-            this.currentCanvasX = getRandomIntInclusive(0, 1000),
-            this.currentCanvasY = getRandomIntInclusive(0, 1000),
+            this.bg_imgCurrentX = getRandomIntInclusive(-300,500),
+            this.bg_imgCurrentY = getRandomIntInclusive(-300,500),
+            this.currentCanvasX = getRandomIntInclusive(0,1000),
+            this.currentCanvasY = getRandomIntInclusive(0,1000),
             this.bg_imgCurrentTranslate = 2,
             this.scrollSpeedBackground = getRandomIntInclusive(1, 3),
             this.scrollAcce = 2;
@@ -523,7 +523,7 @@ class LevelOption {
             //this.obstacleTable = null;
             this.aiEnemys = aiEnemys,
             this.itemSlots = itemSlots,
-            this.winCodition = 10
+            this.winCodition = 20
     }
 }
 class EmptyState {
@@ -1755,8 +1755,7 @@ function drawBackground(bg_stars, playGroundImage) {
     );
     //ctx.drawImage(playGroundImage.bg_img[playGroundImage.currentImage], playGroundImage.bg_imgCurrentX, 0, playGroundImage.currentCanvasX, playGroundImage.currentCanvasY);
     ctxPlanet1.restore();
-
-    playGroundImage.anglePlanet2 = playGroundImage.anglePlanet2 + 1.5 * Math.PI / 180;
+    playGroundImage.anglePlanet2 = playGroundImage.anglePlanet2 + 3 * Math.PI / 180;
     var ctxPlanet2 = null;
     ctxPlanet2 = gameField.canvasContext;
     ctxPlanet2.save();
