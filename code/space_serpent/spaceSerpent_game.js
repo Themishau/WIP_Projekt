@@ -721,7 +721,7 @@ class level {
             this.menuconfig.changeMenuConfig("You Won!",null);
             gameMode.push(new AfterGameScreen("AfterGameScreen", this.levelConfig, this.currentOption, this.menuconfig));
         }
-        else if (this.levelConfig.highestEnemy == this.levelConfig.levelOption.winCodition) {
+        else if (this.levelConfig.highestEnemy == this.levelConfig.levelOption.winCodition || this.levelConfig.serpentPlayer.alive == false) {
         //else if (this.levelConfig.highestEnemy == this.levelConfig.levelOption.winCodition || this.levelConfig.serpentPlayer.isAlive == false) {    
             this.levelConfig.playGroundLevel.bgsound.pause();
             this.levelConfig.playGroundLevel.bgsound.currentTime = 0;
