@@ -1,3 +1,6 @@
+# WIP_Projekt develop branch Markus
+Tests 
+
 # WIP_Projekt
 Kleines Spiel in Javascript/HTML <br/>
 Organisation geschieht über Microsoft Teams und Github <br/>
@@ -16,18 +19,16 @@ Weeklys: sonntags wird sich um 16 getroffen <br/>
 Hauptprojekte: Space Serpent, <br/>
 Nebenprojekte: Arkanoid (NES), Snake <br/>
 
-18.10.2020
-Erste Ideen waren:
-- etwa wie slither.io, 
-Nebenprojekte: Arkanoid (NES), Snake <br/>
-- KI-Programmierung <br/>
-- Levelgenerierung automatisch <br/>
+Aufgaben: 
+- Programmierstruktur anlegen 
+- KI-Programmierung (Kai)
+- Spielfeld 
+- Kamerafixierung auf Player
+- Theme: Weltraum
+- Sound 
+- Sprites und Animation 
 
-
-
-Aufgaben: <br/>
-- KANBAN-System <br/>
-- in Register "Projects" zu finden <br/>
+- (Levelgenerierung automatisch)
 
 
 ## Mitglieder
@@ -35,6 +36,5 @@ Mitglieder:
 - Mark Silas
 - Markus 
 - Kai
-
 
 
