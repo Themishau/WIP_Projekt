@@ -999,7 +999,7 @@ class MainMenu {
         this.buttons.push(new MenuButton("Credit", "Copyright (c) 2020 KaBra, MaSiPi, MaZa", null, 500, 970, 100, 50, "14pt Courier", "blue"));
         this.buttons.push(new MenuButton("ChoosePlayer", "choose Player:", null, 150, 500, 100, 50, "20pt Courier", "white"));
         this.buttons.push(new MenuButton("Enemies", "Enemies: ", null, 150, 600, 100, 50, "20pt Courier", "white"));
-        this.buttons.push(new MenuButton("playfieldsize", "Field Size", null, 150, 700, 100, 50, "20pt Courier", "white"));
+        this.buttons.push(new MenuButton("playfieldsize", "Field Size: ", null, 150, 700, 100, 50, "20pt Courier", "white"));
         this.buttons.push(new MenuButton("startText", "Start Game", null, 450, 800, 100, 50, "20pt Courier", "white"));
         this.buttons.push(new MenuButton("startText", "See Credits", null, 150, 900, 100, 50, "20pt Courier", "white"));
         this.buttons.push(new MenuButton("Player", "Player:", this.menuconfig.serpentSprites, 450, 470, 100, 50, "20pt Courier", "white"));
