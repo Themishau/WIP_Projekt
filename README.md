@@ -1,6 +1,3 @@
-# WIP_Projekt develop branch Markus
-Tests 
-
 # WIP_Projekt
 Kleines Spiel in Javascript/HTML <br/>
 Organisation geschieht über Microsoft Teams und Github <br/>
