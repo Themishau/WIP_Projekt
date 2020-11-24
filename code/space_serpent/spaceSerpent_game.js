@@ -434,16 +434,16 @@ class LevelConfig {
             gridfield = 50;
         }
         else if (this.levelOption.playGroundSize == 1) {
+            gridSizeScale = 31.25;
+            gridSizey = 31.25; // 1000 / gridSizeScale = 
+            gridSizex = 31.25; // 1000 % gridSizeScale
+            gridfield = 32;
+        }
+        else if (this.levelOption.playGroundSize == 0) {
             gridSizeScale = 40;
             gridSizey = 40; // 1000 / gridSizeScale = 
             gridSizex = 40; // 1000 % gridSizeScale
             gridfield = 25;
-        }
-        else if (this.levelOption.playGroundSize == 0) {
-            gridSizeScale = 50;
-            gridSizey = 50; // 1000 / gridSizeScale = 
-            gridSizex = 50; // 1000 % gridSizeScale
-            gridfield = 20;
         }
         this.serpent_sprites[0] = [assets.snake_head1, assets.snake_head2, assets.snake_head3, assets.snake_mid, assets.snake_downleft, assets.snake_downright, assets.snake_end]; // for testing
         this.serpent_sprites[1] = [assets.snake_head_b_1, assets.snake_head_b_2, assets.snake_head_b_3, assets.snake_mid_b, assets.snake_downleft_b, assets.snake_downright_b, assets.snake_end_b];
@@ -769,16 +769,17 @@ class level {
         this.globalDeltaLast = this.globalDeltaNow;
         this.globalDeltaNow = Date.now();
         this.globalDelta = this.globalDeltaNow - this.globalDeltaLast;
-        this.currentDeltaFrame += round10((this.globalDelta * this.speed), -1);
+        this.currentDeltaFrame += this.globalDelta * this.speed;
+        //this.currentDeltaFrame += round10((this.globalDelta * this.speed), -1);
         //console.log(this.globalDelta, this.speed, this.globalDelta * this.speed, this.currentDeltaFrame);
         // if (Math.ceil(this.currentDeltaFrame) == 1) {
-        //console.log("jetziger wert: ", this.currentDeltaFrame, "addiere: ", (this.globalDelta * this.speed) ,"round10: ", round10((this.globalDelta * this.speed), -1));
+        //console.log("jetziger wert: ", round10((this.currentDeltaFrame), -1), "addiere: ", (this.globalDelta * this.speed) ,"round10: ", round10((this.globalDelta * this.speed), -1));
         if (round10((this.currentDeltaFrame), -1) >= 1) {
             this.currentDeltaFrame = 0;       
             update(this.levelConfig.serpentPlayer, this.levelConfig.aiSerpents, this.levelConfig.playGroundLevel, this.levelConfig.itemlist, this.levelConfig.sound);
+            //console.log("NULL GESETZT");
         }
         animations(this.levelConfig.serpentPlayer);
-
     };
     /* draw section */
     render() {
@@ -1448,7 +1449,7 @@ var gameField = {
         this.canvas.width = this.canvas_width;
         this.canvas.height = this.canvas_height;
         this.canvasContext = this.canvas.getContext("2d");
-        this.deltaTime = (0.5 / (1000/this.FPS));
+        this.deltaTime = (0.35 / (1000/this.FPS));
         document.body.insertBefore(this.canvas, document.body.childNodes[0]); // due to some loading issues with images and sprites w want to insert it before
         this.timer = 1000 / this.FPS;
         this.startGame();
