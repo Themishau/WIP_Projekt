@@ -68,7 +68,14 @@ var objects = [
     "spr_planet04",
     "spr_planet05",
     "spr_planet06",
-    "spr_planet07"
+    "spr_planet07",
+    "spr_planet08",
+    "spr_planet09",
+    "spr_planet10",
+    "spr_planet11",
+    "spr_planet12",
+    "spr_planet13",
+    "spr_planet14"
 ];
 /* soundEffects table */
 var soundEffects = [
@@ -243,32 +250,33 @@ class playground {
 
     constructor(id, bg_img, bgsound) {
         this.id = id,
-            this.name = "playground",
-            this.xSize = gameField.canvas.width / gridSizeScale,
-            this.ySize = gameField.canvas.height / gridSizeScale,
-            this.fields = [],
-            this.bg_img = bg_img,
-            this.angle = 0,
-            this.anglePlanet2 = 0,
-            this.bg_imgCurrentX = getRandomIntInclusive(-300,500),
-            this.bg_imgCurrentY = getRandomIntInclusive(-300,500),
-            this.currentCanvasX = getRandomIntInclusive(0,1000),
-            this.currentCanvasY = getRandomIntInclusive(0,1000),
-            this.bg_imgCurrentTranslate = 2,
-            this.scrollSpeedBackground = getRandomIntInclusive(1, 3),
-            this.scrollAcce = 2;
-        this.scrollDirection = [-1, 1],
-            this.bg_starCurrentX = getRandomIntInclusive(-50, 50),
-            this.bg_starCurrentY = getRandomIntInclusive(-50, 50),
-            this.bg_starScrollSpeedBackgroundX = getRandomIntInclusive(2, 5),
-            this.bg_starScrollSpeedBackgroundY = getRandomIntInclusive(2, 4),
-            this.currentImage = 0,
-            this.bgsound = bgsound,
-            this.resetPlayground()
+        this.name = "playground",
+        this.xSize = gameField.canvas.width / gridSizeScale,
+        this.ySize = gameField.canvas.height / gridSizeScale,
+        this.fields = [],
+        this.bg_img = bg_img,
+        this.angle = 0,
+        this.anglePlanet2 = 0,
+        this.anglePlanet3 = 0,
+        this.bg_imgCurrentX = getRandomIntInclusive(-300,500),
+        this.bg_imgCurrentY = getRandomIntInclusive(-300,500),
+        this.currentCanvasX = getRandomIntInclusive(0,1000),
+        this.currentCanvasY = getRandomIntInclusive(0,1000),
+        this.bg_imgCurrentTranslate = 2,
+        this.scrollSpeedBackground = getRandomIntInclusive(1, 3),
+        this.scrollAcce = 0.5,
+        this.scrollDirection = [-0.4, 0.4],
+        this.bg_starCurrentX = getRandomIntInclusive(-50, 50),
+        this.bg_starCurrentY = getRandomIntInclusive(-50, 50),
+        this.bg_starScrollSpeedBackgroundX = getRandomIntInclusive(2, 5),
+        this.bg_starScrollSpeedBackgroundY = getRandomIntInclusive(2, 4),
+        this.currentImage = getRandomIntInclusive(0, 11),
+        this.bgsound = bgsound,
+        this.resetPlayground()
     }
     changeCurrentImage(imageNumber) {
         this.currentImage = imageNumber;
-        // console.log(this.bg_img[this.currentImage]);
+        console.log(this.bg_img[this.currentImage]);
     }
     changeCurrent(x, y, cX, cY) {
         this.bg_imgCurrentX = x;
@@ -426,16 +434,16 @@ class LevelConfig {
             gridfield = 50;
         }
         else if (this.levelOption.playGroundSize == 1) {
+            gridSizeScale = 31.25;
+            gridSizey = 31.25; // 1000 / gridSizeScale = 
+            gridSizex = 31.25; // 1000 % gridSizeScale
+            gridfield = 32;
+        }
+        else if (this.levelOption.playGroundSize == 0) {
             gridSizeScale = 40;
             gridSizey = 40; // 1000 / gridSizeScale = 
             gridSizex = 40; // 1000 % gridSizeScale
             gridfield = 25;
-        }
-        else if (this.levelOption.playGroundSize == 0) {
-            gridSizeScale = 50;
-            gridSizey = 50; // 1000 / gridSizeScale = 
-            gridSizex = 50; // 1000 % gridSizeScale
-            gridfield = 20;
         }
         this.serpent_sprites[0] = [assets.snake_head1, assets.snake_head2, assets.snake_head3, assets.snake_mid, assets.snake_downleft, assets.snake_downright, assets.snake_end]; // for testing
         this.serpent_sprites[1] = [assets.snake_head_b_1, assets.snake_head_b_2, assets.snake_head_b_3, assets.snake_mid_b, assets.snake_downleft_b, assets.snake_downright_b, assets.snake_end_b];
@@ -443,7 +451,21 @@ class LevelConfig {
         this.serpentSpritesGreen = this.serpent_sprites[0];
         this.serpentSpritesBlue = this.serpent_sprites[1];
         this.serpentSpriteRed = this.serpent_sprites[2];
-        this.backGroundSprites = [assets.spr_planet01, assets.spr_planet02, assets.spr_planet03, assets.spr_planet04, assets.spr_planet05, assets.spr_planet06, assets.spr_planet07];
+        this.backGroundSprites = [assets.spr_planet01,
+                                  assets.spr_planet02,
+                                  assets.spr_planet03,
+                                  assets.spr_planet04,
+                                  assets.spr_planet05,
+                                  assets.spr_planet06,
+                                  assets.spr_planet07,
+                                  assets.spr_planet08,
+                                  assets.spr_planet09,
+                                  assets.spr_planet10,
+                                  assets.spr_planet11,
+                                  assets.spr_planet12,
+                                  assets.spr_planet13,
+                                  assets.spr_planet14,
+                                ];
         this.playGroundBGMusic = [assets.bg_Jupiter, assets.underclocked, assets.Jumpshot, assets.Arpanauts];
         this.playGroundLevel = new playground(0, this.backGroundSprites,  this.playGroundBGMusic[getRandomIntInclusive(0, this.playGroundBGMusic.length -1)]);
         this.serpent_sprite = assets.serpent_sprite;
@@ -565,9 +587,13 @@ class level {
         window.onkeyup = null;
         window.onDirectionChanged = null;
         /* animations */
-        this.frame = 0;
+        this.globalDeltaLast = Date.now();
+        this.globalDeltaNow = Date.now();
+        this.globalDelta = 0;
+        this.currentDeltaFrame = 0;
+        this.speed = getGameDeltaTime();
         this.animationInterval = 0;
-        this.animationdelay = 10;
+        this.animationdelay = 100;
         this.obstacleTable;
 
 
@@ -738,10 +764,22 @@ class level {
             gameMode.push(new AfterGameScreen("AfterGameScreen", this.levelConfig, this.currentOption, this.menuconfig));
         }
         //console.log(this.levelConfig.playGroundLevel.fields);
+        
         moveLevelBackground(this.levelConfig.playGroundLevel);
-        update(this.levelConfig.serpentPlayer, this.levelConfig.aiSerpents, this.levelConfig.playGroundLevel, this.levelConfig.itemlist, this.levelConfig.sound);
+        this.globalDeltaLast = this.globalDeltaNow;
+        this.globalDeltaNow = Date.now();
+        this.globalDelta = this.globalDeltaNow - this.globalDeltaLast;
+        this.currentDeltaFrame += this.globalDelta * this.speed;
+        //this.currentDeltaFrame += round10((this.globalDelta * this.speed), -1);
+        //console.log(this.globalDelta, this.speed, this.globalDelta * this.speed, this.currentDeltaFrame);
+        // if (Math.ceil(this.currentDeltaFrame) == 1) {
+        //console.log("jetziger wert: ", round10((this.currentDeltaFrame), -1), "addiere: ", (this.globalDelta * this.speed) ,"round10: ", round10((this.globalDelta * this.speed), -1));
+        if (round10((this.currentDeltaFrame), -1) >= 1) {
+            this.currentDeltaFrame = 0;       
+            update(this.levelConfig.serpentPlayer, this.levelConfig.aiSerpents, this.levelConfig.playGroundLevel, this.levelConfig.itemlist, this.levelConfig.sound);
+            //console.log("NULL GESETZT");
+        }
         animations(this.levelConfig.serpentPlayer);
-
     };
     /* draw section */
     render() {
@@ -962,7 +1000,7 @@ class MainMenu {
         this.buttons.push(new MenuButton("Credit", "Copyright (c) 2020 KaBra, MaSiPi, MaZa", null, 500, 970, 100, 50, "14pt Courier", "blue"));
         this.buttons.push(new MenuButton("ChoosePlayer", "choose Player:", null, 150, 500, 100, 50, "20pt Courier", "white"));
         this.buttons.push(new MenuButton("Enemies", "Enemies: ", null, 150, 600, 100, 50, "20pt Courier", "white"));
-        this.buttons.push(new MenuButton("playfieldsize", "Field Size", null, 150, 700, 100, 50, "20pt Courier", "white"));
+        this.buttons.push(new MenuButton("playfieldsize", "Field Size: ", null, 150, 700, 100, 50, "20pt Courier", "white"));
         this.buttons.push(new MenuButton("startText", "Start Game", null, 450, 800, 100, 50, "20pt Courier", "white"));
         this.buttons.push(new MenuButton("startText", "See Credits", null, 150, 900, 100, 50, "20pt Courier", "white"));
         this.buttons.push(new MenuButton("Player", "Player:", this.menuconfig.serpentSprites, 450, 470, 100, 50, "20pt Courier", "white"));
@@ -1090,13 +1128,14 @@ class AfterGameScreen {
         // When the Enter key is pressed go to the next state
         window.onkeydown = function (e) {
             let stateData = getStateData();
+            let gameMode = getGameInstance();
             let keyCode = e.keyCode;
             if ((keyCode === 13)) {
                 // Go to next State
                 stateData.menuconfig.selectSound.pause();
                 stateData.menuconfig.selectSound.currentTime = 0;
                 stateData.menuconfig.selectSound.play();
-                let gameMode = getGameInstance();
+                
                 let levelConfig = getCurrentLevelConfig();
                 stateData.menuconfig.afterGameScreenMusic.pause();
                 stateData.menuconfig.afterGameScreenMusic.currentTime = 0;
@@ -1106,6 +1145,17 @@ class AfterGameScreen {
                 /** Note that this does not remove the current state
                  *  from the list. it just adds Level1State on top of it.
                  */
+            }
+            if (keyCode === 32 ) {
+                // Go to next State
+                stateData.menuconfig.selectSound.pause();
+                stateData.menuconfig.selectSound.currentTime = 0;
+                stateData.menuconfig.selectSound.play();
+                stateData.menuconfig.afterGameScreenMusic.pause();
+                stateData.menuconfig.afterGameScreenMusic.currentTime = 0;
+                let mainMenu = new MainMenu("MainMenu", new MenuConfig("MainMenu"));
+                mainMenu.menuconfig.StartLoading();
+                gameMode.push(mainMenu);  
             }
             stateData.menuconfig.scrollSound.pause();
             stateData.menuconfig.scrollSound.currentTime = 0;
@@ -1139,7 +1189,7 @@ class AfterGameScreen {
         this.canvas.font = "64pt Courier";
         this.canvas.fillText(this.menuconfig.mainText, this.dimensions.width / 2 - 225, 200);
         this.canvas.beginPath();
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i <= 4; i++) {
             if (i == 4) {
                 if (this.menuconfig.colorIndexSelected == this.menuconfig.colorsArraySelected.length) {
                     this.menuconfig.colorIndexSelected = 0;
@@ -1159,8 +1209,12 @@ class AfterGameScreen {
                 this.canvas.fillText(this.buttons[i].text, this.buttons[i].buttonX, this.buttons[i].buttonY);
             }
         }
-        this.canvas.fillText(this.buttons[4].text, this.buttons[4].buttonX, this.buttons[4].buttonY);
+        this.canvas.fillStyle = this.buttons[5].fillStyle;
+        this.canvas.font = this.buttons[5].font;
         this.canvas.fillText(this.buttons[5].text, this.buttons[5].buttonX, this.buttons[5].buttonY);
+        this.canvas.fillStyle = this.buttons[6].fillStyle;
+        this.canvas.font = this.buttons[6].font;
+        this.canvas.fillText(this.buttons[6].text, this.buttons[6].buttonX, this.buttons[6].buttonY);
     };
     update() {
         // update values
@@ -1171,9 +1225,10 @@ class AfterGameScreen {
         this.buttons.push(new MenuButton("Credit", "Copyright (c) 2020 KaBra, MaSiPi, MaZa", null, 500, 970, 100, 50,"14pt Courier", "white"));
         this.buttons.push(new MenuButton("Your Score:", "Your Highscore", null, 150, 500, 100, 50, "20pt Courier", "white"));
         this.buttons.push(new MenuButton("Enemy's Highscore:", "Enemy's Highscore", null, 150, 600, 100, 50, "20pt Courier", "white"));
-        this.buttons.push(new MenuButton("startText", "Press Enter To Start Next Round", null, 450, 800, 100, 50, "20pt Courier", "white"));
-        this.buttons.push(new MenuButton("Food Eaten Player", this.levelConfig.serpentPlayer.foodEaten, null, 450, 500, 100, 50, "20pt Courier", "white"));
-        this.buttons.push(new MenuButton("Food Eaten Player", this.levelConfig.highestEnemy, null, 450, 600, 100, 50, "20pt Courier", "white"));
+        this.buttons.push(new MenuButton("startText", "Press Enter To Start Next Round", null, 300, 800, 100, 50, "20pt Courier", "white"));
+        this.buttons.push(new MenuButton("startText", "Or Press Space To Return To Main Menu", null, 300, 850, 100, 50, "20pt Courier", "white"));
+        this.buttons.push(new MenuButton("Food Eaten Player", this.levelConfig.serpentPlayer.foodEaten, null, 500, 500, 100, 50, "20pt Courier", "white"));
+        this.buttons.push(new MenuButton("Food Eaten Player", this.levelConfig.highestEnemy, null, 500, 600, 100, 50, "20pt Courier", "white"));
     };
 }
 class CreditScreen {
@@ -1363,7 +1418,8 @@ var gameField = {
     //then: null,
     //startTime: null,
     timer: null,
-    FPS: 15,
+    FPS: 30,
+    deltaTime: 0,
     fpsInterval: null,
     update: function () {
         this.gameMode.update();
@@ -1393,6 +1449,7 @@ var gameField = {
         this.canvas.width = this.canvas_width;
         this.canvas.height = this.canvas_height;
         this.canvasContext = this.canvas.getContext("2d");
+        this.deltaTime = (0.35 / (1000/this.FPS));
         document.body.insertBefore(this.canvas, document.body.childNodes[0]); // due to some loading issues with images and sprites w want to insert it before
         this.timer = 1000 / this.FPS;
         this.startGame();
@@ -1438,11 +1495,12 @@ window.onload = function () {
     window.getGameInstance = function () {
         return gameField.gameMode;
     };
-
     window.getContext = function () {
         return gameField.canvasContext;
     };
-
+    window.getGameDeltaTime = function () {
+        return gameField.deltaTime;
+    };
     window.getGameDimensions = function () {
         return {
             width: gameField.canvas_width,
@@ -1453,12 +1511,10 @@ window.onload = function () {
         gameField.gameMode.pause();
         gameField.pauseGame();
     };
-
     window.resumeGame = function () {
         gameField.resumeGame();
         gameField.gameMode.resume();
     };
-
     window.getContextElement = function () {
         return gameField.canvasContext;
     };
@@ -1565,11 +1621,11 @@ function drawSerpent(serpentPlayer) {
             if ((serpentPartbefore[0] != serpentPartafter[0]) && (serpentPartbefore[1] != serpentPartafter[1])) {
                 var currentCornerSprite = new Image();
                 if (serpentPlayer.serpentParts[i].currentCorner == 1) {
-                    console.log("links");
+                    //console.log("links");
                     currentCornerSprite = serpentPlayer.animation.spritesheet[5];
                 }
                 else {
-                    console.log("rechts", serpentPlayer.serpentParts[i].currentCorner);
+                    //console.log("rechts", serpentPlayer.serpentParts[i].currentCorner);
                     currentCornerSprite = serpentPlayer.animation.spritesheet[4];
                 }
                 ctx.drawImage(currentCornerSprite,
@@ -1731,7 +1787,7 @@ function drawBackground(bg_stars, playGroundImage) {
     var ctxPlanet1 = null;
     ctxPlanet1 = gameField.canvasContext;
     ctxPlanet1.save();
-    ctxPlanet1.translate(playGroundImage.bg_imgCurrentX + 442 / playGroundImage.bg_imgCurrentTranslate, playGroundImage.bg_imgCurrentY + 442 / playGroundImage.bg_imgCurrentTranslate);
+    ctxPlanet1.translate(playGroundImage.bg_imgCurrentX + 500 / playGroundImage.bg_imgCurrentTranslate, playGroundImage.bg_imgCurrentY + 500 / playGroundImage.bg_imgCurrentTranslate);
     ctxPlanet1.rotate(playGroundImage.angle);
     ctxPlanet1.drawImage(playGroundImage.bg_img[playGroundImage.currentImage],
         0,
@@ -1750,25 +1806,25 @@ function drawBackground(bg_stars, playGroundImage) {
         2560,
         1000 / 2,
         1000 / 2,
-        playGroundImage.bg_imgCurrentX * 2.75,
-        playGroundImage.bg_imgCurrentX * 2.75,
+        3500 + playGroundImage.bg_imgCurrentX * 2.75,
+        3500 + playGroundImage.bg_imgCurrentX * 2.75,
     );
     //ctx.drawImage(playGroundImage.bg_img[playGroundImage.currentImage], playGroundImage.bg_imgCurrentX, 0, playGroundImage.currentCanvasX, playGroundImage.currentCanvasY);
     ctxPlanet1.restore();
-    playGroundImage.anglePlanet2 = playGroundImage.anglePlanet2 + 3 * Math.PI / 180;
+    
+    playGroundImage.anglePlanet2 = playGroundImage.anglePlanet2 + 0.9 * Math.PI / 180;
     var ctxPlanet2 = null;
     ctxPlanet2 = gameField.canvasContext;
     ctxPlanet2.save();
-    playGroundImage.bg_imgCurrentTranslate
-    ctxPlanet2.translate(playGroundImage.bg_imgCurrentX / playGroundImage.bg_imgCurrentTranslate, playGroundImage.bg_imgCurrentY / playGroundImage.bg_imgCurrentTranslate);
+    ctxPlanet2.translate( 100 + playGroundImage.currentCanvasX, 100 + playGroundImage.currentCanvasY);
     ctxPlanet2.rotate(playGroundImage.anglePlanet2);
     ctxPlanet2.drawImage(playGroundImage.bg_img[playGroundImage.currentImage + 1],
         0,
         0,
         1000,
         1000,
-        1000 / -2,
-        1000 / -2,
+        playGroundImage.bg_imgCurrentX * -2,
+        playGroundImage.bg_imgCurrentX * -2,
         50 + playGroundImage.bg_imgCurrentX * 1.5,
         50 + playGroundImage.bg_imgCurrentX * 1.5
     );
@@ -1777,13 +1833,56 @@ function drawBackground(bg_stars, playGroundImage) {
         0,
         playGroundImage.bg_imgCurrentX + 1000,
         playGroundImage.bg_imgCurrentX + 1000,
-        1000 / -2,
-        1000 / -2,
+        2000 / -2,
+        2000 / -2,
         800 + playGroundImage.bg_imgCurrentX * 1.1,
         800 + playGroundImage.bg_imgCurrentX * 1.1,
     );
     //ctx.drawImage(playGroundImage.bg_img[playGroundImage.currentImage], playGroundImage.bg_imgCurrentX, 0, playGroundImage.currentCanvasX, playGroundImage.currentCanvasY);
     ctxPlanet2.restore();
+   
+    playGroundImage.anglePlanet3 = playGroundImage.anglePlanet3 + 0.5 * Math.PI / 180;
+    var ctxPlanet3 = null;
+    ctxPlanet3 = gameField.canvasContext;
+    ctxPlanet3.save();
+    ctxPlanet3.translate(playGroundImage.currentCanvasX, playGroundImage.currentCanvasY);
+    ctxPlanet3.rotate(playGroundImage.anglePlanet3);
+    //ctxPlanet3.fillStyle = "red";
+    //ctxPlanet3.fillRect(200 / -2, 200 / -2, 200, 200); 
+    ctxPlanet3.drawImage(playGroundImage.bg_img[playGroundImage.currentImage + 2],
+        0,
+        0,
+        884,
+        884,        
+        playGroundImage.bg_imgCurrentX / -2,
+        playGroundImage.bg_imgCurrentX / -2,
+        300 + playGroundImage.bg_imgCurrentX,
+        300 + playGroundImage.bg_imgCurrentX
+    );
+    /*
+       ctxPlanet3.drawImage(playGroundImage.bg_img[playGroundImage.currentImage + 2],
+        0,
+        0,
+        884 / -2,
+        884 / -2,
+        884,
+        884,        
+        playGroundImage.bg_imgCurrentX * 1.9,
+        playGroundImage.bg_imgCurrentX * 1.9
+    ); 
+    */
+    ctxPlanet3.drawImage(bg_stars,
+        0,
+        0,
+        1800,
+        1800,
+        playGroundImage.bg_imgCurrentX,
+        playGroundImage.bg_imgCurrentX,
+        3500 + playGroundImage.bg_imgCurrentX * 2,
+        3500 + playGroundImage.bg_imgCurrentX * 2,
+    );
+    //ctx.drawImage(playGroundImage.bg_img[playGroundImage.currentImage], playGroundImage.bg_imgCurrentX, 0, playGroundImage.currentCanvasX, playGroundImage.currentCanvasY);
+    ctxPlanet3.restore();
 
     gameField.canvasContext.drawImage(bg_stars,
         playGroundImage.bg_starCurrentX,
@@ -1809,13 +1908,13 @@ function moveMenuBackground(backgroundY, speed) {
 }
 
 function moveLevelBackground(image) {
-    image.changeCurrent(image.bg_imgCurrentX + image.scrollSpeedBackground + image.scrollAcce, image.bg_imgCurrentX + image.scrollSpeedBackground + image.scrollAcce * 1.25, image.currentCanvasX - image.scrollSpeedBackground, image.currentCanvasY - image.scrollSpeedBackground);
+    image.changeCurrent(image.bg_imgCurrentX + image.scrollSpeedBackground + image.scrollAcce, image.bg_imgCurrentX + image.scrollSpeedBackground + image.scrollAcce * 0.75, image.currentCanvasX - image.scrollSpeedBackground, image.currentCanvasY - image.scrollSpeedBackground);
     image.changeCurrentbgStarX(image.bg_starCurrentX + image.bg_starScrollSpeedBackgroundX, image.bg_starCurrentY + image.bg_starScrollSpeedBackgroundY)
     if (image.bg_imgCurrentX == 0 || image.bg_imgCurrentX == 1 || image.bg_imgCurrentX == -1 || image.bg_imgCurrentX == 2 || image.bg_imgCurrentX == -2) {
-        if (image.currentImage > 4) {
+        if (image.currentImage > 10) {
             image.scrollSpeedBackground = image.scrollDirection[getRandomIntInclusive(0, 1)] * image.scrollSpeedBackground;
-            image.scrollAcce = 1.5 * image.scrollDirection[getRandomIntInclusive(0, 1)];
-            image.changeCurrentImage(0);
+            image.scrollAcce = 0.35 * image.scrollDirection[getRandomIntInclusive(0, 1)];
+            image.changeCurrentImage(getRandomIntInclusive(0, 11));
             image.changeCurrent(0, 0, getRandomIntInclusive(-50, 500), getRandomIntInclusive(-50, 500));
             image.changeCurrentTranslate();
             console.log(image.bg_imgCurrentX);
@@ -1823,16 +1922,16 @@ function moveLevelBackground(image) {
         }
         else {
             image.scrollSpeedBackground = image.scrollDirection[getRandomIntInclusive(0, 1)];
-            image.scrollAcce = 1.5 * image.scrollDirection[getRandomIntInclusive(0, 1)];
-            image.changeCurrentImage(image.currentImage + 1);
+            image.scrollAcce = 0.5 * image.scrollDirection[getRandomIntInclusive(0, 1)];
+            image.changeCurrentImage(getRandomIntInclusive(0, 11));
             image.changeCurrent(0, 0, getRandomIntInclusive(-50, 500), getRandomIntInclusive(-50, 500));
             image.changeCurrentTranslate();
             //console.log(image.bg_imgCurrentX);
         }
     }
-    else if (image.bg_imgCurrentX >= 700 || image.bg_imgCurrentX <= -500) {
+    else if (image.bg_imgCurrentX >= 1200 || image.bg_imgCurrentX <= -1500) {
         image.scrollSpeedBackground = image.scrollSpeedBackground * -1;
-        image.scrollAcce = image.scrollAcce * - 1;
+        image.scrollAcce = image.scrollAcce * - 0.25;
     }
 
 
@@ -2282,7 +2381,7 @@ function animationPlayer(serpentPlayer) {
         serpentPlayer.animation.animationInterval = 0;
         serpentPlayer.animation.currentFrame = 0;
     }
-    serpentPlayer.animation.animationInterval += 10;
+    serpentPlayer.animation.animationInterval += 1;
     // console.log(serpentPlayer.animation.frameSet.length, serpentPlayer.animation.currentFrame, animationInterval);
 }
 function animations(serpentPlayer) {
@@ -2370,5 +2469,35 @@ function sleep(milliseconds) {
         currentDate = Date.now();
     } while (currentDate - date < milliseconds);
 }
+function precise(x) {
+    return Number.parseFloat(x).toPrecision(2);
+  }
+
+  function decimalAdjust(type, value, exp) {
+    // If the exp is undefined or zero...
+    if (typeof exp === 'undefined' || +exp === 0) {
+      return Math[type](value);
+    }
+    value = +value;
+    exp = +exp;
+    // If the value is not a number or the exp is not an integer...
+    if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
+      return NaN;
+    }
+    // Shift
+    value = value.toString().split('e');
+    value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
+    // Shift back
+    value = value.toString().split('e');
+    return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
+  }
+  
+  // Decimal round
+  const round10 = (value, exp) => decimalAdjust('round', value, exp);
+  // Decimal floor
+  const floor10 = (value, exp) => decimalAdjust('floor', value, exp);
+  // Decimal ceil
+  const ceil10 = (value, exp) => decimalAdjust('ceil', value, exp);
 /* ---- help functions section end  */
+
 
