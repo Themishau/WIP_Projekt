@@ -40,7 +40,6 @@ var objects = [
     "book",
     "feather",
     "snake",
-    "serpent_sprite",
     "snake_head_b_1",
     "snake_head_b_2",
     "snake_head_b_3",
@@ -90,6 +89,7 @@ var soundEffects = [
     "explosion.wav",
     "foodPlayer.wav",
     "lost.wav",
+    "loseSound.wav",
     "backpack.wav",
     "wibl001.wav",
     "Debris1.wav",
@@ -507,6 +507,8 @@ class LevelConfig {
         this.sound[6].volume = 0.1;
         this.sound[7] = assets.lost;
         this.sound[7].volume = 0.1;
+        this.sound[8] = assets.loseSound;
+        this.sound[8].volume = 0.1;
         console.log("sounds", this.sound);
         this.sound.volume = 0.1;
         //this.obstacleTable = new playground(1, null, null);
@@ -691,7 +693,7 @@ class level {
             //else if (this.levelConfig.highestEnemy == this.levelConfig.levelOption.winCodition || this.levelConfig.serpentPlayer.isAlive == false) {    
             this.levelConfig.playGroundLevel.bgsound.pause();
             this.levelConfig.playGroundLevel.bgsound.currentTime = 0;
-            this.levelConfig.sound[7].play();
+            //this.levelConfig.sound[8].play();
             //victorySoundeffect(this.levelConfig.sound);
             let gameMode = getGameInstance();
             //console.log("this state is: ", gameMode);
@@ -2134,6 +2136,7 @@ function movePlayer(serpent, playField, items, sound) {
 
         }
         killSerpent(serpent, playField, items);
+        sound[8].play();
     }
 }
 
