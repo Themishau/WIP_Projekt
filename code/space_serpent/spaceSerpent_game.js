@@ -1,11 +1,5 @@
 'use strict';
 /* ---- global section ---- */
-/* keys */
-var kspace = false;
-var kleftA = false;
-var krightA = false;
-var kupA = false;
-var kdownA = false;
 var int = 1;
 /* grid size scale */
 var gridSizeScale = 40;
@@ -19,7 +13,7 @@ const round10 = (value, exp) => decimalAdjust('round', value, exp);
 const floor10 = (value, exp) => decimalAdjust('floor', value, exp);
 // Decimal ceil
 const ceil10 = (value, exp) => decimalAdjust('ceil', value, exp);
-  
+
 /* object_table */
 var objectTable = {
     empty: 0, // empty
@@ -91,9 +85,9 @@ var objects = [
 ];
 /* soundEffects table */
 var soundEffects = [
-    "Explosion6.wav",
     "powerUp.wav",
     "food.wav",
+    "explosion.wav",
     "foodPlayer.wav",
     "lost.wav",
     "backpack.wav",
@@ -101,7 +95,6 @@ var soundEffects = [
     "Debris1.wav",
     "blip003.wav",
     "blip001.wav",
-    "WaterSplash.wav",
     "bg_Jupiter.mp3",
     "sfx_menu_select3.wav",
     "menuSelect.wav",
@@ -262,30 +255,30 @@ class playground {
 
     constructor(id, bgSpace, bg_img, bgsound) {
         this.id = id,
-        this.name = "playground",
-        this.xSize = gameField.canvas.width / gridSizeScale,
-        this.ySize = gameField.canvas.height / gridSizeScale,
-        this.fields = [],
-        this.bg_img = bg_img,
-        this.bgSpace = bgSpace,
-        this.angle = 0,
-        this.anglePlanet2 = 0,
-        this.anglePlanet3 = 0,
-        this.bg_imgCurrentX = getRandomIntInclusive(-300,500),
-        this.bg_imgCurrentY = getRandomIntInclusive(-300,500),
-        this.currentCanvasX = getRandomIntInclusive(0,1000),
-        this.currentCanvasY = getRandomIntInclusive(0,1000),
-        this.bg_imgCurrentTranslate = 2,
-        this.scrollSpeedBackground = getRandomIntInclusive(1, 3),
-        this.scrollAcce = 0.5,
-        this.scrollDirection = [-0.4, 0.4],
-        this.bg_starCurrentX = getRandomIntInclusive(-50, 50),
-        this.bg_starCurrentY = getRandomIntInclusive(-50, 50),
-        this.bg_starScrollSpeedBackgroundX = getRandomIntInclusive(2, 5),
-        this.bg_starScrollSpeedBackgroundY = getRandomIntInclusive(2, 4),
-        this.currentImage = getRandomIntInclusive(0, 11),
-        this.bgsound = bgsound,
-        this.resetPlayground()
+            this.name = "playground",
+            this.xSize = gameField.canvas.width / gridSizeScale,
+            this.ySize = gameField.canvas.height / gridSizeScale,
+            this.fields = [],
+            this.bg_img = bg_img,
+            this.bgSpace = bgSpace,
+            this.angle = 0,
+            this.anglePlanet2 = 0,
+            this.anglePlanet3 = 0,
+            this.bg_imgCurrentX = getRandomIntInclusive(-300, 500),
+            this.bg_imgCurrentY = getRandomIntInclusive(-300, 500),
+            this.currentCanvasX = getRandomIntInclusive(0, 1000),
+            this.currentCanvasY = getRandomIntInclusive(0, 1000),
+            this.bg_imgCurrentTranslate = 2,
+            this.scrollSpeedBackground = getRandomIntInclusive(1, 3),
+            this.scrollAcce = 0.5,
+            this.scrollDirection = [-0.4, 0.4],
+            this.bg_starCurrentX = getRandomIntInclusive(-50, 50),
+            this.bg_starCurrentY = getRandomIntInclusive(-50, 50),
+            this.bg_starScrollSpeedBackgroundX = getRandomIntInclusive(2, 5),
+            this.bg_starScrollSpeedBackgroundY = getRandomIntInclusive(2, 4),
+            this.currentImage = getRandomIntInclusive(0, 11),
+            this.bgsound = bgsound,
+            this.resetPlayground()
     }
     changeCurrentImage(imageNumber) {
         this.currentImage = imageNumber;
@@ -310,7 +303,7 @@ class playground {
 }
 /* individual part of the serpent */
 class serpentPart {
-    constructor(x, y) {
+    constructor(x, y, currentPointOfView) {
         this.name = "serpentPart",
             this.x = x, // init the serpents position regarding to the grid ex.: gridSizex = 20 ; x = gridnumber in row n;  25 * 20 = 500 -> the position is x = 500 on the canvas
             this.y = y,
@@ -322,15 +315,18 @@ class serpentPart {
                 south: 0,
                 west: 90
             },
-            this.currentPointOfView = this.PointOfView.east
+            this.currentPointOfView = currentPointOfView
     }
 }
 /* serpent */
 class serpent {
     addSerpentPart(amount) {
         for (var i = 0; i < amount; i++) {
-            this.serpentParts.push(new serpentPart(this.gridx - i, this.gridy));
+            this.serpentParts.push(new serpentPart(this.gridx - i, this.gridy, 180));
         }
+    }
+    removeAllSerpentParts() {
+        this.serpentParts = [];
     }
     constructor(id, x, y, spritesheet, initSnakeParts) {
         this.id = id,
@@ -403,7 +399,7 @@ class MenuConfig {
     StartLoading = function () {
         this.loadLevel(globalassets);
     }
-    changeMenuConfig(mainText, backgroundImage){
+    changeMenuConfig(mainText, backgroundImage) {
         if (mainText != null)
             this.mainText = mainText;
         if (backgroundImage != null)
@@ -415,7 +411,7 @@ class LevelConfig {
     constructor(name, level, levelOption) {
         /* ---- init some variables ---- */
         this.name = name,
-        this.level = level,
+            this.level = level,
             this.levelOption = levelOption,
             this.backGroudSpace = [],
             this.bg_image = new Image(),
@@ -428,7 +424,7 @@ class LevelConfig {
             this.serpent_sprites = [],
             this.playGroundLevel,
             this.playGroundBGMusic,
-            this.backGroundSprites, 
+            this.backGroundSprites,
             this.serpentPlayer,
             this.highestEnemy = 0,
             this.speed = 0,
@@ -476,24 +472,24 @@ class LevelConfig {
         this.serpentSpritesGreen = this.serpent_sprites[0];
         this.serpentSpritesBlue = this.serpent_sprites[1];
         this.serpentSpriteRed = this.serpent_sprites[2];
-        this.backGroudSpace = [null,assets.Space001, assets.Space002, assets.Space003, assets.Space004, assets.Space005],
-        this.backGroundSprites = [assets.spr_planet01,
-                                  assets.spr_planet02,
-                                  assets.spr_planet03,
-                                  assets.spr_planet04,
-                                  assets.spr_planet05,
-                                  assets.spr_planet06,
-                                  assets.spr_planet07,
-                                  assets.spr_planet08,
-                                  assets.spr_planet09,
-                                  assets.spr_planet10,
-                                  assets.spr_planet11,
-                                  assets.spr_planet12,
-                                  assets.spr_planet13,
-                                  assets.spr_planet14,
-                                ];
+        this.backGroudSpace = [null, assets.Space001, assets.Space002, assets.Space003, assets.Space004, assets.Space005],
+            this.backGroundSprites = [assets.spr_planet01,
+            assets.spr_planet02,
+            assets.spr_planet03,
+            assets.spr_planet04,
+            assets.spr_planet05,
+            assets.spr_planet06,
+            assets.spr_planet07,
+            assets.spr_planet08,
+            assets.spr_planet09,
+            assets.spr_planet10,
+            assets.spr_planet11,
+            assets.spr_planet12,
+            assets.spr_planet13,
+            assets.spr_planet14,
+            ];
         this.playGroundBGMusic = [assets.bg_Jupiter, assets.underclocked, assets.Jumpshot, assets.Arpanauts];
-        this.playGroundLevel = new playground(0, this.backGroudSpace[getRandomIntInclusive(0,5)], this.backGroundSprites, this.playGroundBGMusic[getRandomIntInclusive(0, this.playGroundBGMusic.length -1)]);
+        this.playGroundLevel = new playground(0, this.backGroudSpace[getRandomIntInclusive(0, 5)], this.backGroundSprites, this.playGroundBGMusic[getRandomIntInclusive(0, this.playGroundBGMusic.length - 1)]);
         this.serpent_sprite = assets.serpent_sprite;
         this.sound[0] = assets.food;
         this.sound[0].volume = 0.1;
@@ -501,7 +497,7 @@ class LevelConfig {
         this.sound[1].volume = 0.1;
         this.sound[2] = assets.backpack;
         this.sound[2].volume = 0.1;
-        this.sound[3] = assets.powerUp;
+        this.sound[3] = assets.explosion;
         this.sound[3].volume = 0.1;
         this.sound[4] = assets.blip001;
         this.sound[4].volume = 0.1;
@@ -524,9 +520,9 @@ class LevelConfig {
         this.itemlist[0] = new item(1, "food", getRandomIntInclusive(3, gridfield - 3), getRandomIntInclusive(3, gridfield - 3), assets.clover);
         this.itemlist[1] = new item(1, "food", getRandomIntInclusive(3, gridfield - 3), getRandomIntInclusive(3, gridfield - 3), assets.clover);
         this.itemlist[2] = new item(1, "food", getRandomIntInclusive(3, gridfield - 3), getRandomIntInclusive(3, gridfield - 3), assets.clover);
+        this.itemlist[3] = new item(3, "bomb", getRandomIntInclusive(1, gridfield - 3), getRandomIntInclusive(1, gridfield - 3), assets.bomb);
         /*
         this.itemlist[3] = new item(2, "backpack", getRandomIntInclusive(1, gridfield - 3), getRandomIntInclusive(1, gridfield - 3), assets.backpack);
-        this.itemlist[4] = new item(3, "bomb", getRandomIntInclusive(1, gridfield - 3), getRandomIntInclusive(1, gridfield - 3), assets.bomb);
         this.itemlist[5] = new item(4, "book", getRandomIntInclusive(1, gridfield - 3), getRandomIntInclusive(1, gridfield - 3), assets.book);
         this.itemlist[6] = new item(5, "feather", getRandomIntInclusive(1, gridfield - 3), getRandomIntInclusive(1, gridfield - 3), assets.feather);
         */
@@ -536,7 +532,7 @@ class LevelConfig {
         }
 
         for (let i = 0; i <= this.levelOption.aiEnemys - 1; i++) {
-           // console.log(i % 2, i % 1);
+            // console.log(i % 2, i % 1);
             this.aiSerpents[i] = new serpent(i + 7, getRandomIntInclusive(3, gridfield - 3), getRandomIntInclusive(3, gridfield - 3), this.serpent_sprites[getRandomIntInclusive(0, 1)], 3);
             /*
             if (i % 2 == 0)
@@ -611,110 +607,44 @@ class level {
         this.buttons = [];
         /* keyboard listener */
         window.onkeydown = null;
-        window.onkeyup = null;
-        window.onDirectionChanged = null;
         /* animations */
         this.globalDeltaLast = Date.now();
         this.globalDeltaNow = Date.now();
         this.globalDelta = 0;
         this.currentDeltaFrame = 0;
-        this.speed =  this.levelConfig.speed / getGameDeltaTime();
+        this.speed = this.levelConfig.speed / getGameDeltaTime();
         this.animationInterval = 0;
         this.animationdelay = 100;
         this.obstacleTable;
-
-
-        this.KeyUpEvent = function (event) {
-            /* as there might be some support issues we have to check the property of the key pressed */
-            if (event.which || event.charCode || event.keyCode) {
-                var characterCode = event.which || event.charCode || event.keyCode;
-            }
-            else if (event.key != undefined) {
-                var characterCode = charCodeArr[event.key] || event.key.charCodeAt(0);
-            }
-            else {
-                var characterCode = 0;
-            }
-
-            /* check saved key */
-            if (characterCode == 37) {
-                kleftA = false;
-            }
-            else if (characterCode == 39) {
-                krightA = false;
-            }
-            else if (characterCode == 38) {
-                kupA = false;
-            }
-            else if (characterCode == 40) {
-                kdownA = false;
-            }
-            if (characterCode == 32) {
-                kspace = false;
-            }
-        };
     };
 
     KeyDownEvent(event) {
-        var gameMode = getGameInstance();
-        var levelConfig = getCurrentLevelConfig();
-        var playerDx = levelConfig.serpentPlayer.dx;
-        var playerDy = levelConfig.serpentPlayer.dy;
-        var currentMovingDirection = levelConfig.serpentPlayer.serpentParts[0].currentPointOfView;
-        /* as there might be some support issues we have to check the property of the key pressed */
-        if (event.which || event.charCode || event.keyCode) {
-            var characterCode = event.which || event.charCode || event.keyCode;
-        }
-        else if (event.key != undefined) {
-            var characterCode = charCodeArr[event.key] || event.key.charCodeAt(0);
-        }
-        else {
-            var characterCode = 0;
-        }
-
+        let gameMode = getGameInstance();
+        let levelConfig = getCurrentLevelConfig();
+        let currentMovingDirection = levelConfig.serpentPlayer.serpentParts[0].currentPointOfView;
+        let characterCode = event.keyCode;
+        levelConfig.serpentPlayer.OldDx = levelConfig.serpentPlayer.dx;
+        levelConfig.serpentPlayer.OldDy = levelConfig.serpentPlayer.dy;
         /* check saved key */
         if (characterCode == 27) {
             gameMode.pause();
 
         }
         else if ((characterCode == 37) && (currentMovingDirection != levelConfig.serpentPlayer.serpentParts[0].PointOfView.east)) {
-            kleftA = true;
             levelConfig.serpentPlayer.dx = -1;
             levelConfig.serpentPlayer.dy = 0;
-            levelConfig.serpentPlayer.serpentParts[0].currentPointOfView = levelConfig.serpentPlayer.serpentParts[0].PointOfView.west;
         }
         else if ((characterCode == 39) && (currentMovingDirection != levelConfig.serpentPlayer.serpentParts[0].PointOfView.west)) {
-            krightA = true;
             levelConfig.serpentPlayer.dx = +1;
             levelConfig.serpentPlayer.dy = 0;
-            levelConfig.serpentPlayer.serpentParts[0].currentPointOfView = levelConfig.serpentPlayer.serpentParts[0].PointOfView.east;
         }
         else if ((characterCode == 38) && (currentMovingDirection != levelConfig.serpentPlayer.serpentParts[0].PointOfView.south)) {
-            kupA = true;
             levelConfig.serpentPlayer.dx = 0;
             levelConfig.serpentPlayer.dy = -1;
-            levelConfig.serpentPlayer.serpentParts[0].currentPointOfView = levelConfig.serpentPlayer.serpentParts[0].PointOfView.north;
-
         }
         else if ((characterCode == 40) && (currentMovingDirection != levelConfig.serpentPlayer.serpentParts[0].PointOfView.north)) {
-            kdownA = true;
             levelConfig.serpentPlayer.dx = 0;
             levelConfig.serpentPlayer.dy = +1;
-            levelConfig.serpentPlayer.serpentParts[0].currentPointOfView = levelConfig.serpentPlayer.serpentParts[0].PointOfView.south;
-        }
-
-        if (characterCode == 32) {
-            kspace = true;
-        }
-        if ((playerDx != levelConfig.serpentPlayer.dx) && (playerDy != levelConfig.serpentPlayer.dy)) {
-            document.dispatchEvent(new CustomEvent("onChangeDirection", {
-                detail: {
-                    oldDeltax: playerDx,
-                    oldDeltay: playerDy,
-                    playerDeltax: levelConfig.serpentPlayer.dx,
-                    playerDeltay: levelConfig.serpentPlayer.dy
-                }
-            }));
         }
     };
     /* on enter this state */
@@ -723,25 +653,8 @@ class level {
         this.levelConfig.playGroundLevel.bgsound.currentTime = 0;
         this.levelConfig.playGroundLevel.bgsound.play();
         // console.log("onEnter triggered");
-        /* direction changedListener */
-        document.addEventListener("onChangeDirection", function (event) {
-            var levelConfig = getCurrentLevelConfig();
-            //console.log(" changed corner", levelConfig);
-            /* changing direction to the left */
-            if ((event.detail.playerDeltax > 0) && (event.detail.oldDeltay > 0)
-                || (event.detail.playerDeltay < 0) && (event.detail.oldDeltax > 0)
-                || (event.detail.playerDeltax < 0) && (event.detail.oldDeltay < 0)
-                || (event.detail.playerDeltay > 0) && (event.detail.oldDeltax < 0)) {
-                levelConfig.serpentPlayer.serpentParts[0].currentCorner = 1;
-                //console.log("direction changed left", levelConfig.serpentPlayer.serpentParts[0].currentCorner);
-            }
-            else {
-                levelConfig.serpentPlayer.serpentParts[0].currentCorner = 2;
-                //console.log("direction changed right", levelConfig.serpentPlayer.serpentParts[0].currentCorner);
-            }
-        });
+
         window.onkeydown = this.KeyDownEvent;
-        window.onkeyup = this.KeyUpEvent;
         this.buttons.push(new MenuButton("LOST", "YOU DIED!", null, 100, 500, 100, 50, "100pt Courier", "red"));
     };
     /* if direction changes we need to delete the event listeners */
@@ -752,7 +665,7 @@ class level {
     };
     /* update section */
     update() {
-        
+
         //check if keylistener are not null 
         if (window.onkeydown == null && window.onkeyup == null) {
             window.onkeydown = this.KeyDownEvent;
@@ -762,7 +675,7 @@ class level {
         for (let k = 0; k < this.levelConfig.aiSerpents.length; k++) {
             //console.log(k, this.levelConfig.aiSerpents[k].foodEaten, "highestScore:", this.levelConfig.highestEnemy);
             if (this.levelConfig.aiSerpents[k].foodEaten >= this.levelConfig.highestEnemy)
-                this.levelConfig.highestEnemy = this.levelConfig.aiSerpents[k].foodEaten;   
+                this.levelConfig.highestEnemy = this.levelConfig.aiSerpents[k].foodEaten;
         }
         //console.log(this.levelConfig.highestEnemy, this.levelConfig.aiSerpents[0].foodEaten);
         if (this.levelConfig.serpentPlayer.foodEaten == this.levelConfig.levelOption.winCodition) {
@@ -771,11 +684,11 @@ class level {
             let gameMode = getGameInstance();
             //console.log("this state is: ", gameMode);
             //console.log("menu", this.menuconfig);
-            this.menuconfig.changeMenuConfig("You Won!",null);
+            this.menuconfig.changeMenuConfig("You Won!", null);
             gameMode.push(new AfterGameScreen("AfterGameScreen", this.levelConfig, this.currentOption, this.menuconfig));
         }
         else if (this.levelConfig.highestEnemy == this.levelConfig.levelOption.winCodition || this.levelConfig.serpentPlayer.alive == false) {
-        //else if (this.levelConfig.highestEnemy == this.levelConfig.levelOption.winCodition || this.levelConfig.serpentPlayer.isAlive == false) {    
+            //else if (this.levelConfig.highestEnemy == this.levelConfig.levelOption.winCodition || this.levelConfig.serpentPlayer.isAlive == false) {    
             this.levelConfig.playGroundLevel.bgsound.pause();
             this.levelConfig.playGroundLevel.bgsound.currentTime = 0;
             this.levelConfig.sound[7].play();
@@ -787,11 +700,11 @@ class level {
             this.canvas.fillStyle = this.buttons[0].fillStyle;
             this.canvas.fillText(this.buttons[0].text, this.buttons[0].buttonX, this.buttons[0].buttonY);
             sleep(2000);
-            this.menuconfig.changeMenuConfig("You Lost!",null);
+            this.menuconfig.changeMenuConfig("You Lost!", null);
             gameMode.push(new AfterGameScreen("AfterGameScreen", this.levelConfig, this.currentOption, this.menuconfig));
         }
         //console.log(this.levelConfig.playGroundLevel.fields);
-        
+
         moveLevelBackground(this.levelConfig.playGroundLevel);
         this.globalDeltaLast = this.globalDeltaNow;
         this.globalDeltaNow = Date.now();
@@ -803,7 +716,7 @@ class level {
         // if (Math.ceil(this.currentDeltaFrame) == 1) {
         //console.log("jetziger wert: ", round10((this.currentDeltaFrame), -1), "addiere: ", (this.globalDelta * this.speed) ,"round10: ", round10((this.globalDelta * this.speed), -1));
         if (round10((this.currentDeltaFrame), -1) >= 1) {
-            this.currentDeltaFrame = 0;       
+            this.currentDeltaFrame = 0;
             update(this.levelConfig.serpentPlayer, this.levelConfig.aiSerpents, this.levelConfig.playGroundLevel, this.levelConfig.itemlist, this.levelConfig.sound);
             //console.log("NULL GESETZT");
         }
@@ -818,7 +731,6 @@ class level {
     };
     onPause() {
         window.onkeydown = null;
-        window.onkeyup = null;
         this.levelConfig.playGroundLevel.bgsound.pause();
         this.levelConfig.sound[6].play();
         let gameMode = getGameInstance();
@@ -826,11 +738,10 @@ class level {
     };
     onResume() {
         console.log("onResume");
-        console.log( this.levelConfig.playGroundLevel);
+        console.log(this.levelConfig.playGroundLevel);
         this.levelConfig.playGroundLevel.bgsound.play();
         this.levelConfig.sound[4].play();
         window.onkeydown = this.KeyDownEvent;
-        window.onkeyup = this.KeyUpEvent;
     };
     getCurrentLevelConfig() {
         return this.levelConfig
@@ -849,108 +760,108 @@ class MainMenu {
             this.currentOption[1] = 1,
             this.currentOption[2] = 0,
             this.currentOption[3] = 0
-            /* keyboard listener */
-            window.onkeydown = null;
-            this.KeyDownEvent = function (e) {
-                let stateData = getStateData();
-                let keyCode = e.keyCode;
-                stateData.menuconfig.menuMusic.play();
-                if ((keyCode === 13) && (stateData.selectedButton === 5)) {
-                    // Go to next State
-                    stateData.menuconfig.selectSound.pause();
-                    stateData.menuconfig.selectSound.currentTime = 0;
-                    stateData.menuconfig.selectSound.play();
-                    stateData.menuconfig.menuMusic.pause();
-                    let gameMode = getGameInstance();
-                    console.log("options", stateData.currentOption[2], stateData.currentOption[1], stateData.currentOption[0], stateData.menuconfig);
-                    let levelConfig = new LevelConfig("level" + 1, 1, new LevelOption("level" + 1, stateData.currentOption[3],stateData.currentOption[2], stateData.currentOption[1], stateData.currentOption[0], null, null, null));
-                    levelConfig.StartLoading();
-                    gameMode.push(new level("level" + (levelConfig.level),levelConfig, stateData.menuconfig));
-                    /** Note that this does not remove the current state
-                     *  from the list. it just adds Level1State on top of it.
-                     */
+        /* keyboard listener */
+        window.onkeydown = null;
+        this.KeyDownEvent = function (e) {
+            let stateData = getStateData();
+            let keyCode = e.keyCode;
+            stateData.menuconfig.menuMusic.play();
+            if ((keyCode === 13) && (stateData.selectedButton === 5)) {
+                // Go to next State
+                stateData.menuconfig.selectSound.pause();
+                stateData.menuconfig.selectSound.currentTime = 0;
+                stateData.menuconfig.selectSound.play();
+                stateData.menuconfig.menuMusic.pause();
+                let gameMode = getGameInstance();
+                console.log("options", stateData.currentOption[2], stateData.currentOption[1], stateData.currentOption[0], stateData.menuconfig);
+                let levelConfig = new LevelConfig("level" + 1, 1, new LevelOption("level" + 1, stateData.currentOption[3], stateData.currentOption[2], stateData.currentOption[1], stateData.currentOption[0], null, null, null));
+                levelConfig.StartLoading();
+                gameMode.push(new level("level" + (levelConfig.level), levelConfig, stateData.menuconfig));
+                /** Note that this does not remove the current state
+                 *  from the list. it just adds Level1State on top of it.
+                 */
+            }
+            if ((keyCode === 13) && (stateData.selectedButton === 6)) {
+                // Go to next State
+                stateData.menuconfig.selectSound.pause();
+                stateData.menuconfig.selectSound.currentTime = 0;
+                stateData.menuconfig.selectSound.play();
+                stateData.menuconfig.menuMusic.pause();
+                let gameMode = getGameInstance();
+                stateData.menuconfig.changeMenuConfig("Credits", null);
+                gameMode.push(new CreditScreen("CreditsScreen", stateData.menuconfig));
+                /** Note that this does not remove the current state
+                 *  from the list. it just adds Level1State on top of it.
+                 */
+            }
+            // left
+            else if (keyCode === 37) {
+                if (stateData.selectedButton == 1) {
+                    stateData.currentOption[0]--;
+                    if (stateData.currentOption[0] < 0)
+                        stateData.currentOption[0] = 2;
+
                 }
-                if ((keyCode === 13) && (stateData.selectedButton === 6)) {
-                    // Go to next State
-                    stateData.menuconfig.selectSound.pause();
-                    stateData.menuconfig.selectSound.currentTime = 0;
-                    stateData.menuconfig.selectSound.play();
-                    stateData.menuconfig.menuMusic.pause();
-                    let gameMode = getGameInstance();
-                    stateData.menuconfig.changeMenuConfig("Credits",null);
-                    gameMode.push(new CreditScreen("CreditsScreen", stateData.menuconfig));
-                    /** Note that this does not remove the current state
-                     *  from the list. it just adds Level1State on top of it.
-                     */
+                else if (stateData.selectedButton == 2) {
+                    stateData.currentOption[1]--;
+                    if (stateData.currentOption[1] < 1)
+                        stateData.currentOption[1] = 1;
+
+                    stateData.buttons[8].text = stateData.currentOption[1];
                 }
-                // left
-                else if (keyCode === 37) {
-                    if (stateData.selectedButton == 1) {
-                        stateData.currentOption[0]--;
-                        if (stateData.currentOption[0] < 0)
-                            stateData.currentOption[0] = 2;
-    
-                    }
-                    else if (stateData.selectedButton == 2) {
-                        stateData.currentOption[1]--;
-                        if (stateData.currentOption[1] < 1)
-                            stateData.currentOption[1] = 1;
-    
-                        stateData.buttons[8].text = stateData.currentOption[1];
-                    }
-                    else if (stateData.selectedButton == 3) {
-                        stateData.currentOption[2]--;
-                        if (stateData.currentOption[2] < 0)
-                            stateData.currentOption[2] = 0;
-                    }
-                    else if (stateData.selectedButton == 4) {
-                        stateData.currentOption[3]--;
-                        if (stateData.currentOption[3] < 0)
-                            stateData.currentOption[3] = 0;
-                    }
+                else if (stateData.selectedButton == 3) {
+                    stateData.currentOption[2]--;
+                    if (stateData.currentOption[2] < 0)
+                        stateData.currentOption[2] = 0;
                 }
-                // right
-                else if (keyCode === 39) {
-                    if (stateData.selectedButton == 1) {
-                        stateData.currentOption[0]++;
-                        if (stateData.currentOption[0] > 2)
-                            stateData.currentOption[0] = 0;
-                    }
-                    else if (stateData.selectedButton == 2) {
-                        stateData.currentOption[1]++;
-                        if (stateData.currentOption[1] > 5)
-                            stateData.currentOption[1] = 5;
-    
-                        stateData.buttons[8].text = stateData.currentOption[1];
-                    }
-                    else if (stateData.selectedButton == 3) {
-                        stateData.currentOption[2]++;
-                        if (stateData.currentOption[2] > 2)
-                            stateData.currentOption[2] = 2;
-                    }
-                    else if (stateData.selectedButton == 4) {
-                        stateData.currentOption[3]++;
-                        if (stateData.currentOption[3] > 2)
-                            stateData.currentOption[3] = 2;
-    
-                    }
+                else if (stateData.selectedButton == 4) {
+                    stateData.currentOption[3]--;
+                    if (stateData.currentOption[3] < 0)
+                        stateData.currentOption[3] = 0;
                 }
-                // up
-                else if (keyCode === 38) {
-                    stateData.selectedButton--;
-                    if (stateData.selectedButton < 1)
-                        stateData.selectedButton = 6;
+            }
+            // right
+            else if (keyCode === 39) {
+                if (stateData.selectedButton == 1) {
+                    stateData.currentOption[0]++;
+                    if (stateData.currentOption[0] > 2)
+                        stateData.currentOption[0] = 0;
                 }
-                // down
-                else if (keyCode === 40) {
-                    stateData.selectedButton++;
-                    if (stateData.selectedButton > 6)
-                        stateData.selectedButton = 1;
+                else if (stateData.selectedButton == 2) {
+                    stateData.currentOption[1]++;
+                    if (stateData.currentOption[1] > 5)
+                        stateData.currentOption[1] = 5;
+
+                    stateData.buttons[8].text = stateData.currentOption[1];
                 }
-                stateData.menuconfig.scrollSound.pause();
-                stateData.menuconfig.scrollSound.currentTime = 0;
-                stateData.menuconfig.scrollSound.play();
-            };
+                else if (stateData.selectedButton == 3) {
+                    stateData.currentOption[2]++;
+                    if (stateData.currentOption[2] > 2)
+                        stateData.currentOption[2] = 2;
+                }
+                else if (stateData.selectedButton == 4) {
+                    stateData.currentOption[3]++;
+                    if (stateData.currentOption[3] > 2)
+                        stateData.currentOption[3] = 2;
+
+                }
+            }
+            // up
+            else if (keyCode === 38) {
+                stateData.selectedButton--;
+                if (stateData.selectedButton < 1)
+                    stateData.selectedButton = 6;
+            }
+            // down
+            else if (keyCode === 40) {
+                stateData.selectedButton++;
+                if (stateData.selectedButton > 6)
+                    stateData.selectedButton = 1;
+            }
+            stateData.menuconfig.scrollSound.pause();
+            stateData.menuconfig.scrollSound.currentTime = 0;
+            stateData.menuconfig.scrollSound.play();
+        };
     }
     onEnter() {
         this.addToButtons();
@@ -1087,12 +998,12 @@ class PauseMenu {
             var gameMode = getGameInstance();
             if (keyCode === 27) {
                 // Go to next State
-                
+
                 console.log("this state is: ", gameMode);
                 gameMode.pop();
                 gameMode.resume();
             }
-            if (keyCode === 32 ) {
+            if (keyCode === 32) {
                 let mainMenu = new MainMenu("MainMenu", new MenuConfig("MainMenu"));
                 mainMenu.menuconfig.StartLoading();
                 gameMode.push(mainMenu);
@@ -1177,7 +1088,7 @@ class AfterGameScreen {
                 stateData.menuconfig.selectSound.pause();
                 stateData.menuconfig.selectSound.currentTime = 0;
                 stateData.menuconfig.selectSound.play();
-                
+
                 let levelConfig = getCurrentLevelConfig();
                 stateData.menuconfig.afterGameScreenMusic.pause();
                 stateData.menuconfig.afterGameScreenMusic.currentTime = 0;
@@ -1188,7 +1099,7 @@ class AfterGameScreen {
                  *  from the list. it just adds Level1State on top of it.
                  */
             }
-            if (keyCode === 32 ) {
+            if (keyCode === 32) {
                 // Go to next State
                 stateData.menuconfig.selectSound.pause();
                 stateData.menuconfig.selectSound.currentTime = 0;
@@ -1197,7 +1108,7 @@ class AfterGameScreen {
                 stateData.menuconfig.afterGameScreenMusic.currentTime = 0;
                 let mainMenu = new MainMenu("MainMenu", new MenuConfig("MainMenu"));
                 mainMenu.menuconfig.StartLoading();
-                gameMode.push(mainMenu);  
+                gameMode.push(mainMenu);
             }
             stateData.menuconfig.scrollSound.pause();
             stateData.menuconfig.scrollSound.currentTime = 0;
@@ -1232,7 +1143,7 @@ class AfterGameScreen {
         this.canvas.fillText(this.menuconfig.mainText, this.dimensions.width / 2 - 225, 200);
         this.canvas.beginPath();
         for (let i = 0; i <= 4; i++) {
-            if (i == 4) {
+            if (i == -1) {
                 if (this.menuconfig.colorIndexSelected == this.menuconfig.colorsArraySelected.length) {
                     this.menuconfig.colorIndexSelected = 0;
                 }
@@ -1264,7 +1175,7 @@ class AfterGameScreen {
     };
     addToButtons() {
         console.log(this.levelConfig.serpentPlayer.foodEaten, this.levelConfig.aiSerpents[0].foodEaten);
-        this.buttons.push(new MenuButton("Credit", "Copyright (c) 2020 KaBra, MaSiPi, MaZa", null, 500, 970, 100, 50,"14pt Courier", "white"));
+        this.buttons.push(new MenuButton("Credit", "Copyright (c) 2020 KaBra, MaSiPi, MaZa", null, 500, 970, 100, 50, "14pt Courier", "white"));
         this.buttons.push(new MenuButton("Your Score:", "Your Highscore", null, 150, 500, 100, 50, "20pt Courier", "white"));
         this.buttons.push(new MenuButton("Enemy's Highscore:", "Enemy's Highscore", null, 150, 600, 100, 50, "20pt Courier", "white"));
         this.buttons.push(new MenuButton("startText", "Press Enter To Start Next Round", null, 300, 800, 100, 50, "20pt Courier", "white"));
@@ -1277,12 +1188,12 @@ class CreditScreen {
     constructor(name, menuconfig) {
         this.name = name // Just to identify the State
         this.canvas = getContext(),
-        this.dimensions = getGameDimensions(),
-        this.menuconfig = menuconfig,
-        this.canvas = getContext(),
-        this.dimensions = getGameDimensions(),
-        this.buttons = [],
-        this.selectedButton = 4
+            this.dimensions = getGameDimensions(),
+            this.menuconfig = menuconfig,
+            this.canvas = getContext(),
+            this.dimensions = getGameDimensions(),
+            this.buttons = [],
+            this.selectedButton = 4
     }
     onEnter() {
         console.log(this.menuconfig);
@@ -1311,7 +1222,7 @@ class CreditScreen {
                 stateData.menuconfig.selectSound.currentTime = 0;
                 stateData.menuconfig.selectSound.play();
                 let gameMode = getGameInstance();
-                stateData.menuconfig.changeMenuConfig("Space Serpent",null);
+                stateData.menuconfig.changeMenuConfig("Space Serpent", null);
                 gameMode.pop();
                 /** Note that this does not remove the current state
                  *  from the list. it just adds Level1State on top of it.
@@ -1350,11 +1261,11 @@ class CreditScreen {
         this.canvas.fillText(this.menuconfig.mainText, this.dimensions.width / 2 - 225, 200);
         this.canvas.beginPath();
         for (let i = 0; i < this.buttons.length; i++) {
-                this.canvas.beginPath();
-                this.canvas.fillStyle = this.buttons[i].fillStyle;
-                this.canvas.font = this.buttons[i].font;
-                this.canvas.fillText(this.buttons[i].text, this.buttons[i].buttonX, this.buttons[i].buttonY);
-        
+            this.canvas.beginPath();
+            this.canvas.fillStyle = this.buttons[i].fillStyle;
+            this.canvas.font = this.buttons[i].font;
+            this.canvas.fillText(this.buttons[i].text, this.buttons[i].buttonX, this.buttons[i].buttonY);
+
         }
     };
     update() {
@@ -1362,11 +1273,11 @@ class CreditScreen {
         this.menuconfig.backgroundImageY = moveMenuBackground(this.menuconfig.backgroundImageY, this.menuconfig.scrollSpeedBackground);
     };
     addToButtons() {
-        this.buttons.push(new MenuButton("Credit", "Music: Eric Skiff - Jumpshot - Resistor Anthems - Available at http://EricSkiff.com/music", null, 20, 400, 100, 50,"8pt Courier", "white"));
-        this.buttons.push(new MenuButton("Credit", "Music: Eric Skiff - HHavok-intro - Resistor Anthems - Available at http://EricSkiff.com/music", null, 20, 420, 100, 50,"8pt Courier", "white"));
-        this.buttons.push(new MenuButton("Credit", "Music: Eric Skiff - Underclocked - Resistor Anthems - Available at http://EricSkiff.com/music", null, 20, 440, 100, 50,"8pt Courier", "white"));
-        this.buttons.push(new MenuButton("Credit", "Music: Eric Skiff - Prologue - Resistor Anthems - Available at http://EricSkiff.com/music", null, 20, 460, 100, 50,"8pt Courier", "white"));
-        this.buttons.push(new MenuButton("Credit", "Music: Eric Skiff - Arpanauts - Resistor Anthems - Available at http://EricSkiff.com/music", null, 20, 480, 100, 50,"8pt Courier", "white"));
+        this.buttons.push(new MenuButton("Credit", "Music: Eric Skiff - Jumpshot - Resistor Anthems - Available at http://EricSkiff.com/music", null, 20, 400, 100, 50, "8pt Courier", "white"));
+        this.buttons.push(new MenuButton("Credit", "Music: Eric Skiff - HHavok-intro - Resistor Anthems - Available at http://EricSkiff.com/music", null, 20, 420, 100, 50, "8pt Courier", "white"));
+        this.buttons.push(new MenuButton("Credit", "Music: Eric Skiff - Underclocked - Resistor Anthems - Available at http://EricSkiff.com/music", null, 20, 440, 100, 50, "8pt Courier", "white"));
+        this.buttons.push(new MenuButton("Credit", "Music: Eric Skiff - Prologue - Resistor Anthems - Available at http://EricSkiff.com/music", null, 20, 460, 100, 50, "8pt Courier", "white"));
+        this.buttons.push(new MenuButton("Credit", "Music: Eric Skiff - Arpanauts - Resistor Anthems - Available at http://EricSkiff.com/music", null, 20, 480, 100, 50, "8pt Courier", "white"));
         this.buttons.push(new MenuButton("Credit", "https://opengameart.org/content/512-sound-effects-8-bit-style", null, 20, 500, 100, 50, "8pt Courier", "white"));
         this.buttons.push(new MenuButton("Credit", "Ctskelgysth Inauaruat - Ctskelgysth: https://opengameart.org/content/8-bit-sound-effects-0", null, 20, 520, 100, 50, "8pt Courier", "white"));
         this.buttons.push(new MenuButton("Credit", "https://opengameart.org/content/colorful-planets-0", null, 20, 540, 100, 50, "8pt Courier", "white"));
@@ -1492,7 +1403,7 @@ var gameField = {
         this.canvas.height = this.canvas_height;
         this.canvasContext = this.canvas.getContext("2d");
         //this.deltaTime = (0.35 / (1000/this.FPS));
-        this.deltaTime = (1000/this.FPS);
+        this.deltaTime = (1000 / this.FPS);
         document.body.insertBefore(this.canvas, document.body.childNodes[0]); // due to some loading issues with images and sprites w want to insert it before
         this.timer = 1000 / this.FPS;
         this.startGame();
@@ -1826,13 +1737,13 @@ function drawBackground(bg_stars, playGroundImage) {
         groundy += gridSizeScale;
     }
     */
-   if (playGroundImage.bgSpace != null)
-   gameField.canvasContext.drawImage(playGroundImage.bgSpace,
-                                        0,
-                                        0,
-                                        1000,
-                                        1000
-                                        );
+    if (playGroundImage.bgSpace != null)
+        gameField.canvasContext.drawImage(playGroundImage.bgSpace,
+            0,
+            0,
+            1000,
+            1000
+        );
     playGroundImage.angle = playGroundImage.angle - 0.5 * Math.PI / 180;
     var ctxPlanet1 = null;
     ctxPlanet1 = gameField.canvasContext;
@@ -1861,12 +1772,12 @@ function drawBackground(bg_stars, playGroundImage) {
     );
     //ctx.drawImage(playGroundImage.bg_img[playGroundImage.currentImage], playGroundImage.bg_imgCurrentX, 0, playGroundImage.currentCanvasX, playGroundImage.currentCanvasY);
     ctxPlanet1.restore();
-    
+
     playGroundImage.anglePlanet2 = playGroundImage.anglePlanet2 + 0.9 * Math.PI / 180;
     var ctxPlanet2 = null;
     ctxPlanet2 = gameField.canvasContext;
     ctxPlanet2.save();
-    ctxPlanet2.translate( 100 + playGroundImage.currentCanvasX, 100 + playGroundImage.currentCanvasY);
+    ctxPlanet2.translate(100 + playGroundImage.currentCanvasX, 100 + playGroundImage.currentCanvasY);
     ctxPlanet2.rotate(playGroundImage.anglePlanet2);
     ctxPlanet2.drawImage(playGroundImage.bg_img[playGroundImage.currentImage + 1],
         0,
@@ -1890,7 +1801,7 @@ function drawBackground(bg_stars, playGroundImage) {
     );
     //ctx.drawImage(playGroundImage.bg_img[playGroundImage.currentImage], playGroundImage.bg_imgCurrentX, 0, playGroundImage.currentCanvasX, playGroundImage.currentCanvasY);
     ctxPlanet2.restore();
-   
+
     playGroundImage.anglePlanet3 = playGroundImage.anglePlanet3 + 0.5 * Math.PI / 180;
     var ctxPlanet3 = null;
     ctxPlanet3 = gameField.canvasContext;
@@ -1903,7 +1814,7 @@ function drawBackground(bg_stars, playGroundImage) {
         0,
         0,
         884,
-        884,        
+        884,
         playGroundImage.bg_imgCurrentX / -2,
         playGroundImage.bg_imgCurrentX / -2,
         300 + playGroundImage.bg_imgCurrentX,
@@ -1944,7 +1855,7 @@ function drawBackground(bg_stars, playGroundImage) {
         3500,
         3500
     );
-   //console.log("planet", playGroundImage.bg_imgCurrentX, playGroundImage.bg_imgCurrentY);
+    //console.log("planet", playGroundImage.bg_imgCurrentX, playGroundImage.bg_imgCurrentY);
     //playGroundImage.bg_starCurrentX,
     //playGroundImage.bg_starCurrentY,
 
@@ -1986,16 +1897,16 @@ function moveLevelBackground(image) {
 
 
 
-    if(image.bg_starCurrentX >= 1000 || image.bg_starCurrentX <= -1000 || image.bg_starCurrentY >= 1000 || image.bg_starCurrentY <= -1000){
-        if(image.bg_starCurrentX >= 1050 || image.bg_starCurrentX <= -1050 ) {
-            image.bg_starScrollSpeedBackgroundX = image.scrollDirection[getRandomIntInclusive(0,1)] * image.bg_starScrollSpeedBackgroundX;
-            image.bg_starScrollSpeedBackgroundY = image.scrollDirection[getRandomIntInclusive(0,1)] * image.bg_starScrollSpeedBackgroundY;
+    if (image.bg_starCurrentX >= 1000 || image.bg_starCurrentX <= -1000 || image.bg_starCurrentY >= 1000 || image.bg_starCurrentY <= -1000) {
+        if (image.bg_starCurrentX >= 1050 || image.bg_starCurrentX <= -1050) {
+            image.bg_starScrollSpeedBackgroundX = image.scrollDirection[getRandomIntInclusive(0, 1)] * image.bg_starScrollSpeedBackgroundX;
+            image.bg_starScrollSpeedBackgroundY = image.scrollDirection[getRandomIntInclusive(0, 1)] * image.bg_starScrollSpeedBackgroundY;
             image.changeCurrentbgStarX(999, 999);
             // console.log(image.bg_starCurrentX, image.bg_starCurrentX);
-        }   
-        else  {      
-            image.bg_starScrollSpeedBackgroundX = image.scrollDirection[getRandomIntInclusive(0,1)] * image.bg_starScrollSpeedBackgroundX;
-            image.bg_starScrollSpeedBackgroundY = image.scrollDirection[getRandomIntInclusive(0,1)] * image.bg_starScrollSpeedBackgroundY;
+        }
+        else {
+            image.bg_starScrollSpeedBackgroundX = image.scrollDirection[getRandomIntInclusive(0, 1)] * image.bg_starScrollSpeedBackgroundX;
+            image.bg_starScrollSpeedBackgroundY = image.scrollDirection[getRandomIntInclusive(0, 1)] * image.bg_starScrollSpeedBackgroundY;
             image.changeCurrentbgStarX(image.bg_starCurrentX * -1, image.bg_starCurrentX * -1);
             //console.log(image.bg_starCurrentX, image.bg_starCurrentX); 
         }
@@ -2021,45 +1932,45 @@ function calculateNextMove(obstaclesTable, currentPosition, itemPosition, serpen
         var nextNode = aStarResult.nextNode;
         if (nextNode.position.x > currentPosition.x) {
             //move right!
-            return {movementIsPossible: true, direction: { dx: 1, dy: 0 }};
+            return { movementIsPossible: true, direction: { dx: 1, dy: 0 } };
         }
         if (nextNode.position.x < currentPosition.x) {
             //move left!
-            return {movementIsPossible: true, direction: { dx: -1, dy: 0 }};
+            return { movementIsPossible: true, direction: { dx: -1, dy: 0 } };
 
         }
         if (nextNode.position.y > currentPosition.y) {
             //move down!
-            return {movementIsPossible: true, direction: { dx: 0, dy: 1 }};
+            return { movementIsPossible: true, direction: { dx: 0, dy: 1 } };
 
         }
         if (nextNode.position.y < currentPosition.y) {
             //move up!
-            return {movementIsPossible: true, direction: { dx: 0, dy: -1 }};
+            return { movementIsPossible: true, direction: { dx: 0, dy: -1 } };
         }
     }
     // if aStar can not find a valid path, an adjacent free field will be chosen
     else {
         if (currentPosition.y + 1 < obstaclesTable.length && obstaclesTable[currentPosition.x][currentPosition.y + 1] == 0) {
             //move down!
-            return {movementIsPossible: true, direction: { dx: 0, dy: 1 }};
+            return { movementIsPossible: true, direction: { dx: 0, dy: 1 } };
         }
 
         if (currentPosition.y - 1 >= 0 && obstaclesTable[currentPosition.x][currentPosition.y - 1] == 0) {
             //move up!
-            return {movementIsPossible: true, direction: { dx: 0, dy: -1 }};
+            return { movementIsPossible: true, direction: { dx: 0, dy: -1 } };
         }
 
         if (currentPosition.x + 1 < obstaclesTable.length && obstaclesTable[currentPosition.x + 1][currentPosition.y] == 0) {
             //move right!
-            return {movementIsPossible: true, direction: { dx: 1, dy: 0 }};
+            return { movementIsPossible: true, direction: { dx: 1, dy: 0 } };
         }
 
         if (currentPosition.x - 1 >= 0 && obstaclesTable[currentPosition.x - 1][currentPosition.y] == 0) {
             //move left!
-            return {movementIsPossible: true, direction: { dx: -1, dy: 0 }};
+            return { movementIsPossible: true, direction: { dx: -1, dy: 0 } };
         }
-        return {movementIsPossible: false, direction: { dx: 1, dy: 0 }};
+        return { movementIsPossible: false, direction: { dx: 1, dy: 0 } };
     }
 }
 function reconstruct_path(current) {
@@ -2138,20 +2049,27 @@ function moveSerpents(serpentPlayer, aiSerpents, playGroundLevel, items, sound) 
 }
 function getTargetPosition(aiSerpent, items, playField, serpentHeadPosition) {
     let targetStillExists = (playField.fields[aiSerpent.nextTarget.x][aiSerpent.nextTarget.y] == aiSerpent.nextTarget.objectID) ? true : false;
-    if (!targetStillExists || positionsAreEqual({x: aiSerpent.nextTarget.x, y: aiSerpent.nextTarget.y}, serpentHeadPosition))
-        aiSerpent.nextTarget = generateNewRandomTarget(items);
+    if (!targetStillExists || positionsAreEqual({ x: aiSerpent.nextTarget.x, y: aiSerpent.nextTarget.y }, serpentHeadPosition))
+        aiSerpent.nextTarget = generateNewTarget(items);
     return { x: aiSerpent.nextTarget.x, y: aiSerpent.nextTarget.y };
 }
-function generateNewRandomTarget(items) {
-    let randomInt = getRandomIntInclusive(0, items.length - 1);
-    let newTarget = items[randomInt];
+function generateNewTarget(items) {
+    let targets = [];
+    items.forEach(goodItem => {    
+        if (goodItem.id == 1)
+            targets.push(goodItem);
+});
+    console.log("target:", targets);
+    let randomInt = getRandomIntInclusive(0, targets.length - 1);
+    let newTarget = targets[randomInt];
     return { objectID: newTarget.id, x: newTarget.gridx, y: newTarget.gridy };
 }
 function createObstaclesTable(aiSerpent, playField) {
     let obstaclesTable = new playground();
     for (var column = 0; column < obstaclesTable.xSize; column++) {
         for (var row = 0; row < obstaclesTable.ySize; row++) {
-            if (playField.fields[column][row] >= 6)
+            if (playField.fields[column][row] >= 6 || // serpents
+                playField.fields[column][row] == 3  ) // bombs
                 obstaclesTable.fields[column][row] = 1;
         }
     }
@@ -2168,41 +2086,13 @@ function moveAiSerpents(aiSerpents, playField, items, sound) {
 
             const nextMovement = calculateNextMove(obstaclesTable.fields, serpentHeadPosition, nextTargetPosition, aiSerpents[i]);
 
-            if (nextMovement == undefined)
-            {
-                console.log("what");
-            }
-
-            if(nextMovement.movementIsPossible == false)
-            {
-                killSerpent(aiSerpents[i], playField);
+            if (nextMovement.movementIsPossible == false) {
+                killSerpent(aiSerpents[i], playField, items);
                 return;
             }
 
             aiSerpents[i].OldDx = aiSerpents[i].dx;
             aiSerpents[i].OldDy = aiSerpents[i].dy;
-
-            /* change direction for animation head */
-            if (nextMovement.direction.dy == -1)
-                aiSerpents[i].serpentParts[0].currentPointOfView = aiSerpents[i].serpentParts[0].PointOfView.north;
-            else if (nextMovement.direction.dy == +1)
-                aiSerpents[i].serpentParts[0].currentPointOfView = aiSerpents[i].serpentParts[0].PointOfView.south;
-            else if (nextMovement.direction.dx == -1)
-                aiSerpents[i].serpentParts[0].currentPointOfView = aiSerpents[i].serpentParts[0].PointOfView.west;
-            else if (nextMovement.direction.dx == +1)
-                aiSerpents[i].serpentParts[0].currentPointOfView = aiSerpents[i].serpentParts[0].PointOfView.east;
-
-            /* change direction for animation body */
-            if ((aiSerpents[i].OldDx == + 1 && aiSerpents[i].serpentParts[0].currentPointOfView == aiSerpents[i].serpentParts[0].PointOfView.north)
-                || (aiSerpents[i].OldDy == + 1 && aiSerpents[i].serpentParts[0].currentPointOfView == aiSerpents[i].serpentParts[0].PointOfView.east)
-                || (aiSerpents[i].OldDx == - 1 && aiSerpents[i].serpentParts[0].currentPointOfView == aiSerpents[i].serpentParts[0].PointOfView.south)
-                || (aiSerpents[i].OldDy == - 1 && aiSerpents[i].serpentParts[0].currentPointOfView == aiSerpents[i].serpentParts[0].PointOfView.west)) {
-                aiSerpents[i].serpentParts[0].currentCorner = 1;
-            }
-            else {
-                aiSerpents[i].serpentParts[0].currentCorner = 2;
-            }
-
             /* set movement */
             aiSerpents[i].dx = nextMovement.direction.dx;
             aiSerpents[i].dy = nextMovement.direction.dy;
@@ -2213,79 +2103,105 @@ function moveAiSerpents(aiSerpents, playField, items, sound) {
 
 }
 
-function killSerpent(serpent, playField) {
+function killSerpent(serpent, playField, itemlist) {
     serpent.alive = false;
-    //playField auf 0 setzen
-
-    /*
+    
     for (let serpentPartIndex = 0; serpentPartIndex < serpent.serpentParts.length; serpentPartIndex++) {
-        playField.fields[serpent.serpentParts[serpentPartIndex].x][serpent.serpentParts[serpentPartIndex].y] = 0;
+        playField.removeFromPlayground(serpent.serpentParts[serpentPartIndex].x, serpent.serpentParts[serpentPartIndex].y)
     }
-    */
 
+    for (let i = 0; i < 3; i++) {
+        generateNewItem(3, itemlist, playField, generateRandomPosition(playField));
+    }
+    serpent.removeAllSerpentParts();
     serpent.dx = 0;
     serpent.dy = 0;
-    //input disablen bei spieler
-    //alive = true/false;
-    //einfreeze mit taste weiter in den nächsten
-    //aus AISerpents entfernen
+
 }
 
 function movePlayer(serpent, playField, items, sound) {
-    let nextXPosition = serpent.serpentParts[0].x + serpent.dx;
-    let nextYPositon = serpent.serpentParts[0].y + serpent.dy;
-    let leavesPlayfield = (nextXPosition < 0 || nextXPosition >= playField.xSize) || (nextYPositon < 0 || nextYPositon >= playField.ySize) ? true : false;
+    if (serpent.alive){
+        let nextXPosition = serpent.serpentParts[0].x + serpent.dx;
+        let nextYPositon = serpent.serpentParts[0].y + serpent.dy;
+        let leavesPlayfield = (nextXPosition < 0 || nextXPosition >= playField.xSize) || (nextYPositon < 0 || nextYPositon >= playField.ySize) ? true : false;
+        if (!leavesPlayfield) {
+            let touchesEnemySerpent = (playField.fields[nextXPosition][nextYPositon] >= 7) ? true : false;
+            let touchesBomb = (playField.fields[nextXPosition][nextYPositon] == 3) ? true : false;
+            if (!touchesEnemySerpent && !touchesBomb) {
+                executeSerpentMovement(serpent, playField, items, sound);
+                return;
+            }
 
-    if (!leavesPlayfield) {
-        let touchesEnemySerpent = (playField.fields[nextXPosition][nextYPositon] >= 7) ? true : false;
-        if (!touchesEnemySerpent) {
-            executeSerpentMovement(serpent, playField, items, sound);
-            return;
         }
+        killSerpent(serpent, playField, items);
     }
-    killSerpent(serpent, playField);
 }
 
+function changeCurrentPointOfView(serpent) {
+    /* change direction for animation head */
+    if (serpent.dy == -1)
+        serpent.serpentParts[0].currentPointOfView = serpent.serpentParts[0].PointOfView.north;
+    else if (serpent.dy == +1)
+        serpent.serpentParts[0].currentPointOfView = serpent.serpentParts[0].PointOfView.south;
+    else if (serpent.dx == -1)
+        serpent.serpentParts[0].currentPointOfView = serpent.serpentParts[0].PointOfView.west;
+    else if (serpent.dx == +1)
+        serpent.serpentParts[0].currentPointOfView = serpent.serpentParts[0].PointOfView.east;
+}
+function changeBodyDirectionAnimation(serpent) {
+    /* change direction for animation body */
+    if ((serpent.OldDx == + 1 && serpent.serpentParts[0].currentPointOfView == serpent.serpentParts[0].PointOfView.north)
+        || (serpent.OldDy == + 1 && serpent.serpentParts[0].currentPointOfView == serpent.serpentParts[0].PointOfView.east)
+        || (serpent.OldDx == - 1 && serpent.serpentParts[0].currentPointOfView == serpent.serpentParts[0].PointOfView.south)
+        || (serpent.OldDy == - 1 && serpent.serpentParts[0].currentPointOfView == serpent.serpentParts[0].PointOfView.west)) {
+        serpent.serpentParts[0].currentCorner = 1;
+    }
+    else {
+        serpent.serpentParts[0].currentCorner = 2;
+    }
+}
 function executeSerpentMovement(serpent, playField, items, sound) {
-    var newHead = new serpentPart(serpent.serpentParts[0].x + serpent.dx, serpent.serpentParts[0].y + serpent.dy);
-    newHead.currentPointOfView = serpent.serpentParts[0].currentPointOfView;
 
+    changeCurrentPointOfView(serpent);
+
+    var newHead = new serpentPart(serpent.serpentParts[0].x + serpent.dx, serpent.serpentParts[0].y + serpent.dy, serpent.serpentParts[0].currentPointOfView);
+    changeBodyDirectionAnimation(serpent);
     serpent.serpentParts.unshift(newHead);
 
     for (let serpentPartIndex = 0; serpentPartIndex < serpent.serpentParts.length; serpentPartIndex++) {
-        playField.addToPlayground(serpent.serpentParts[serpentPartIndex].x,serpent.serpentParts[serpentPartIndex].y, serpent.id );
+        playField.addToPlayground(serpent.serpentParts[serpentPartIndex].x, serpent.serpentParts[serpentPartIndex].y, serpent.id);
     }
 
     const chasEatenFood = hasEatenFood(serpent, items, playField, sound);
 
     if (chasEatenFood) {
-        generateNewItem(1, items, playField);
+        generateNewItem(1, items, playField, generateRandomPosition(playField));
     }
-    else
-    {
+    else {
         let lastSerpentPart = serpent.serpentParts[serpent.serpentParts.length - 1];
         playField.removeFromPlayground(lastSerpentPart.x, lastSerpentPart.y);
         serpent.serpentParts.pop();
     }
-    //const chasEatenItem = hasEatenItem(serpent, items, playField, sound);
-    /*
-    else if (chasEatenItem) {
+    const chasEatenItem = hasEatenItem(serpent, items, playField, sound);
+
+    if (chasEatenItem) {
         // Remove the last part of snake body
-        generateNewItem(getRandomIntInclusive(2, 5), items, playField);
+        //generateNewItem(getRandomIntInclusive(3), items, playField);
+        generateNewItem(3, items, playField, generateRandomPosition(playField));
         serpent.serpentParts.pop();
     }
-    */
+
 }
 
 
 function hasEatenFood(serpent, items, playField, sound) {
     for (let i = 0; i < items.length; i++) {
-        
+
         playField.addToPlayground(items[i].gridx, items[i].gridy, items[i].id);
-        
+
         // if item == 1 , food is 1
         if (items[i].id == 1) {
-            const chasEatenFood = (serpent.serpentParts[0].x == items[i].gridx && serpent.serpentParts[0].y == items[i].gridy) ? true: false;
+            const chasEatenFood = (serpent.serpentParts[0].x == items[i].gridx && serpent.serpentParts[0].y == items[i].gridy) ? true : false;
 
             if (chasEatenFood) {
                 eatFoodSoundeffect(sound);
@@ -2371,32 +2287,31 @@ function generateRandomPosition(playField) {
     return randomPosition;
 }
 
-function generateNewItem(ObjectType, itemlist, playField) {
-
-    let randomPosition = generateRandomPosition(playField);
+function generateNewItem(ObjectType, itemlist, playField, position) {
 
     if (ObjectType == 1) {
-        var newFood = new item(1, "food", randomPosition.x, randomPosition.y, globalassets.clover);
+        var newFood = new item(1, "food", position.x, position.y, globalassets.clover);
         itemlist.push(newFood);
         playField.addToPlayground(newFood.gridx, newFood.gridy, 1);
     }
     else if (ObjectType == 2) {
-        var newBackpack = new item(2, "backpack", randomPosition.x, randomPosition.y, globalassets.backpack);
+        var newBackpack = new item(2, "backpack", position.x, position.y, globalassets.backpack);
         itemlist.push(newBackpack);
         playField.addToPlayground(newBackpack.gridx, newBackpack.gridy, 2);
     }
     else if (ObjectType == 3) {
-        var newBomb = new item(3, "bomb", randomPosition.x, randomPosition.y, globalassets.bomb);
+        var newBomb = new item(3, "bomb", position.x, position.y, globalassets.bomb);
         itemlist.push(newBomb);
         playField.addToPlayground(newBomb.gridx, newBomb.gridy, 3);
+        console.log("BOMB EATEN");
     }
     else if (ObjectType == 4) {
-        var newBook = new item(4, "book", randomPosition.x, randomPosition.y, globalassets.book);
+        var newBook = new item(4, "book", position.x, position.y, globalassets.book);
         itemlist.push(newBook);
         playField.addToPlayground(newBook.gridx, newBook.gridy, 4);
     }
     else if (ObjectType == 5) {
-        var newFeather = new item(5, "feather", randomPosition.x, randomPosition.y, globalassets.feather);
+        var newFeather = new item(5, "feather", position.x, position.y, globalassets.feather);
         itemlist.push(newFeather);
         playField.addToPlayground(newFeather.gridx, newFeather.gridy, 5);
     }
@@ -2453,9 +2368,9 @@ function eatFeatherSoundeffect(eatFeatherSound) {
     eatFeatherSound[4].play();
 }
 function eatBombSoundeffect(eatBombSound) {
-    eatBombSound[1].pause();
-    eatBombSound[1].currentTime = 0;
-    eatBombSound[1].play();
+    eatBombSound[3].pause();
+    eatBombSound[3].currentTime = 0;
+    eatBombSound[3].play();
 }
 function eatBackpackSoundeffect(eatBackpackSound) {
     eatBackpackSound[1].pause();
@@ -2521,18 +2436,18 @@ function sleep(milliseconds) {
 }
 function precise(x) {
     return Number.parseFloat(x).toPrecision(2);
-  }
+}
 
-  function decimalAdjust(type, value, exp) {
+function decimalAdjust(type, value, exp) {
     // If the exp is undefined or zero...
     if (typeof exp === 'undefined' || +exp === 0) {
-      return Math[type](value);
+        return Math[type](value);
     }
     value = +value;
     exp = +exp;
     // If the value is not a number or the exp is not an integer...
     if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
-      return NaN;
+        return NaN;
     }
     // Shift
     value = value.toString().split('e');
@@ -2540,8 +2455,8 @@ function precise(x) {
     // Shift back
     value = value.toString().split('e');
     return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
-  }
-  
+}
+
 
 /* ---- help functions section end  */
 
