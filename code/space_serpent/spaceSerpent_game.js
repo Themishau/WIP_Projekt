@@ -13,6 +13,13 @@ var gridSizey = 40; // 1000 / gridSizeScale =
 var gridSizex = 40; // 1000 % gridSizeScale
 var gridfield = 25;
 
+// Decimal round
+const round10 = (value, exp) => decimalAdjust('round', value, exp);
+// Decimal floor
+const floor10 = (value, exp) => decimalAdjust('floor', value, exp);
+// Decimal ceil
+const ceil10 = (value, exp) => decimalAdjust('ceil', value, exp);
+  
 /* object_table */
 var objectTable = {
     empty: 0, // empty
@@ -75,7 +82,12 @@ var objects = [
     "spr_planet11",
     "spr_planet12",
     "spr_planet13",
-    "spr_planet14"
+    "spr_planet14",
+    "Space001",
+    "Space002",
+    "Space003",
+    "Space004",
+    "Space005"
 ];
 /* soundEffects table */
 var soundEffects = [
@@ -248,13 +260,14 @@ class playground {
         this.fields[gridx][gridy] = 0;
     }
 
-    constructor(id, bg_img, bgsound) {
+    constructor(id, bgSpace, bg_img, bgsound) {
         this.id = id,
         this.name = "playground",
         this.xSize = gameField.canvas.width / gridSizeScale,
         this.ySize = gameField.canvas.height / gridSizeScale,
         this.fields = [],
         this.bg_img = bg_img,
+        this.bgSpace = bgSpace,
         this.angle = 0,
         this.anglePlanet2 = 0,
         this.anglePlanet3 = 0,
@@ -404,6 +417,7 @@ class LevelConfig {
         this.name = name,
         this.level = level,
             this.levelOption = levelOption,
+            this.backGroudSpace = [],
             this.bg_image = new Image(),
             this.img = new Image(),
             this.bg_universe = new Image(),
@@ -462,6 +476,7 @@ class LevelConfig {
         this.serpentSpritesGreen = this.serpent_sprites[0];
         this.serpentSpritesBlue = this.serpent_sprites[1];
         this.serpentSpriteRed = this.serpent_sprites[2];
+        this.backGroudSpace = [null,assets.Space001, assets.Space002, assets.Space003, assets.Space004, assets.Space005],
         this.backGroundSprites = [assets.spr_planet01,
                                   assets.spr_planet02,
                                   assets.spr_planet03,
@@ -478,7 +493,7 @@ class LevelConfig {
                                   assets.spr_planet14,
                                 ];
         this.playGroundBGMusic = [assets.bg_Jupiter, assets.underclocked, assets.Jumpshot, assets.Arpanauts];
-        this.playGroundLevel = new playground(0, this.backGroundSprites,  this.playGroundBGMusic[getRandomIntInclusive(0, this.playGroundBGMusic.length -1)]);
+        this.playGroundLevel = new playground(0, this.backGroudSpace[getRandomIntInclusive(0,5)], this.backGroundSprites, this.playGroundBGMusic[getRandomIntInclusive(0, this.playGroundBGMusic.length -1)]);
         this.serpent_sprite = assets.serpent_sprite;
         this.sound[0] = assets.food;
         this.sound[0].volume = 0.1;
@@ -1811,6 +1826,13 @@ function drawBackground(bg_stars, playGroundImage) {
         groundy += gridSizeScale;
     }
     */
+   if (playGroundImage.bgSpace != null)
+   gameField.canvasContext.drawImage(playGroundImage.bgSpace,
+                                        0,
+                                        0,
+                                        1000,
+                                        1000
+                                        );
     playGroundImage.angle = playGroundImage.angle - 0.5 * Math.PI / 180;
     var ctxPlanet1 = null;
     ctxPlanet1 = gameField.canvasContext;
@@ -2520,12 +2542,7 @@ function precise(x) {
     return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
   }
   
-  // Decimal round
-  const round10 = (value, exp) => decimalAdjust('round', value, exp);
-  // Decimal floor
-  const floor10 = (value, exp) => decimalAdjust('floor', value, exp);
-  // Decimal ceil
-  const ceil10 = (value, exp) => decimalAdjust('ceil', value, exp);
+
 /* ---- help functions section end  */
 
 
