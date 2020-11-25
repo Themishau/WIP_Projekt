@@ -2046,8 +2046,8 @@ function aStar(obstaclesTable, goalPosition, startPosition) {
 
 /* ----  movement section  ---- */
 function moveSerpents(serpentPlayer, aiSerpents, playGroundLevel, items, sound) {
-    moveAiSerpents(aiSerpents, playGroundLevel, items, sound);
     movePlayer(serpentPlayer, playGroundLevel, items, sound);
+    moveAiSerpents(aiSerpents, playGroundLevel, items, sound);
 }
 function getTargetPosition(aiSerpent, items, playField, serpentHeadPosition) {
     let targetStillExists = (playField.fields[aiSerpent.nextTarget.x][aiSerpent.nextTarget.y] == aiSerpent.nextTarget.objectID) ? true : false;
@@ -2090,6 +2090,7 @@ function moveAiSerpents(aiSerpents, playField, items, sound) {
 
             if (nextMovement.movementIsPossible == false) {
                 killSerpent(aiSerpents[i], playField, items);
+                sound[7].play();
                 return;
             }
 
