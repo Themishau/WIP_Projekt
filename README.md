@@ -37,21 +37,21 @@ Mitglieder:
 ## Quellen:
 
 ## Musik und Sprites
-https://opengameart.org/content/free-game-items-pack-2
-"Free Game Items Pack #2" Olga Bikmullina (http://ahninniah.graphics)Licensed under Creative Commons: By Attribution 3.0 http://creativecommons.org/licenses/by/3.0/
-https://opengameart.org/content/stars-parallax-backgrounds
-https://opengameart.org/content/colorful-planets-0
-https://opengameart.org/content/8-bit-sound-effects-0
- "Ctskelgysth Inauaruat", "Ctskelgysth", https://opengameart.org/content/8-bit-jupiter-the-bringer-of-jollity-456
-https://opengameart.org/content/512-sound-effects-8-bit-style
-Music: Eric Skiff - Resistor Anthems - Available at http://EricSkiff.com/music
-https://opengameart.org/content/space-backgrounds-with-stars-and-nubular
+- https://opengameart.org/content/free-game-items-pack-2
+- "Free Game Items Pack #2" Olga Bikmullina (http://ahninniah.graphics)Licensed under Creative Commons: By Attribution 3.0 http://creativecommons.org/licenses/by/3.0/
+- https://opengameart.org/content/stars-parallax-backgrounds
+- https://opengameart.org/content/colorful-planets-0
+- https://opengameart.org/content/8-bit-sound-effects-0
+- "Ctskelgysth Inauaruat", "Ctskelgysth", https://opengameart.org/content/8-bit-jupiter-the-bringer-of-jollity-456
+- https://opengameart.org/content/512-sound-effects-8-bit-style
+- Music: Eric Skiff - Resistor Anthems - Available at http://EricSkiff.com/music
+- https://opengameart.org/content/space-backgrounds-with-stars-and-nubular
 
 ## code:
-https://stackoverflow.com/questions/19764018/controlling-fps-with-requestanimationframe
-https://codeincomplete.com/articles/javascript-game-foundations-loading-assets/
-https://codeincomplete.com/articles/javascript-game-foundations-state-management/
-https://code.tutsplus.com/tutorials/animating-game-menus-and-screen-transitions-in-html5-a-guide-for-flash-developers--active-11183
-https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Number/toPrecision
-https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Math/floor
+- https://stackoverflow.com/questions/19764018/controlling-fps-with-requestanimationframe
+- https://codeincomplete.com/articles/javascript-game-foundations-loading-assets/
+- https://codeincomplete.com/articles/javascript-game-foundations-state-management/
+- https://code.tutsplus.com/tutorials/animating-game-menus-and-screen-transitions-in-html5-a-guide-for-flash-developers--active-11183
+- https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Number/toPrecision
+- https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Math/floor
 
