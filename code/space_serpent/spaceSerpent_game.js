@@ -784,7 +784,7 @@ class level {
         this.currentDeltaFrame += this.globalDelta * this.speed;
         //this.currentDeltaFrame += round10((this.globalDelta * this.speed), -1);
         //console.log(this.globalDelta, this.speed, this.globalDelta * this.speed, this.currentDeltaFrame);
-        console.log(this.levelConfig.speed, this.levelConfig.levelOption.movementAcc, this.speed);
+        //console.log(this.levelConfig.speed, this.levelConfig.levelOption.movementAcc, this.speed);
         // if (Math.ceil(this.currentDeltaFrame) == 1) {
         //console.log("jetziger wert: ", round10((this.currentDeltaFrame), -1), "addiere: ", (this.globalDelta * this.speed) ,"round10: ", round10((this.globalDelta * this.speed), -1));
         if (round10((this.currentDeltaFrame), -1) >= 1) {
