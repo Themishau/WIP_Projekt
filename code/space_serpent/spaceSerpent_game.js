@@ -39,7 +39,6 @@ var objects = [
     "bomb",
     "book",
     "feather",
-    "snake",
     "snake_head_b_1",
     "snake_head_b_2",
     "snake_head_b_3",
