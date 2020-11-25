@@ -37,15 +37,15 @@ Mitglieder:
 ## Quellen:
 
 ## Musik und Sprites
-- https://opengameart.org/content/free-game-items-pack-2
-- "Free Game Items Pack #2" Olga Bikmullina (http://ahninniah.graphics)Licensed under Creative Commons: By Attribution 3.0 http://creativecommons.org/licenses/by/3.0/
-- https://opengameart.org/content/stars-parallax-backgrounds
-- https://opengameart.org/content/colorful-planets-0
-- https://opengameart.org/content/8-bit-sound-effects-0
-- "Ctskelgysth Inauaruat", "Ctskelgysth", https://opengameart.org/content/8-bit-jupiter-the-bringer-of-jollity-456
-- https://opengameart.org/content/512-sound-effects-8-bit-style
-- Music: Eric Skiff - Resistor Anthems - Available at http://EricSkiff.com/music
-- https://opengameart.org/content/space-backgrounds-with-stars-and-nubular
+- AhNinniah - https://opengameart.org/content/free-game-items-pack-2 - CC by 3.0
+- "Free Game Items Pack #2" Olga Bikmullina (http://ahninniah.graphics) - CC by 3.0
+- Bonsaiheldin - https://opengameart.org/content/stars-parallax-backgrounds - CC by 0
+- Bonsaiheldin - https://opengameart.org/content/colorful-planets-0 - CC by 0
+- "Ctskelgysth Inauaruat", "Ctskelgysth" - https://opengameart.org/content/8-bit-sound-effects-0 - CC by 0
+- Dizzy Crow - https://opengameart.org/content/8-bit-jupiter-the-bringer-of-jollity-456 - CC by 0
+- SubspaceAudio - https://opengameart.org/content/512-sound-effects-8-bit-style - CC by 0
+- Music: Eric Skiff - Song Name - Resistor Anthems - Available at http://EricSkiff.com/music - CC by 4.0
+- Soluna Software - https://opengameart.org/content/space-backgrounds-with-stars-and-nubular - CC by 0
 
 ## code:
 - https://stackoverflow.com/questions/19764018/controlling-fps-with-requestanimationframe
