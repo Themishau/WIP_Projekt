@@ -13,6 +13,13 @@ var gridSizey = 40; // 1000 / gridSizeScale =
 var gridSizex = 40; // 1000 % gridSizeScale
 var gridfield = 25;
 
+// Decimal round
+const round10 = (value, exp) => decimalAdjust('round', value, exp);
+// Decimal floor
+const floor10 = (value, exp) => decimalAdjust('floor', value, exp);
+// Decimal ceil
+const ceil10 = (value, exp) => decimalAdjust('ceil', value, exp);
+  
 /* object_table */
 var objectTable = {
     empty: 0, // empty
@@ -2520,12 +2527,7 @@ function precise(x) {
     return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
   }
   
-  // Decimal round
-  const round10 = (value, exp) => decimalAdjust('round', value, exp);
-  // Decimal floor
-  const floor10 = (value, exp) => decimalAdjust('floor', value, exp);
-  // Decimal ceil
-  const ceil10 = (value, exp) => decimalAdjust('ceil', value, exp);
+
 /* ---- help functions section end  */
 
 
