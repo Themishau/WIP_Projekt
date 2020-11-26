@@ -1097,7 +1097,7 @@ class MainMenu {
         this.buttons.push(new MenuButton("Time", "Time: ", null, 150, 750, 100, 50, "20pt Courier", "white"));
         this.buttons.push(new MenuButton("startText", "Start Game", null, 450, 800, 100, 50, "20pt Courier", "white"));
         this.buttons.push(new MenuButton("Credits", "See Credits", null, 550, 900, 100, 50, "20pt Courier", "white"));
-        this.buttons.push(new MenuButton("WinCondition", ["Food Mode", "Time Mode", "Endless Mode"], null, 450, 450, 100, 50, "20pt Courier", "white"));
+        this.buttons.push(new MenuButton("WinCondition", ["Food Mode", "Time Mode", "Endless Mode"], null, 450, 450, 100, 50, "20pt Courier", "yellow"));
         this.buttons.push(new MenuButton("Player", "Player:", this.menuconfig.serpentSprites, 450, 470, 100, 50, "20pt Courier", "white"));
         this.buttons.push(new MenuButton("Enemy", 1, null, 450, 550, 100, 50, "20pt Courier", "white"));
         this.buttons.push(new MenuButton("fieldSize", ["small", "normal", "big"], null, 450, 600, 100, 50, "20pt Courier", "white"));
