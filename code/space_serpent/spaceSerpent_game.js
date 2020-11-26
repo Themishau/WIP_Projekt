@@ -2046,7 +2046,7 @@ function aStar(obstaclesTable, goalPosition, startPosition) {
 
 /* ----  movement section  ---- */
 function moveSerpents(serpentPlayer, aiSerpents, playGroundLevel, items, sound) {
-    movePlayer(serpentPlayer, playGroundLevel, items, sound);
+    executeSerpentMovement(serpentPlayer, playGroundLevel, items, sound);
     moveAiSerpents(aiSerpents, playGroundLevel, items, sound);
 }
 function getTargetPosition(aiSerpent, items, playField, serpentHeadPosition) {
@@ -2057,10 +2057,10 @@ function getTargetPosition(aiSerpent, items, playField, serpentHeadPosition) {
 }
 function generateNewTarget(items) {
     let targets = [];
-    items.forEach(goodItem => {    
+    items.forEach(goodItem => {
         if (goodItem.id == 1)
             targets.push(goodItem);
-});
+    });
     console.log("target:", targets);
     let randomInt = getRandomIntInclusive(0, targets.length - 1);
     let newTarget = targets[randomInt];
@@ -2071,7 +2071,7 @@ function createObstaclesTable(aiSerpent, playField) {
     for (var column = 0; column < obstaclesTable.xSize; column++) {
         for (var row = 0; row < obstaclesTable.ySize; row++) {
             if (playField.fields[column][row] >= 6 || // serpents
-                playField.fields[column][row] == 3  ) // bombs
+                playField.fields[column][row] == 3) // bombs
                 obstaclesTable.fields[column][row] = 1;
         }
     }
@@ -2108,7 +2108,7 @@ function moveAiSerpents(aiSerpents, playField, items, sound) {
 
 function killSerpent(serpent, playField, itemlist) {
     serpent.alive = false;
-    
+
     for (let serpentPartIndex = 0; serpentPartIndex < serpent.serpentParts.length; serpentPartIndex++) {
         playField.removeFromPlayground(serpent.serpentParts[serpentPartIndex].x, serpent.serpentParts[serpentPartIndex].y)
     }
@@ -2120,25 +2120,6 @@ function killSerpent(serpent, playField, itemlist) {
     serpent.dx = 0;
     serpent.dy = 0;
 
-}
-
-function movePlayer(serpent, playField, items, sound) {
-    if (serpent.alive){
-        let nextXPosition = serpent.serpentParts[0].x + serpent.dx;
-        let nextYPositon = serpent.serpentParts[0].y + serpent.dy;
-        let leavesPlayfield = (nextXPosition < 0 || nextXPosition >= playField.xSize) || (nextYPositon < 0 || nextYPositon >= playField.ySize) ? true : false;
-        if (!leavesPlayfield) {
-            let touchesEnemySerpent = (playField.fields[nextXPosition][nextYPositon] >= 7) ? true : false;
-            let touchesBomb = (playField.fields[nextXPosition][nextYPositon] == 3) ? true : false;
-            if (!touchesEnemySerpent && !touchesBomb) {
-                executeSerpentMovement(serpent, playField, items, sound);
-                return;
-            }
-
-        }
-        killSerpent(serpent, playField, items);
-        sound[8].play();
-    }
 }
 
 function changeCurrentPointOfView(serpent) {
@@ -2164,11 +2145,48 @@ function changeBodyDirectionAnimation(serpent) {
         serpent.serpentParts[0].currentCorner = 2;
     }
 }
+
+function getNextXPosition(serpent, playField) {
+    let nextXPosition = serpent.serpentParts[0].x + serpent.dx;
+
+    if (nextXPosition < 0)
+        nextXPosition = playField.fields.length - 1;
+    if (nextXPosition == playField.fields.length)
+        nextXPosition = 0;
+    return nextXPosition;
+}
+function getNextYPosition(serpent, playField) {
+    let nextYPosition = serpent.serpentParts[0].y + serpent.dy;
+    if (nextYPosition < 0)
+        nextYPosition = playField.fields.length - 1;
+    if (nextYPosition == playField.fields.length)
+        nextYPosition = 0;
+    return nextYPosition;
+}
+
+function serpentLost(serpent, playField, items, nextXPosition, nextYPosition){
+    let touchesEnemySerpent = (playField.fields[nextXPosition][nextYPosition] >= 7) ? true : false;
+    let touchesBomb = (playField.fields[nextXPosition][nextYPosition] == 3) ? true : false;
+    if (touchesEnemySerpent || touchesBomb) {
+        killSerpent(serpent, playField, items);
+        sound[8].play();
+        return true;
+    }
+    return false;
+}
+
 function executeSerpentMovement(serpent, playField, items, sound) {
 
     changeCurrentPointOfView(serpent);
 
-    var newHead = new serpentPart(serpent.serpentParts[0].x + serpent.dx, serpent.serpentParts[0].y + serpent.dy, serpent.serpentParts[0].currentPointOfView);
+    let nextXPosition = getNextXPosition(serpent, playField);
+    let nextYPosition = getNextYPosition(serpent, playField);
+
+    if (serpentLost(serpent, playField, items, nextXPosition, nextYPosition))
+        return;
+
+    var newHead = new serpentPart(nextXPosition, nextYPosition, serpent.serpentParts[0].currentPointOfView);
+
     changeBodyDirectionAnimation(serpent);
     serpent.serpentParts.unshift(newHead);
 
