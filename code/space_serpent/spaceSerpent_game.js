@@ -2234,7 +2234,6 @@ function moveAiSerpents(aiSerpents, playField, items, sound) {
 
             if (nextMovement.movementIsPossible == false) {
                 killSerpent(aiSerpents[i], playField, items);
-                playField.bgsound.pause();
                 sound[7].play();
                 return;
             }
