@@ -2329,7 +2329,7 @@ function getNextYPosition(serpent, playField) {
     return nextYPosition;
 }
 
-function serpentLost(serpent, playField, items, nextXPosition, nextYPosition){
+function serpentLost(serpent, playField, items, nextXPosition, nextYPosition, sound){
     let touchesEnemySerpent = (playField.fields[nextXPosition][nextYPosition] >= 7) ? true : false;
     let touchesBomb = (playField.fields[nextXPosition][nextYPosition] == 3) ? true : false;
     if (touchesEnemySerpent || touchesBomb) {
@@ -2347,7 +2347,7 @@ function executeSerpentMovement(serpent, playField, items, sound) {
     let nextXPosition = getNextXPosition(serpent, playField);
     let nextYPosition = getNextYPosition(serpent, playField);
 
-    if (serpentLost(serpent, playField, items, nextXPosition, nextYPosition))
+    if (serpentLost(serpent, playField, items, nextXPosition, nextYPosition, sound))
         return;
 
     var newHead = new serpentPart(nextXPosition, nextYPosition, serpent.serpentParts[0].currentPointOfView);
