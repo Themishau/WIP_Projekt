@@ -340,7 +340,7 @@ class serpent {
     constructor(id, x, y, spritesheet, initSnakeParts) {
         this.id = id,
             this.alive = true,
-            this.name = names[getRandomIntInclusive(0,6)],
+            this.name = names[getRandomIntInclusive(0,names.length-1)],
             this.gridx = x, // init the serpents position regarding to the grid ex.: gridSizex = 20 ; x = gridnumber in row n;  25 * 20 = 500 -> the position is x = 500 on the canvas
             this.gridy = y,
             this.width = gridSizex,
@@ -1267,6 +1267,7 @@ class AfterGameScreen {
                 let mainMenu = new MainMenu("MainMenu", new MenuConfig("MainMenu"));
                 mainMenu.menuconfig.StartLoading();
                 gameMode.push(mainMenu);
+                this.highScoreTable.clear();
             }
             stateData.menuconfig.scrollSound.pause();
             stateData.menuconfig.scrollSound.currentTime = 0;
@@ -1571,16 +1572,24 @@ var gameField = {
 var highScoreTable = {
     highScoreCanvas: null,
     highScoreCanvasContext: null,
-    highScoreCanvasWidth: 300,
+    highScoreCanvasWidth: screen.width/2.5,
     highScoreCanvasHeight: 500,
-    highScoreCanvasRight: "20px",
-    highScoreCanvasTop: "220px",
+    highScoreCanvasRight: "2%",
+    highScoreCanvasTop: "9%",
     highScoreCanvasPosition: "relative",
     serpentRanking: null,
-    serpentRank: 1,
+    serpentRank: 0,
     highScoreCanvasButtons: [],
     playerNameButtons:[],
     playerScoreButtons: [],
+
+    clear: function(){
+        //this.highScoreCanvasContext.clearRect(0,0, this.highScoreCanvasWidth, this.highScoreCanvasHeight);
+        for(let i=0;i<this.playerScoreButtons.length;i++){
+            this.popScoreSheetButtons();
+        }
+        document.body.removeChild(this.highScoreCanvas);
+    },
 
     update: function() {
         this.sync();
@@ -1622,7 +1631,6 @@ var highScoreTable = {
     renderButtons: function(){
         this.highScoreCanvasContext.clearRect(0,0,this.highScoreCanvasWidth,this.highScoreCanvasHeight);
         this.highScoreCanvasContext.beginPath();
-        this.highScoreCanvasContext.strokeStyle = "rgb(200,200,0)";
         this.highScoreCanvasContext.fillStyle = "rgb(200,200,0)";
         for(let i=0; i< this.highScoreCanvasButtons.length; i++){
             this.highScoreCanvasContext.font = this.highScoreCanvasButtons[i].font;
@@ -1640,12 +1648,16 @@ var highScoreTable = {
             this.highScoreCanvasContext.fillText(this.playerScoreButtons[i].text,this.playerScoreButtons[i].buttonX, this.playerScoreButtons[i].buttonY);
         }
     },
+
+    popScoreSheetButtons: function(){
+        this.playerNameButtons.pop();
+        this.playerScoreButtons.pop();
+    },
     
 
     init: function () {
         //alle Schlangen in ein lokales Array packen, welches über die Update-Funktion sortiert wird
         this.sync();
-
         //Definition und Inititalisierung des Highscore-Canvas
         this.highScoreCanvas = document.createElement("canvas");
         this.highScoreCanvas.id = "highScore";
@@ -1655,23 +1667,78 @@ var highScoreTable = {
         this.highScoreCanvas.style.marginRight = this.highScoreCanvasRight;
         this.highScoreCanvas.style.marginTop = this.highScoreCanvasTop;
         this.highScoreCanvasContext = this.highScoreCanvas.getContext("2d");
-        document.body.insertBefore(this.highScoreCanvas, document.body.childNodes[1]);
+        document.body.insertBefore(this.highScoreCanvas, document.body.childNodes[2]);
 
         //Einfügen der Buttons zur Darstellung der Highscore-Tabelle
-        this.highScoreCanvasButtons.push(new MenuButton("Head", "HighscoreTable", null, 15, 40, 100, 50,"24pt Courier", "white"));
-        this.highScoreCanvasButtons.push(new MenuButton("Player", "Player", null, 15, 70, 100, 50, "20pt Courier", "white"));
-        this.highScoreCanvasButtons.push(new MenuButton("Score", "Score", null, 150, 70, 100, 50, "20pt Courier", "white"));
+        this.highScoreCanvasButtons.push(new MenuButton("Head", "HighscoreTable", null, this.highScoreCanvasWidth/5, 40, 100, 50,"24pt Courier", "white"));
+        this.highScoreCanvasButtons.push(new MenuButton("Player", "Player", null, this.highScoreCanvasWidth/8, 70, 100, 50, "20pt Courier", "white"));
+        this.highScoreCanvasButtons.push(new MenuButton("Score", "Score", null, this.highScoreCanvasWidth/1.8, 70, 100, 50, "20pt Courier", "white"));
        
         //Einfügen des Rankings
         console.log(this.serpentRanking);
         for (let i=0; i< this.serpentRanking.length; i++){
             console.log(this.highScoreCanvasButtons);
-            this.playerNameButtons.push(new MenuButton(i, this.serpentRanking[i].name, null, 15, 100+i*30, 50,30, "20pt Courier", "white"));
-            this.playerScoreButtons.push(new MenuButton(i, this.serpentRanking[i].foodEaten, null, 150, 100+(i*30), 50, 30, "20pt Courier", "white"));
+            this.playerNameButtons.push(new MenuButton(i, this.serpentRanking[i].name, null, this.highScoreCanvasWidth/8, 120+(i*40), 50,30, "20pt Courier", "white"));
+            this.playerScoreButtons.push(new MenuButton(i, this.serpentRanking[i].foodEaten, null, this.highScoreCanvasWidth/1.8, 120+(i*40), 50, 30, "20pt Courier", "white"));
         }
-        
         this.renderButtons();
     },
+}
+
+var instruction ={
+    instructionCanvas: null,
+    instructionCanvasContext: null,
+    instructionCanvasWidth: screen.width/2.5,
+    instructionCanvasHeight: 500,
+    instructionCanvasLeft: "2%",
+    instructionCanvasTop: "9%",
+    instructionCanvasPosition: "relative",
+    instructionButtons: [],
+    feather: new Image(),
+    bomb: new Image(),
+    clover: new Image(),
+
+    init: function(){
+        if(this.instructionCanvasWidth>=300){
+            this.instructionCanvas = document.createElement("canvas");
+            this.instructionCanvas.id = "instruction";
+            this.instructionCanvas.width = this.instructionCanvasWidth;
+            this.instructionCanvas.height = this.instructionCanvasHeight;
+            this.instructionCanvas.position = this.instructionCanvasPosition;
+            this.instructionCanvas.style.marginLeft = this.instructionCanvasLeft;
+            this.instructionCanvas.style.marginTop = this.instructionCanvasTop;
+            this.instructionCanvasContext = this.instructionCanvas.getContext("2d");
+            document.body.insertBefore(this.instructionCanvas, document.body.childNodes[1]);
+
+            this.instructionButtons.push(new MenuButton("feather","The Feater...",null, 50,20, 150,20, "14pt Courier","white"));
+            this.instructionButtons.push(new MenuButton("clover","Länge +1 und Score +1",null, 50,50, 150,20, "14pt Courier","white"));
+            this.instructionButtons.push(new MenuButton("bomb","Explode - Ends the game",null, 50,90, 150,20, "14pt Courier","white"));
+        
+            this.feather.src = 'sprites/feather.png';
+            this.clover.src = 'sprites/clover.png';
+            this.bomb.src = 'sprites/bomb.png';
+
+            this.render();
+        }else{
+            window.alert("Screen is too small - Please load the game on a bigger screen")
+        } 
+    },
+
+    render: function(){
+        this.instructionCanvasContext.clearRect(0,0,this.instructionCanvasWidth, this.instructionCanvasHeight);
+        this.instructionCanvasContext.beginPath();
+        
+        this.instructionCanvasContext.drawImage(this.feather, 20,20, 20,20);
+        this.instructionCanvasContext.drawImage(this.clover,20, 50, 20,20);
+        this.instructionCanvasContext.drawImage(this.bomb, 20, 90, 20,20);
+        
+
+        this.instructionCanvasContext.fillStyle = "rgb(200,200,0)";
+        for(let i=0; i< this.instructionButtons.length; i++){
+            this.instructionCanvasContext.font = this.instructionButtons[i].font;
+            this.instructionCanvasContext.fillText(this.instructionButtons[i].text,this.instructionButtons[i].buttonX, this.instructionButtons[i].buttonY);
+        }
+    }
 }
 
 /* ----  load section  ---- */
@@ -1749,6 +1816,8 @@ window.onload = function () {
     /***** GAME STARTS HERE *****/
     sleep(5000);
     gameField.init();
+    instruction.init();
+
 }
 /* ----  global function section for gameField end  ---- */
 
@@ -2381,6 +2450,7 @@ function killSerpent(serpent, playField, itemlist) {
     serpent.removeAllSerpentParts();
     serpent.dx = 0;
     serpent.dy = 0;
+    this.highScoreTable.popScoreSheetButtons();
 
 }
 
