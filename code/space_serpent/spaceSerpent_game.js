@@ -1561,6 +1561,7 @@ var gameField = {
         this.canvas.width = this.canvas_width;
         this.canvas.height = this.canvas_height;
         this.canvasContext = this.canvas.getContext("2d");
+        this.canvas.style.border = "1px solid white";
         //this.deltaTime = (0.35 / (1000/this.FPS));
         this.deltaTime = (1000 / this.FPS);
         document.body.insertBefore(this.canvas, document.body.childNodes[0]); // due to some loading issues with images and sprites w want to insert it before
@@ -1672,6 +1673,7 @@ var highScoreTable = {
         this.highScoreCanvas.position = this.highScoreCanvasPosition;
         this.highScoreCanvas.style.marginRight = this.highScoreCanvasRight;
         this.highScoreCanvas.style.marginTop = this.highScoreCanvasTop;
+        this.highScoreCanvas.style.border = "2px solid black";
         this.highScoreCanvasContext = this.highScoreCanvas.getContext("2d");
         document.body.insertBefore(this.highScoreCanvas, document.body.childNodes[2]);
 
@@ -1714,6 +1716,7 @@ var instruction ={
             this.instructionCanvas.position = this.instructionCanvasPosition;
             this.instructionCanvas.style.marginLeft = this.instructionCanvasLeft;
             this.instructionCanvas.style.marginTop = this.instructionCanvasTop;
+            this.instructionCanvas.style.border = "2px solid black";
             this.instructionCanvasContext = this.instructionCanvas.getContext("2d");
             document.body.insertBefore(this.instructionCanvas, document.body.childNodes[1]);
 

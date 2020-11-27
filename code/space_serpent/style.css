@@ -18,13 +18,5 @@ html {
     background-repeat: repeat;
   }
 
-#canvas2{
-    border: 5px solid green;
-    width: 20%;
-    height: 40%;
-    position: absolute;
-    left: 75%;
-    top: 15%;
 
-}
 
