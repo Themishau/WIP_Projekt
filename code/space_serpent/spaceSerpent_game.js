@@ -709,8 +709,8 @@ class level {
         }
         // Time Mode
         else if (this.playMode == 1){
-            console.log(this.timeStart - this.gameTime);
-            console.log(this.gameTime, this.levelConfig.levelOption.winCondition.condition);
+            //console.log(this.timeStart - this.gameTime);
+            //console.log(this.gameTime, this.levelConfig.levelOption.winCondition.condition);
 
             if ((this.levelConfig.serpentPlayer.foodEaten > this.levelConfig.highestEnemy) && this.gameTime >= this.levelConfig.levelOption.winCondition.condition)
                 this.playerWin = true;
@@ -1679,7 +1679,7 @@ var highScoreTable = {
 
         //Einfügen der Buttons zur Darstellung der Highscore-Tabelle
         this.highScoreCanvasButtons.push(new MenuButton("Time", "Time ", null, this.highScoreCanvasWidth/5, 40, 100, 50,"24pt Courier", "white"));
-        this.highScoreCanvasButtons.push(new MenuButton("Head", "HighscoreTable", null, this.highScoreCanvasWidth/5, 80, 100, 50,"24pt Courier", "white"));
+        this.highScoreCanvasButtons.push(new MenuButton("Head", "HighscoreTable", null, this.highScoreCanvasWidth/6.5, 80, 100, 50,"24pt Courier", "white"));
         this.highScoreCanvasButtons.push(new MenuButton("Player", "Player", null, this.highScoreCanvasWidth/10, 120, 100, 50, "20pt Courier", "white"));
         this.highScoreCanvasButtons.push(new MenuButton("Score", "Score", null, this.highScoreCanvasWidth/1.8, 120, 100, 50, "20pt Courier", "white"));
        
@@ -2430,8 +2430,7 @@ function moveAiSerpents(aiSerpents, playField, items, sound) {
             const nextMovement = calculateNextMove(obstaclesTable.fields, serpentHeadPosition, nextTargetPosition, aiSerpents[i]);
 
             if (nextMovement.movementIsPossible == false) {
-                killSerpent(aiSerpents[i], playField, items);
-                sound[7].play();
+                killSerpent(aiSerpents[i], playField, items, sound);
                 return;
             }
 
@@ -2447,9 +2446,9 @@ function moveAiSerpents(aiSerpents, playField, items, sound) {
 
 }
 
-function killSerpent(serpent, playField, itemlist) {
+function killSerpent(serpent, playField, itemlist, sound) {
     serpent.alive = false;
-
+    sound[8].play();
     for (let serpentPartIndex = 0; serpentPartIndex < serpent.serpentParts.length; serpentPartIndex++) {
         playField.removeFromPlayground(serpent.serpentParts[serpentPartIndex].x, serpent.serpentParts[serpentPartIndex].y)
     }
@@ -2460,6 +2459,7 @@ function killSerpent(serpent, playField, itemlist) {
     serpent.removeAllSerpentParts();
     serpent.dx = 0;
     serpent.dy = 0;
+
     // ist hier ein bug, denke ich
     this.highScoreTable.popScoreSheetButtons();
 
@@ -2479,9 +2479,8 @@ function movePlayer(serpent, playField, items, sound) {
             }
 
         }
-        killSerpent(serpent, playField, items);
+        killSerpent(serpent, playField, items, sound);
         playField.bgsound.pause();
-        sound[8].play();
     }
 }
 
@@ -2531,8 +2530,7 @@ function serpentLost(serpent, playField, items, nextXPosition, nextYPosition, so
     let touchesEnemySerpent = (playField.fields[nextXPosition][nextYPosition] >= 7) ? true : false;
     let touchesBomb = (playField.fields[nextXPosition][nextYPosition] == 3) ? true : false;
     if (touchesEnemySerpent || touchesBomb) {
-        killSerpent(serpent, playField, items);
-        sound[8].play();
+        killSerpent(serpent, playField, items, sound);
         return true;
     }
     return false;
