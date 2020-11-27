@@ -810,7 +810,7 @@ class MainMenu {
             this.currentOption[1] = 1, // Enemies
             this.currentOption[2] = 0, // Playfieldsize
             this.currentOption[3] = 0, // Speed
-            this.currentOption[4] = 0, // Food
+            this.currentOption[4] = 1, // Food
             this.currentOption[5] = 1  // Time
             this.winCondition = {
                 playType: 0,  // food mode
