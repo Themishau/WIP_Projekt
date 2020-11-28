@@ -112,7 +112,8 @@ var soundEffects = [
     "Prologue.mp3",
     "Jumpshot.mp3",
     "underclocked.mp3",
-    "Arpanauts.mp3"
+    "Arpanauts.mp3",
+    "allofus.mp3"
 
 ];
 /* loaded assets */
@@ -497,7 +498,7 @@ class LevelConfig {
             assets.spr_planet13,
             assets.spr_planet14,
             ];
-        this.playGroundBGMusic = [assets.bg_Jupiter, assets.underclocked, assets.Jumpshot, assets.Arpanauts];
+        this.playGroundBGMusic = [assets.underclocked, assets.Jumpshot, assets.Arpanauts, assets.allofus];
         this.playGroundLevel = new playground(0, this.backGroudSpace[getRandomIntInclusive(0, 5)], this.backGroundSprites, this.playGroundBGMusic[getRandomIntInclusive(0, this.playGroundBGMusic.length - 1)]);
         this.serpent_sprite = assets.serpent_sprite;
         this.sound[0] = assets.food;
@@ -709,8 +710,8 @@ class level {
         }
         // Time Mode
         else if (this.playMode == 1){
-            console.log(this.timeStart - this.gameTime);
-            console.log(this.gameTime, this.levelConfig.levelOption.winCondition.condition);
+            //console.log(this.timeStart - this.gameTime);
+            //console.log(this.gameTime, this.levelConfig.levelOption.winCondition.condition);
 
             if ((this.levelConfig.serpentPlayer.foodEaten > this.levelConfig.highestEnemy) && this.gameTime >= this.levelConfig.levelOption.winCondition.condition)
                 this.playerWin = true;
@@ -1432,6 +1433,7 @@ class CreditScreen {
         this.menuconfig.backgroundImageY = moveMenuBackground(this.menuconfig.backgroundImageY, this.menuconfig.scrollSpeedBackground);
     };
     addToButtons() {
+        this.buttons.push(new MenuButton("Credit", "Music: Eric Skiff - All Of Us - Resistor Anthems - Available at http://EricSkiff.com/music", null, 20, 380, 100, 50, "8pt Courier", "white"));
         this.buttons.push(new MenuButton("Credit", "Music: Eric Skiff - Jumpshot - Resistor Anthems - Available at http://EricSkiff.com/music", null, 20, 400, 100, 50, "8pt Courier", "white"));
         this.buttons.push(new MenuButton("Credit", "Music: Eric Skiff - HHavok-intro - Resistor Anthems - Available at http://EricSkiff.com/music", null, 20, 420, 100, 50, "8pt Courier", "white"));
         this.buttons.push(new MenuButton("Credit", "Music: Eric Skiff - Underclocked - Resistor Anthems - Available at http://EricSkiff.com/music", null, 20, 440, 100, 50, "8pt Courier", "white"));
@@ -1561,6 +1563,7 @@ var gameField = {
         this.canvas.width = this.canvas_width;
         this.canvas.height = this.canvas_height;
         this.canvasContext = this.canvas.getContext("2d");
+        this.canvas.style.border = "1px solid white";
         //this.deltaTime = (0.35 / (1000/this.FPS));
         this.deltaTime = (1000 / this.FPS);
         document.body.insertBefore(this.canvas, document.body.childNodes[0]); // due to some loading issues with images and sprites w want to insert it before
@@ -1672,12 +1675,13 @@ var highScoreTable = {
         this.highScoreCanvas.position = this.highScoreCanvasPosition;
         this.highScoreCanvas.style.marginRight = this.highScoreCanvasRight;
         this.highScoreCanvas.style.marginTop = this.highScoreCanvasTop;
+        this.highScoreCanvas.style.border = "2px solid black";
         this.highScoreCanvasContext = this.highScoreCanvas.getContext("2d");
         document.body.insertBefore(this.highScoreCanvas, document.body.childNodes[2]);
 
         //Einfügen der Buttons zur Darstellung der Highscore-Tabelle
         this.highScoreCanvasButtons.push(new MenuButton("Time", "Time ", null, this.highScoreCanvasWidth/5, 40, 100, 50,"24pt Courier", "white"));
-        this.highScoreCanvasButtons.push(new MenuButton("Head", "HighscoreTable", null, this.highScoreCanvasWidth/5, 80, 100, 50,"24pt Courier", "white"));
+        this.highScoreCanvasButtons.push(new MenuButton("Head", "HighscoreTable", null, this.highScoreCanvasWidth/6.5, 80, 100, 50,"24pt Courier", "white"));
         this.highScoreCanvasButtons.push(new MenuButton("Player", "Player", null, this.highScoreCanvasWidth/10, 120, 100, 50, "20pt Courier", "white"));
         this.highScoreCanvasButtons.push(new MenuButton("Score", "Score", null, this.highScoreCanvasWidth/1.8, 120, 100, 50, "20pt Courier", "white"));
        
@@ -1714,6 +1718,7 @@ var instruction ={
             this.instructionCanvas.position = this.instructionCanvasPosition;
             this.instructionCanvas.style.marginLeft = this.instructionCanvasLeft;
             this.instructionCanvas.style.marginTop = this.instructionCanvasTop;
+            this.instructionCanvas.style.border = "2px solid black";
             this.instructionCanvasContext = this.instructionCanvas.getContext("2d");
             document.body.insertBefore(this.instructionCanvas, document.body.childNodes[1]);
 
@@ -2427,8 +2432,7 @@ function moveAiSerpents(aiSerpents, playField, items, sound) {
             const nextMovement = calculateNextMove(obstaclesTable.fields, serpentHeadPosition, nextTargetPosition, aiSerpents[i]);
 
             if (nextMovement.movementIsPossible == false) {
-                killSerpent(aiSerpents[i], playField, items);
-                sound[7].play();
+                killSerpent(aiSerpents[i], playField, items, sound);
                 return;
             }
 
@@ -2444,9 +2448,9 @@ function moveAiSerpents(aiSerpents, playField, items, sound) {
 
 }
 
-function killSerpent(serpent, playField, itemlist) {
+function killSerpent(serpent, playField, itemlist, sound) {
     serpent.alive = false;
-
+    sound[8].play();
     for (let serpentPartIndex = 0; serpentPartIndex < serpent.serpentParts.length; serpentPartIndex++) {
         playField.removeFromPlayground(serpent.serpentParts[serpentPartIndex].x, serpent.serpentParts[serpentPartIndex].y)
     }
@@ -2457,6 +2461,7 @@ function killSerpent(serpent, playField, itemlist) {
     serpent.removeAllSerpentParts();
     serpent.dx = 0;
     serpent.dy = 0;
+
     // ist hier ein bug, denke ich
     this.highScoreTable.popScoreSheetButtons();
 
@@ -2476,9 +2481,8 @@ function movePlayer(serpent, playField, items, sound) {
             }
 
         }
-        killSerpent(serpent, playField, items);
+        killSerpent(serpent, playField, items, sound);
         playField.bgsound.pause();
-        sound[8].play();
     }
 }
 
@@ -2528,8 +2532,7 @@ function serpentLost(serpent, playField, items, nextXPosition, nextYPosition, so
     let touchesEnemySerpent = (playField.fields[nextXPosition][nextYPosition] >= 7) ? true : false;
     let touchesBomb = (playField.fields[nextXPosition][nextYPosition] == 3) ? true : false;
     if (touchesEnemySerpent || touchesBomb) {
-        killSerpent(serpent, playField, items);
-        sound[8].play();
+        killSerpent(serpent, playField, items, sound);
         return true;
     }
     return false;
