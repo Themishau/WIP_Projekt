@@ -1600,9 +1600,6 @@ var highScoreTable = {
             }
             document.body.removeChild(this.highScoreCanvas);
 <<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> parent of e109b48... ScreenTableDynamicInitial
-=======
 >>>>>>> parent of e109b48... ScreenTableDynamicInitial
 =======
 >>>>>>> parent of e109b48... ScreenTableDynamicInitial
@@ -1767,9 +1764,6 @@ var instruction ={
 =======
     arrows: new Image(),
 <<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> parent of e109b48... ScreenTableDynamicInitial
-=======
 >>>>>>> parent of e109b48... ScreenTableDynamicInitial
 =======
 >>>>>>> parent of e109b48... ScreenTableDynamicInitial
