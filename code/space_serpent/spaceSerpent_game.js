@@ -1168,6 +1168,7 @@ class PauseMenu {
                 let mainMenu = new MainMenu("MainMenu", new MenuConfig("MainMenu"));
                 mainMenu.menuconfig.StartLoading();
                 gameMode.push(mainMenu);
+                this.highScoreTable.clear();
             }
 
         };
@@ -1256,6 +1257,8 @@ class AfterGameScreen {
                 let newlevelconfig = new LevelConfig("level" + (levelConfig.level + 1), levelConfig.level + 1, new LevelOption("level" + (levelConfig.level + 1), levelConfig.levelOption.movementAcc, levelConfig.levelOption.playGroundSize, levelConfig.levelOption.aiEnemys, levelConfig.levelOption.serpentSpriteColor, null, null, levelConfig.levelOption.winCondition));
                 newlevelconfig.StartLoading();
                 gameMode.push(new level("level" + (levelConfig.level + 1), newlevelconfig, stateData.menuconfig));
+                this.highScoreTable.clear();
+                this.highScoreTable.init();
                 /** Note that this does not remove the current state
                  *  from the list. it just adds Level1State on top of it.
                  */
@@ -1577,7 +1580,7 @@ var gameField = {
 var highScoreTable = {
     highScoreCanvas: null,
     highScoreCanvasContext: null,
-    highScoreCanvasWidth: screen.width/5, //Auch window.innerWidth verwendebar
+    highScoreCanvasWidth: 500, //Auch window.innerWidth verwendebar
     highScoreCanvasHeight: 540,
     highScoreCanvasRight: "2%",
     highScoreCanvasTop: "",
@@ -1593,17 +1596,19 @@ var highScoreTable = {
 
     clear: function(){
         //this.highScoreCanvasContext.clearRect(0,0, this.highScoreCanvasWidth, this.highScoreCanvasHeight);
-        if(this.sizeToSmall == false){
-            for(let i=0;i<this.playerScoreButtons.length;i++){
-                this.popScoreSheetButtons();
-            }
+        if(this.sizeToSmall == false && this.highScoreCanvas != null){
             document.body.removeChild(this.highScoreCanvas);
             this.highScoreCanvas = null;
+            this.playerNameButtons = [];
+            this.playerScoreButtons = [];
         }
     },
 
     update: function() {
-        if(window.innerWidth >=1100){
+        if(window.innerWidth >=2000){
+            if(this.highScoreCanvas == null){
+                this.init();
+            }
             this.sync();
             let time = this.stateData;
             this.timeButton.text = time;
@@ -1640,10 +1645,11 @@ var highScoreTable = {
         this.copyAiSerpents = getStateData().levelConfig.aiSerpents.slice(0, getStateData().levelConfig.aiSerpents.length);
         this.serpentRanking = this.copyAiSerpents;
         for (let i = 0; i < this.serpentRanking.length; i++) {
-            if(this.serpentRanking[i].alive == false){
+            if(getStateData().levelConfig.aiSerpents[i].alive == false){
                 this.serpentRanking.splice(i,1);
             }
         }
+        
         //console.log(this.serpentRanking, "this.stateData", this.stateData, "this.timebutton",this.timeButton);
         this.copySerpent = copyObject(getStateData().levelConfig.serpentPlayer);
         this.serpentRanking.push(this.copySerpent);
@@ -1675,6 +1681,7 @@ var highScoreTable = {
 
     popScoreSheetButtons: function(){
         if(this.sizeToSmall==false){
+            this.temp =getStateData().levelConfig.serpentPlayer.alive;
             if(getStateData().levelConfig.serpentPlayer.alive ==true){
                 this.playerNameButtons.pop();
                 this.playerScoreButtons.pop();
@@ -1683,7 +1690,7 @@ var highScoreTable = {
     },
     
     init: function () {
-        if(window.innerWidth >= 1100){
+        if(window.innerWidth >= 2000){
             //alle Schlangen in ein lokales Array packen, welches über die Update-Funktion sortiert wird
             this.sync();
             this.sizeToSmall = false;
@@ -1715,7 +1722,6 @@ var highScoreTable = {
             this.renderButtons();
         }else{
             this.sizeToSmall = true;
-            window.alert("Window to small to display the Scoresheet");
         }
     },
 }
@@ -1723,7 +1729,7 @@ var highScoreTable = {
 var instruction ={
     instructionCanvas: null,
     instructionCanvasContext: null,
-    instructionCanvasWidth: screen.width/5, //window.innerWidth
+    instructionCanvasWidth: 500, //window.innerWidth
     instructionCanvasHeight: 620,
     instructionCanvasLeft: "2%",
     instructionCanvasTop: "",
@@ -1735,7 +1741,7 @@ var instruction ={
     arrows: new Image(),
     
     update:function(){
-        if(window.innerWidth<1100){
+        if(window.innerWidth<2000){
             if(this.instructionCanvas != null){
                 this.clear();
             }
@@ -1755,7 +1761,7 @@ var instruction ={
     },
 
     init: function(){
-        if(window.innerWidth>=1100){
+        if(window.innerWidth>=2000){
             this.instructionCanvas = document.createElement("canvas");
             this.instructionCanvas.id = "instruction";
             this.instructionCanvas.width = this.instructionCanvasWidth;
