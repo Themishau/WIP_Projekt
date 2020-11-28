@@ -1629,7 +1629,7 @@ var highScoreTable = {
                 }
             }
             //HighScoreTable aktualisieren (machen)
-            for( let i=0; i <this.serpentRanking.length; i++){
+            for( let i=0; i <this.serpentRanking.length || i < this.playerNameButtons.length; i++){
                 this.playerNameButtons[i].text = this.serpentRanking[i].name;
                 this.playerScoreButtons[i].text = this.serpentRanking[i].foodEaten;
             }
