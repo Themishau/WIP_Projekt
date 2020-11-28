@@ -1763,6 +1763,7 @@ var instruction ={
             this.instructionCanvas.position = this.instructionCanvasPosition;
             this.instructionCanvas.style.marginLeft = this.instructionCanvasLeft;
             this.instructionCanvas.style.marginTop = this.instructionCanvasTop;
+            this.instructionCanvas.style.border = "2px solid black";
             this.instructionCanvasContext = this.instructionCanvas.getContext("2d");
             document.body.insertBefore(this.instructionCanvas, document.body.childNodes[1]);
 
@@ -1790,7 +1791,7 @@ var instruction ={
         this.instructionCanvasContext.drawImage(this.feather, 30, 80, 50, 50);
         this.instructionCanvasContext.drawImage(this.clover,30, 150, 50, 50);
         this.instructionCanvasContext.drawImage(this.bomb, 30, 220, 50, 50);
-        this.instructionCanvasContext.drawImage(this.arrows, 75, 330, this.instructionCanvasWidth-150, 210);
+        this.instructionCanvasContext.drawImage(this.arrows, 75, 330, 100, 150);
                 
 
         this.instructionCanvasContext.fillStyle = "rgb(200,200,0)";
