@@ -1623,9 +1623,11 @@ var highScoreTable = {
         this.copyAiSerpents = getStateData().levelConfig.aiSerpents.slice(0, getStateData().levelConfig.aiSerpents.length);
         this.serpentRanking = this.copyAiSerpents;
         console.log(this.serpentRanking);
-        this.copySerpent = copyObject(getStateData().levelConfig.serpentPlayer);
-        this.serpentRanking.push(this.copySerpent);
-        this.serpentRank = this.serpentRanking.length-1;
+        //if(getStateData().levelConfig.serpentPlayer.alive == true){
+            this.copySerpent = copyObject(getStateData().levelConfig.serpentPlayer);
+            this.serpentRanking.push(this.copySerpent);
+            this.serpentRank = this.serpentRanking.length-1;
+        //}
         console.log(this.serpentRanking);
     },
 
@@ -1651,8 +1653,10 @@ var highScoreTable = {
     },
 
     popScoreSheetButtons: function(){
-        this.playerNameButtons.pop();
-        this.playerScoreButtons.pop();
+        if(getStateData().levelConfig.serpentPlayer.alive == true){
+            this.playerNameButtons.pop();
+            this.playerScoreButtons.pop();
+        }
     },
     
 
@@ -2456,7 +2460,7 @@ function killSerpent(serpent, playField, itemlist) {
     serpent.removeAllSerpentParts();
     serpent.dx = 0;
     serpent.dy = 0;
-    this.highScoreTable.popScoreSheetButtons();
+    highScoreTable.popScoreSheetButtons();
 
 }
 
