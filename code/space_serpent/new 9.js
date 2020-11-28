@@ -114,6 +114,7 @@ var soundEffects = [
     "underclocked.mp3",
     "Arpanauts.mp3",
     "allofus.mp3"
+
 ];
 /* loaded assets */
 var globalassets = [];
@@ -497,7 +498,7 @@ class LevelConfig {
             assets.spr_planet13,
             assets.spr_planet14,
             ];
-            this.playGroundBGMusic = [assets.underclocked, assets.Jumpshot, assets.Arpanauts, assets.allofus];
+        this.playGroundBGMusic = [assets.underclocked, assets.Jumpshot, assets.Arpanauts, assets.allofus];
         this.playGroundLevel = new playground(0, this.backGroudSpace[getRandomIntInclusive(0, 5)], this.backGroundSprites, this.playGroundBGMusic[getRandomIntInclusive(0, this.playGroundBGMusic.length - 1)]);
         this.serpent_sprite = assets.serpent_sprite;
         this.sound[0] = assets.food;
@@ -709,7 +710,8 @@ class level {
         }
         // Time Mode
         else if (this.playMode == 1){
-
+            //console.log(this.timeStart - this.gameTime);
+            //console.log(this.gameTime, this.levelConfig.levelOption.winCondition.condition);
 
             if ((this.levelConfig.serpentPlayer.foodEaten > this.levelConfig.highestEnemy) && this.gameTime >= this.levelConfig.levelOption.winCondition.condition)
                 this.playerWin = true;
@@ -1716,6 +1718,7 @@ var instruction ={
             this.instructionCanvas.position = this.instructionCanvasPosition;
             this.instructionCanvas.style.marginLeft = this.instructionCanvasLeft;
             this.instructionCanvas.style.marginTop = this.instructionCanvasTop;
+            this.instructionCanvas.style.border = "2px solid black";
             this.instructionCanvasContext = this.instructionCanvas.getContext("2d");
             document.body.insertBefore(this.instructionCanvas, document.body.childNodes[1]);
 
@@ -2458,7 +2461,6 @@ function killSerpent(serpent, playField, itemlist, sound) {
     serpent.removeAllSerpentParts();
     serpent.dx = 0;
     serpent.dy = 0;
-    // ist hier ein bug, denke ich
     this.highScoreTable.popScoreSheetButtons();
 
 }
