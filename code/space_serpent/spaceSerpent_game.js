@@ -1599,6 +1599,9 @@ var highScoreTable = {
                 this.popScoreSheetButtons();
             }
             document.body.removeChild(this.highScoreCanvas);
+<<<<<<< HEAD
+>>>>>>> parent of e109b48... ScreenTableDynamicInitial
+=======
 >>>>>>> parent of e109b48... ScreenTableDynamicInitial
         }
         document.body.removeChild(this.highScoreCanvas);
@@ -1760,6 +1763,9 @@ var instruction ={
 <<<<<<< HEAD
 =======
     arrows: new Image(),
+<<<<<<< HEAD
+>>>>>>> parent of e109b48... ScreenTableDynamicInitial
+=======
 >>>>>>> parent of e109b48... ScreenTableDynamicInitial
 
     init: function(){
