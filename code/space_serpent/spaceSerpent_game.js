@@ -1583,51 +1583,57 @@ var highScoreTable = {
     highScoreCanvasButtons: [],
     playerNameButtons:[],
     playerScoreButtons: [],
+    sizetosmall: false,
 
     clear: function(){
         //this.highScoreCanvasContext.clearRect(0,0, this.highScoreCanvasWidth, this.highScoreCanvasHeight);
-        for(let i=0;i<this.playerScoreButtons.length;i++){
-            this.popScoreSheetButtons();
+        if(this.sizetosmall == false){
+            for(let i=0;i<this.playerScoreButtons.length;i++){
+                this.popScoreSheetButtons();
+            }
+            document.body.removeChild(this.highScoreCanvas);
         }
-        document.body.removeChild(this.highScoreCanvas);
     },
 
     update: function() {
-        this.sync();
-        console.log(this.serpentRanking);
-        // Bubblesort auf die Serpentlist -> vergleicht die Nachbarn jeweils darauf, ob foodEaten < als der Nachfolger ist
-        for( let n=this.serpentRanking.length-1; n>0; n--){
-            for(let i=0; i<n; i++){
-               if(this.serpentRanking[i].foodEaten < this.serpentRanking[i+1].foodEaten){
-                   //wenn "foodEaten" des Nachfolgers größer ist dann folgt ein Swap
-                   if(i == this.serpentRank){
-                        this.serpentRank = i+1;
-                   }else if(i+1 == this.serpentRank){
-                       this.serpentRank = i;
-                   }
-                    this.temp = this.serpentRanking[i];
-                    this.serpentRanking[i] = this.serpentRanking[i+1];
-                    this.serpentRanking[i+1] = this.temp;
+        if(window.innerWidth >= 1100){
+            this.sync();
+            console.log(this.serpentRanking);
+            // Bubblesort auf die Serpentlist -> vergleicht die Nachbarn jeweils darauf, ob foodEaten < als der Nachfolger ist
+            for( let n=this.serpentRanking.length-1; n>0; n--){
+                for(let i=0; i<n; i++){
+                    if(this.serpentRanking[i].foodEaten < this.serpentRanking[i+1].foodEaten){
+                        //wenn "foodEaten" des Nachfolgers größer ist dann folgt ein Swap
+                        if(i == this.serpentRank){
+                            this.serpentRank = i+1;
+                        }else if(i+1 == this.serpentRank){
+                            this.serpentRank = i;
+                        }
+                        this.temp = this.serpentRanking[i];
+                        this.serpentRanking[i] = this.serpentRanking[i+1];
+                        this.serpentRanking[i+1] = this.temp;
+                    }
                 }
             }
+            //HighScoreTable aktualisieren (machen)
+            for( let i=0; i <this.serpentRanking.length; i++){
+                this.playerNameButtons[i].text = this.serpentRanking[i].name;
+                this.playerScoreButtons[i].text = this.serpentRanking[i].foodEaten;
+            }
+            this.renderButtons();
+        }else{
+            this.clear();
+            this.sizetosmall = true;
         }
-        //HighScoreTable aktualisieren (machen)
-        for( let i=0; i <this.serpentRanking.length; i++){
-            this.playerNameButtons[i].text = this.serpentRanking[i].name;
-            this.playerScoreButtons[i].text = this.serpentRanking[i].foodEaten;
-        }
-        this.renderButtons();
     },
 
     sync: function(){
         this.copyAiSerpents = getStateData().levelConfig.aiSerpents.slice(0, getStateData().levelConfig.aiSerpents.length);
         this.serpentRanking = this.copyAiSerpents;
         console.log(this.serpentRanking);
-        //if(getStateData().levelConfig.serpentPlayer.alive == true){
-            this.copySerpent = copyObject(getStateData().levelConfig.serpentPlayer);
-            this.serpentRanking.push(this.copySerpent);
-            this.serpentRank = this.serpentRanking.length-1;
-        //}
+        this.copySerpent = copyObject(getStateData().levelConfig.serpentPlayer);
+        this.serpentRanking.push(this.copySerpent);
+        this.serpentRank = this.serpentRanking.length-1;
         console.log(this.serpentRanking);
     },
 
@@ -1653,40 +1659,47 @@ var highScoreTable = {
     },
 
     popScoreSheetButtons: function(){
-        if(getStateData().levelConfig.serpentPlayer.alive == true){
-            this.playerNameButtons.pop();
-            this.playerScoreButtons.pop();
+        if(this.sizetosmall == false){
+            if(getStateData().levelConfig.serpentPlayer.alive == true){
+                this.playerNameButtons.pop();
+                this.playerScoreButtons.pop();
+            }
         }
     },
     
 
     init: function () {
-        //alle Schlangen in ein lokales Array packen, welches über die Update-Funktion sortiert wird
-        this.sync();
-        //Definition und Inititalisierung des Highscore-Canvas
-        this.highScoreCanvas = document.createElement("canvas");
-        this.highScoreCanvas.id = "highScore";
-        this.highScoreCanvas.width = this.highScoreCanvasWidth;
-        this.highScoreCanvas.height = this.highScoreCanvasHeight;
-        this.highScoreCanvas.position = this.highScoreCanvasPosition;
-        this.highScoreCanvas.style.marginRight = this.highScoreCanvasRight;
-        this.highScoreCanvas.style.marginTop = this.highScoreCanvasTop;
-        this.highScoreCanvasContext = this.highScoreCanvas.getContext("2d");
-        document.body.insertBefore(this.highScoreCanvas, document.body.childNodes[2]);
+        if(window.innerWidth >= 1100){
+            //alle Schlangen in ein lokales Array packen, welches über die Update-Funktion sortiert wird
+            this.sync();
+            //Definition und Inititalisierung des Highscore-Canvas
+            this.highScoreCanvas = document.createElement("canvas");
+            this.highScoreCanvas.id = "highScore";
+            this.highScoreCanvas.width = this.highScoreCanvasWidth;
+            this.highScoreCanvas.height = this.highScoreCanvasHeight;
+            this.highScoreCanvas.position = this.highScoreCanvasPosition;
+            this.highScoreCanvas.style.marginRight = this.highScoreCanvasRight;
+            this.highScoreCanvas.style.marginTop = this.highScoreCanvasTop;
+            this.highScoreCanvasContext = this.highScoreCanvas.getContext("2d");
+            document.body.insertBefore(this.highScoreCanvas, document.body.childNodes[2]);
 
-        //Einfügen der Buttons zur Darstellung der Highscore-Tabelle
-        this.highScoreCanvasButtons.push(new MenuButton("Head", "ScoreTable", null, this.highScoreCanvasWidth/5, 50, 100, 50,"24pt Courier", "white"));
-        this.highScoreCanvasButtons.push(new MenuButton("Player", "Player", null, this.highScoreCanvasWidth/8, 100, 100, 50, "22pt Courier", "white"));
-        this.highScoreCanvasButtons.push(new MenuButton("Score", "Score", null, this.highScoreCanvasWidth/1.8, 100, 100, 50, "22pt Courier", "white"));
+            //Einfügen der Buttons zur Darstellung der Highscore-Tabelle
+            this.highScoreCanvasButtons.push(new MenuButton("Head", "ScoreTable", null, this.highScoreCanvasWidth/5, 50, 100, 50,"24pt Courier", "white"));
+            this.highScoreCanvasButtons.push(new MenuButton("Player", "Player", null, this.highScoreCanvasWidth/8, 100, 100, 50, "22pt Courier", "white"));
+            this.highScoreCanvasButtons.push(new MenuButton("Score", "Score", null, this.highScoreCanvasWidth/1.8, 100, 100, 50, "22pt Courier", "white"));
        
-        //Einfügen des Rankings
-        console.log(this.serpentRanking);
-        for (let i=0; i< this.serpentRanking.length; i++){
-            console.log(this.highScoreCanvasButtons);
-            this.playerNameButtons.push(new MenuButton(i, this.serpentRanking[i].name, null, this.highScoreCanvasWidth/8, 150+(i*60), 50,30, "22pt Courier", "white"));
-            this.playerScoreButtons.push(new MenuButton(i, this.serpentRanking[i].foodEaten, null, this.highScoreCanvasWidth/1.8, 150+(i*60), 50, 30, "22pt Courier", "white"));
+            //Einfügen des Rankings
+            console.log(this.serpentRanking);
+            for (let i=0; i< this.serpentRanking.length; i++){
+                console.log(this.highScoreCanvasButtons);
+                this.playerNameButtons.push(new MenuButton(i, this.serpentRanking[i].name, null, this.highScoreCanvasWidth/8, 150+(i*60), 50,30, "22pt Courier", "white"));
+                this.playerScoreButtons.push(new MenuButton(i, this.serpentRanking[i].foodEaten, null, this.highScoreCanvasWidth/1.8, 150+(i*60), 50, 30, "22pt Courier", "white"));
+            }
+            this.renderButtons();
+        }else{
+            this.sizetosmall = true;
+            window.alert("Screen to small - To show Scoresheet reload on a bigger screen!");
         }
-        this.renderButtons();
     },
 }
 
@@ -1705,7 +1718,7 @@ var instruction ={
     arrows: new Image(),
 
     init: function(){
-        if(this.instructionCanvasWidth>=300){
+        if(window.innerWidth>=1100){
             this.instructionCanvas = document.createElement("canvas");
             this.instructionCanvas.id = "instruction";
             this.instructionCanvas.width = this.instructionCanvasWidth;
