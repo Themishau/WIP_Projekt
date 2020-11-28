@@ -1590,22 +1590,13 @@ var highScoreTable = {
 
     clear: function(){
         //this.highScoreCanvasContext.clearRect(0,0, this.highScoreCanvasWidth, this.highScoreCanvasHeight);
-<<<<<<< HEAD
         for(let i=0;i<this.playerScoreButtons.length;i++){
             this.popScoreSheetButtons();
-=======
-        if(this.sizetosmall == false){
-            for(let i=0;i<this.playerScoreButtons.length;i++){
-                this.popScoreSheetButtons();
-            }
-            document.body.removeChild(this.highScoreCanvas);
->>>>>>> parent of e109b48... ScreenTableDynamicInitial
         }
         document.body.removeChild(this.highScoreCanvas);
     },
 
     update: function() {
-<<<<<<< HEAD
         this.sync();
         let time = this.stateData;
         this.timeButton.text = time;
@@ -1623,25 +1614,6 @@ var highScoreTable = {
                     this.temp = this.serpentRanking[i];
                     this.serpentRanking[i] = this.serpentRanking[i+1];
                     this.serpentRanking[i+1] = this.temp;
-=======
-        if(window.innerWidth >= 1100){
-            this.sync();
-            console.log(this.serpentRanking);
-            // Bubblesort auf die Serpentlist -> vergleicht die Nachbarn jeweils darauf, ob foodEaten < als der Nachfolger ist
-            for( let n=this.serpentRanking.length-1; n>0; n--){
-                for(let i=0; i<n; i++){
-                    if(this.serpentRanking[i].foodEaten < this.serpentRanking[i+1].foodEaten){
-                        //wenn "foodEaten" des Nachfolgers größer ist dann folgt ein Swap
-                        if(i == this.serpentRank){
-                            this.serpentRank = i+1;
-                        }else if(i+1 == this.serpentRank){
-                            this.serpentRank = i;
-                        }
-                        this.temp = this.serpentRanking[i];
-                        this.serpentRanking[i] = this.serpentRanking[i+1];
-                        this.serpentRanking[i+1] = this.temp;
-                    }
->>>>>>> parent of e109b48... ScreenTableDynamicInitial
                 }
             }
         }
@@ -1692,7 +1664,6 @@ var highScoreTable = {
     },
     
     init: function () {
-<<<<<<< HEAD
         //alle Schlangen in ein lokales Array packen, welches über die Update-Funktion sortiert wird
         this.sync();
 
@@ -1713,26 +1684,6 @@ var highScoreTable = {
         this.highScoreCanvasButtons.push(new MenuButton("Head", "HighscoreTable", null, this.highScoreCanvasWidth/6.5, 80, 100, 50,"24pt Courier", "white"));
         this.highScoreCanvasButtons.push(new MenuButton("Player", "Player", null, this.highScoreCanvasWidth/10, 120, 100, 50, "20pt Courier", "white"));
         this.highScoreCanvasButtons.push(new MenuButton("Score", "Score", null, this.highScoreCanvasWidth/1.8, 120, 100, 50, "20pt Courier", "white"));
-=======
-        if(window.innerWidth >= 1100){
-            //alle Schlangen in ein lokales Array packen, welches über die Update-Funktion sortiert wird
-            this.sync();
-            //Definition und Inititalisierung des Highscore-Canvas
-            this.highScoreCanvas = document.createElement("canvas");
-            this.highScoreCanvas.id = "highScore";
-            this.highScoreCanvas.width = this.highScoreCanvasWidth;
-            this.highScoreCanvas.height = this.highScoreCanvasHeight;
-            this.highScoreCanvas.position = this.highScoreCanvasPosition;
-            this.highScoreCanvas.style.marginRight = this.highScoreCanvasRight;
-            this.highScoreCanvas.style.marginTop = this.highScoreCanvasTop;
-            this.highScoreCanvasContext = this.highScoreCanvas.getContext("2d");
-            document.body.insertBefore(this.highScoreCanvas, document.body.childNodes[2]);
-
-            //Einfügen der Buttons zur Darstellung der Highscore-Tabelle
-            this.highScoreCanvasButtons.push(new MenuButton("Head", "ScoreTable", null, this.highScoreCanvasWidth/5, 50, 100, 50,"24pt Courier", "white"));
-            this.highScoreCanvasButtons.push(new MenuButton("Player", "Player", null, this.highScoreCanvasWidth/8, 100, 100, 50, "22pt Courier", "white"));
-            this.highScoreCanvasButtons.push(new MenuButton("Score", "Score", null, this.highScoreCanvasWidth/1.8, 100, 100, 50, "22pt Courier", "white"));
->>>>>>> parent of e109b48... ScreenTableDynamicInitial
        
         //Einfügen des Rankings
         this.timeButton = new MenuButton(1, "0", null, this.highScoreCanvasWidth/1.8, 40, 50,30, "20pt Courier", "white");
@@ -1757,10 +1708,6 @@ var instruction ={
     feather: new Image(),
     bomb: new Image(),
     clover: new Image(),
-<<<<<<< HEAD
-=======
-    arrows: new Image(),
->>>>>>> parent of e109b48... ScreenTableDynamicInitial
 
     init: function(){
         if(this.instructionCanvasWidth>=300){
