@@ -112,7 +112,8 @@ var soundEffects = [
     "Prologue.mp3",
     "Jumpshot.mp3",
     "underclocked.mp3",
-    "Arpanauts.mp3"
+    "Arpanauts.mp3",
+    "allofus.mp3"
 
 ];
 /* loaded assets */
@@ -497,7 +498,7 @@ class LevelConfig {
             assets.spr_planet13,
             assets.spr_planet14,
             ];
-        this.playGroundBGMusic = [assets.bg_Jupiter, assets.underclocked, assets.Jumpshot, assets.Arpanauts];
+        this.playGroundBGMusic = [assets.underclocked, assets.Jumpshot, assets.Arpanauts, assets.allofus];
         this.playGroundLevel = new playground(0, this.backGroudSpace[getRandomIntInclusive(0, 5)], this.backGroundSprites, this.playGroundBGMusic[getRandomIntInclusive(0, this.playGroundBGMusic.length - 1)]);
         this.serpent_sprite = assets.serpent_sprite;
         this.sound[0] = assets.food;
@@ -1432,6 +1433,7 @@ class CreditScreen {
         this.menuconfig.backgroundImageY = moveMenuBackground(this.menuconfig.backgroundImageY, this.menuconfig.scrollSpeedBackground);
     };
     addToButtons() {
+        this.buttons.push(new MenuButton("Credit", "Music: Eric Skiff - All Of Us - Resistor Anthems - Available at http://EricSkiff.com/music", null, 20, 380, 100, 50, "8pt Courier", "white"));
         this.buttons.push(new MenuButton("Credit", "Music: Eric Skiff - Jumpshot - Resistor Anthems - Available at http://EricSkiff.com/music", null, 20, 400, 100, 50, "8pt Courier", "white"));
         this.buttons.push(new MenuButton("Credit", "Music: Eric Skiff - HHavok-intro - Resistor Anthems - Available at http://EricSkiff.com/music", null, 20, 420, 100, 50, "8pt Courier", "white"));
         this.buttons.push(new MenuButton("Credit", "Music: Eric Skiff - Underclocked - Resistor Anthems - Available at http://EricSkiff.com/music", null, 20, 440, 100, 50, "8pt Courier", "white"));
