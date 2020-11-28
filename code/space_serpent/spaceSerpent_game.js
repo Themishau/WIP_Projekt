@@ -695,6 +695,7 @@ class level {
             window.onkeyup = this.KeyUpEvent;
         }
         highScoreTable.update();
+        instruction.update(); //Überprüft die Windowbreite und entfernt das Canvas
         //easy win condition
         for (let k = 0; k < this.levelConfig.aiSerpents.length; k++) {
             //console.log(k, this.levelConfig.aiSerpents[k].foodEaten, "highestScore:", this.levelConfig.highestEnemy);
@@ -1592,11 +1593,15 @@ var highScoreTable = {
                 this.popScoreSheetButtons();
             }
             document.body.removeChild(this.highScoreCanvas);
+            this.highScoreCanvas = null;
         }
     },
 
     update: function() {
         if(window.innerWidth >= 1100){
+            if(this.highScoreCanvas == null){
+                this.init();
+            }
             this.sync();
             console.log(this.serpentRanking);
             // Bubblesort auf die Serpentlist -> vergleicht die Nachbarn jeweils darauf, ob foodEaten < als der Nachfolger ist
@@ -1671,6 +1676,7 @@ var highScoreTable = {
     init: function () {
         if(window.innerWidth >= 1100){
             //alle Schlangen in ein lokales Array packen, welches über die Update-Funktion sortiert wird
+            this.sizetosmall = false;
             this.sync();
             //Definition und Inititalisierung des Highscore-Canvas
             this.highScoreCanvas = document.createElement("canvas");
@@ -1712,10 +1718,31 @@ var instruction ={
     instructionCanvasTop: "",
     instructionCanvasPosition: "relative",
     instructionButtons: [],
+    sizeToSmall: false,
     feather: new Image(),
     bomb: new Image(),
     clover: new Image(),
     arrows: new Image(),
+
+    update:function(){
+        if(window.innerWidth <1100){
+            if(this.instructionCanvas != null){
+                this.clear();
+            }
+        }else{
+            if(this.instructionCanvas == null){
+                this.init();
+            }
+        }
+    },
+
+    clear: function(){
+        for(let i=0;i<this.instructionButtons.length;i++){
+            this.instructionButtons.pop();
+        }
+        document.body.removeChild(this.instructionCanvas);
+        this.instructionCanvas = null;
+    },
 
     init: function(){
         if(window.innerWidth>=1100){
