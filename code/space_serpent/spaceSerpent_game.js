@@ -1591,7 +1591,6 @@ var highScoreTable = {
     clear: function(){
         //this.highScoreCanvasContext.clearRect(0,0, this.highScoreCanvasWidth, this.highScoreCanvasHeight);
 <<<<<<< HEAD
-<<<<<<< HEAD
         for(let i=0;i<this.playerScoreButtons.length;i++){
             this.popScoreSheetButtons();
 =======
@@ -1607,25 +1606,16 @@ var highScoreTable = {
 >>>>>>> parent of e109b48... ScreenTableDynamicInitial
 =======
 >>>>>>> parent of e109b48... ScreenTableDynamicInitial
-=======
-        for(let i=0;i<this.playerScoreButtons.length;i++){
-            this.popScoreSheetButtons();
->>>>>>> parent of ec44ca0... Löschen des ScoreSheets bei zu kleinem Displays
         }
         document.body.removeChild(this.highScoreCanvas);
     },
 
     update: function() {
 <<<<<<< HEAD
-<<<<<<< HEAD
         this.sync();
         let time = this.stateData;
         this.timeButton.text = time;
         //console.log(this.serpentRanking);
-=======
-        this.sync();
-        console.log(this.serpentRanking);
->>>>>>> parent of ec44ca0... Löschen des ScoreSheets bei zu kleinem Displays
         // Bubblesort auf die Serpentlist -> vergleicht die Nachbarn jeweils darauf, ob foodEaten < als der Nachfolger ist
         for( let n=this.serpentRanking.length-1; n>0; n--){
             for(let i=0; i<n; i++){
@@ -1639,7 +1629,6 @@ var highScoreTable = {
                     this.temp = this.serpentRanking[i];
                     this.serpentRanking[i] = this.serpentRanking[i+1];
                     this.serpentRanking[i+1] = this.temp;
-<<<<<<< HEAD
 =======
         if(window.innerWidth >= 1100){
             this.sync();
@@ -1659,8 +1648,6 @@ var highScoreTable = {
                         this.serpentRanking[i+1] = this.temp;
                     }
 >>>>>>> parent of e109b48... ScreenTableDynamicInitial
-=======
->>>>>>> parent of ec44ca0... Löschen des ScoreSheets bei zu kleinem Displays
                 }
             }
         }
@@ -1676,21 +1663,11 @@ var highScoreTable = {
         this.stateData = round10(getStateData().gameTime / 1000, -1);
         this.copyAiSerpents = getStateData().levelConfig.aiSerpents.slice(0, getStateData().levelConfig.aiSerpents.length);
         this.serpentRanking = this.copyAiSerpents;
-<<<<<<< HEAD
         //console.log(this.serpentRanking, "this.stateData", this.stateData, "this.timebutton",this.timeButton);
         this.copySerpent = copyObject(getStateData().levelConfig.serpentPlayer);
         this.serpentRanking.push(this.copySerpent);
         this.serpentRank = this.serpentRanking.length-1;
         //console.log(this.serpentRanking);
-=======
-        console.log(this.serpentRanking);
-        //if(getStateData().levelConfig.serpentPlayer.alive == true){
-            this.copySerpent = copyObject(getStateData().levelConfig.serpentPlayer);
-            this.serpentRanking.push(this.copySerpent);
-            this.serpentRank = this.serpentRanking.length-1;
-        //}
-        console.log(this.serpentRanking);
->>>>>>> parent of ec44ca0... Löschen des ScoreSheets bei zu kleinem Displays
     },
 
     renderButtons: function(){
@@ -1716,27 +1693,15 @@ var highScoreTable = {
     },
 
     popScoreSheetButtons: function(){
-<<<<<<< HEAD
         this.playerNameButtons.pop();
         this.playerScoreButtons.pop();
-=======
-        if(getStateData().levelConfig.serpentPlayer.alive == true){
-            this.playerNameButtons.pop();
-            this.playerScoreButtons.pop();
-        }
->>>>>>> parent of ec44ca0... Löschen des ScoreSheets bei zu kleinem Displays
     },
     
     init: function () {
 <<<<<<< HEAD
-<<<<<<< HEAD
         //alle Schlangen in ein lokales Array packen, welches über die Update-Funktion sortiert wird
         this.sync();
 
-=======
-        //alle Schlangen in ein lokales Array packen, welches über die Update-Funktion sortiert wird
-        this.sync();
->>>>>>> parent of ec44ca0... Löschen des ScoreSheets bei zu kleinem Displays
         //Definition und Inititalisierung des Highscore-Canvas
         this.highScoreCanvas = document.createElement("canvas");
         this.highScoreCanvas.id = "highScore";
@@ -1745,15 +1710,11 @@ var highScoreTable = {
         this.highScoreCanvas.position = this.highScoreCanvasPosition;
         this.highScoreCanvas.style.marginRight = this.highScoreCanvasRight;
         this.highScoreCanvas.style.marginTop = this.highScoreCanvasTop;
-<<<<<<< HEAD
         this.highScoreCanvas.style.border = "2px solid black";
-=======
->>>>>>> parent of ec44ca0... Löschen des ScoreSheets bei zu kleinem Displays
         this.highScoreCanvasContext = this.highScoreCanvas.getContext("2d");
         document.body.insertBefore(this.highScoreCanvas, document.body.childNodes[2]);
 
         //Einfügen der Buttons zur Darstellung der Highscore-Tabelle
-<<<<<<< HEAD
         this.highScoreCanvasButtons.push(new MenuButton("Time", "Time ", null, this.highScoreCanvasWidth/5, 40, 100, 50,"24pt Courier", "white"));
         this.highScoreCanvasButtons.push(new MenuButton("Head", "HighscoreTable", null, this.highScoreCanvasWidth/6.5, 80, 100, 50,"24pt Courier", "white"));
         this.highScoreCanvasButtons.push(new MenuButton("Player", "Player", null, this.highScoreCanvasWidth/10, 120, 100, 50, "20pt Courier", "white"));
@@ -1785,18 +1746,6 @@ var highScoreTable = {
             //console.log(this.highScoreCanvasButtons);
             this.playerNameButtons.push(new MenuButton(i, this.serpentRanking[i].name, null, this.highScoreCanvasWidth/8, 160+(i*40), 50,30, "20pt Courier", "white"));
             this.playerScoreButtons.push(new MenuButton(i, this.serpentRanking[i].foodEaten, null, this.highScoreCanvasWidth/1.8, 160+(i*40), 50, 30, "20pt Courier", "white"));
-=======
-        this.highScoreCanvasButtons.push(new MenuButton("Head", "ScoreTable", null, this.highScoreCanvasWidth/5, 50, 100, 50,"24pt Courier", "white"));
-        this.highScoreCanvasButtons.push(new MenuButton("Player", "Player", null, this.highScoreCanvasWidth/8, 100, 100, 50, "22pt Courier", "white"));
-        this.highScoreCanvasButtons.push(new MenuButton("Score", "Score", null, this.highScoreCanvasWidth/1.8, 100, 100, 50, "22pt Courier", "white"));
-       
-        //Einfügen des Rankings
-        console.log(this.serpentRanking);
-        for (let i=0; i< this.serpentRanking.length; i++){
-            console.log(this.highScoreCanvasButtons);
-            this.playerNameButtons.push(new MenuButton(i, this.serpentRanking[i].name, null, this.highScoreCanvasWidth/8, 150+(i*60), 50,30, "22pt Courier", "white"));
-            this.playerScoreButtons.push(new MenuButton(i, this.serpentRanking[i].foodEaten, null, this.highScoreCanvasWidth/1.8, 150+(i*60), 50, 30, "22pt Courier", "white"));
->>>>>>> parent of ec44ca0... Löschen des ScoreSheets bei zu kleinem Displays
         }
         this.renderButtons();
     },
