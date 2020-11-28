@@ -1577,8 +1577,8 @@ var gameField = {
 var highScoreTable = {
     highScoreCanvas: null,
     highScoreCanvasContext: null,
-    highScoreCanvasWidth: screen.width/2.5, //Auch window.innerWidth verwendebar
-    highScoreCanvasHeight: 490,
+    highScoreCanvasWidth: screen.width/5, //Auch window.innerWidth verwendebar
+    highScoreCanvasHeight: 540,
     highScoreCanvasRight: "2%",
     highScoreCanvasTop: "",
     highScoreCanvasPosition: "relative",
@@ -1639,6 +1639,11 @@ var highScoreTable = {
         this.stateData = round10(getStateData().gameTime / 1000, -1);
         this.copyAiSerpents = getStateData().levelConfig.aiSerpents.slice(0, getStateData().levelConfig.aiSerpents.length);
         this.serpentRanking = this.copyAiSerpents;
+        for (let i = 0; i < this.serpentRanking.length; i++) {
+            if(this.serpentRanking[i].alive == false){
+                this.serpentRanking.splice(i,1);
+            }
+        }
         //console.log(this.serpentRanking, "this.stateData", this.stateData, "this.timebutton",this.timeButton);
         this.copySerpent = copyObject(getStateData().levelConfig.serpentPlayer);
         this.serpentRanking.push(this.copySerpent);
@@ -1695,17 +1700,17 @@ var highScoreTable = {
             document.body.insertBefore(this.highScoreCanvas, document.body.childNodes[2]);
 
             //Einfügen der Buttons zur Darstellung der Highscore-Tabelle
-            this.highScoreCanvasButtons.push(new MenuButton("Time", "Time ", null, this.highScoreCanvasWidth/5, 40, 100, 50,"24pt Courier", "white"));
-            this.highScoreCanvasButtons.push(new MenuButton("Head", "ScoreTable", null, this.highScoreCanvasWidth/5, 50, 100, 50,"24pt Courier", "white"));
-            this.highScoreCanvasButtons.push(new MenuButton("Player", "Player", null, this.highScoreCanvasWidth/8, 100, 100, 50, "22pt Courier", "white"));
-            this.highScoreCanvasButtons.push(new MenuButton("Score", "Score", null, this.highScoreCanvasWidth/1.8, 100, 100, 50, "22pt Courier", "white"));
+            this.highScoreCanvasButtons.push(new MenuButton("Time", "Time ", null,50, 500, 100, 50,"24pt Courier", "white"));
+            this.highScoreCanvasButtons.push(new MenuButton("Head", "ScoreTable", null, 50, 50, 100, 50,"24pt Courier", "white"));
+            this.highScoreCanvasButtons.push(new MenuButton("Player", "Player", null, 300, 100, 100, 50, "22pt Courier", "white"));
+            this.highScoreCanvasButtons.push(new MenuButton("Score", "Score", null, 20, 100, 100, 50, "22pt Courier", "white"));
         
             //Einfügen des Rankings
-            this.timeButton = new MenuButton(1, "0", null, this.highScoreCanvasWidth/1.8, 40, 50,30, "22pt Courier", "white");
+            this.timeButton = new MenuButton(1, "0", null, 300, 500, 50,30, "22pt Courier", "white");
             for (let i=0; i< this.serpentRanking.length; i++){
                 //console.log(this.highScoreCanvasButtons);
-                this.playerNameButtons.push(new MenuButton(i, this.serpentRanking[i].name, null, this.highScoreCanvasWidth/8, 160+(i*40), 50,30, "22pt Courier", "white"));
-                this.playerScoreButtons.push(new MenuButton(i, this.serpentRanking[i].foodEaten, null, this.highScoreCanvasWidth/1.8, 160+(i*40), 50, 30, "22pt Courier", "white"));
+                this.playerNameButtons.push(new MenuButton(i, this.serpentRanking[i].name, null, 300, 150+(i*60), 50,30, "22pt Courier", "white"));
+                this.playerScoreButtons.push(new MenuButton(i, this.serpentRanking[i].foodEaten, null, 20, 150+(i*60), 50, 30, "22pt Courier", "white"));
             }
             this.renderButtons();
         }else{
@@ -1718,7 +1723,7 @@ var highScoreTable = {
 var instruction ={
     instructionCanvas: null,
     instructionCanvasContext: null,
-    instructionCanvasWidth: screen.width/2.5, //window.innerWidth
+    instructionCanvasWidth: screen.width/5, //window.innerWidth
     instructionCanvasHeight: 620,
     instructionCanvasLeft: "2%",
     instructionCanvasTop: "",
@@ -1766,7 +1771,7 @@ var instruction ={
             this.instructionButtons.push(new MenuButton("feather","The Feater...",null, 100,110, 150,20, "20pt Courier","white"));
             this.instructionButtons.push(new MenuButton("clover","Länge +1 und Score +1",null, 100,180, 150,20, "20pt Courier","white"));
             this.instructionButtons.push(new MenuButton("bomb","Explode - Ends the game",null, 100,255, 150,20, "20pt Courier","white"));
-            this.instructionButtons.push(new MenuButton("keyarrows", "Use Keyarrows for movement", null, 50, 580, 150, 20, "20pt Courier", "white"));        
+            this.instructionButtons.push(new MenuButton("keyarrows", "Use Keyarrows for movement", null, 75, 580, 150, 20, "20pt Courier", "white"));        
             
             this.feather.src = 'sprites/feather.png';
             this.clover.src = 'sprites/clover.png';
@@ -1786,7 +1791,7 @@ var instruction ={
         this.instructionCanvasContext.drawImage(this.feather, 30, 80, 50, 50);
         this.instructionCanvasContext.drawImage(this.clover,30, 150, 50, 50);
         this.instructionCanvasContext.drawImage(this.bomb, 30, 220, 50, 50);
-        this.instructionCanvasContext.drawImage(this.arrows, 75, 330, this.instructionCanvasWidth-150, 210);
+        this.instructionCanvasContext.drawImage(this.arrows, 30, 330, 500, 220);
         
 
         this.instructionCanvasContext.fillStyle = "rgb(200,200,0)";
