@@ -49,7 +49,6 @@ var objects = [
     "bomb",
     "book",
     "feather",
-    "keyarrows",
     "snake_head_b_1",
     "snake_head_b_2",
     "snake_head_b_3",
@@ -695,7 +694,6 @@ class level {
             window.onkeyup = this.KeyUpEvent;
         }
         highScoreTable.update();
-        instruction.update(); //Überprüft die Windowbreite und entfernt das Canvas
         //easy win condition
         for (let k = 0; k < this.levelConfig.aiSerpents.length; k++) {
             //console.log(k, this.levelConfig.aiSerpents[k].foodEaten, "highestScore:", this.levelConfig.highestEnemy);
@@ -1574,10 +1572,10 @@ var gameField = {
 var highScoreTable = {
     highScoreCanvas: null,
     highScoreCanvasContext: null,
-    highScoreCanvasWidth: screen.width/2.5,
-    highScoreCanvasHeight: 490,
+    highScoreCanvasWidth: screen.width/5,
+    highScoreCanvasHeight: 500,
     highScoreCanvasRight: "2%",
-    highScoreCanvasTop: "",
+    highScoreCanvasTop: "9%",
     highScoreCanvasPosition: "relative",
     serpentRanking: null,
     serpentRank: 0,
@@ -1586,52 +1584,42 @@ var highScoreTable = {
     highScoreCanvasButtons: [],
     playerNameButtons:[],
     playerScoreButtons: [],
-    sizetosmall: false,
 
     clear: function(){
         //this.highScoreCanvasContext.clearRect(0,0, this.highScoreCanvasWidth, this.highScoreCanvasHeight);
-        if(this.sizetosmall == false){
-            for(let i=0;i<this.playerScoreButtons.length;i++){
-                this.popScoreSheetButtons();
-            }
-            document.body.removeChild(this.highScoreCanvas);
-            this.highScoreCanvas = null;
+        for(let i=0;i<this.playerScoreButtons.length;i++){
+            this.popScoreSheetButtons();
         }
+        document.body.removeChild(this.highScoreCanvas);
     },
 
     update: function() {
-        if(window.innerWidth >= 1100){
-            if(this.highScoreCanvas == null){
-                this.init();
-            }
-            this.sync();
-            console.log(this.serpentRanking);
-            // Bubblesort auf die Serpentlist -> vergleicht die Nachbarn jeweils darauf, ob foodEaten < als der Nachfolger ist
-            for( let n=this.serpentRanking.length-1; n>0; n--){
-                for(let i=0; i<n; i++){
-                    if(this.serpentRanking[i].foodEaten < this.serpentRanking[i+1].foodEaten){
-                        //wenn "foodEaten" des Nachfolgers größer ist dann folgt ein Swap
-                        if(i == this.serpentRank){
-                            this.serpentRank = i+1;
-                        }else if(i+1 == this.serpentRank){
-                            this.serpentRank = i;
-                        }
-                        this.temp = this.serpentRanking[i];
-                        this.serpentRanking[i] = this.serpentRanking[i+1];
-                        this.serpentRanking[i+1] = this.temp;
-                    }
+        this.sync();
+        let time = this.stateData;
+        this.timeButton.text = time;
+        //console.log(this.serpentRanking);
+        // Bubblesort auf die Serpentlist -> vergleicht die Nachbarn jeweils darauf, ob foodEaten < als der Nachfolger ist
+        for( let n=this.serpentRanking.length-1; n>0; n--){
+            for(let i=0; i<n; i++){
+               if(this.serpentRanking[i].foodEaten < this.serpentRanking[i+1].foodEaten){
+                   //wenn "foodEaten" des Nachfolgers größer ist dann folgt ein Swap
+                   if(i == this.serpentRank){
+                        this.serpentRank = i+1;
+                   }else if(i+1 == this.serpentRank){
+                       this.serpentRank = i;
+                   }
+                    this.temp = this.serpentRanking[i];
+                    this.serpentRanking[i] = this.serpentRanking[i+1];
+                    this.serpentRanking[i+1] = this.temp;
                 }
             }
-            //HighScoreTable aktualisieren (machen)
-            for( let i=0; i <this.serpentRanking.length; i++){
-                this.playerNameButtons[i].text = this.serpentRanking[i].name;
-                this.playerScoreButtons[i].text = this.serpentRanking[i].foodEaten;
-            }
-            this.renderButtons();
-        }else{
-            this.clear();
-            this.sizetosmall = true;
         }
+        //HighScoreTable aktualisieren (machen)
+        for( let i=0; i <this.serpentRanking.length; i++){
+            this.playerNameButtons[i].text = this.serpentRanking[i].name;
+            this.playerScoreButtons[i].text = this.serpentRanking[i].foodEaten;
+        }
+        this.renderButtons();
     },
 
     sync: function(){
@@ -1668,87 +1656,57 @@ var highScoreTable = {
     },
 
     popScoreSheetButtons: function(){
-        if(this.sizetosmall == false){
-            if(getStateData().levelConfig.serpentPlayer.alive == true){
-                this.playerNameButtons.pop();
-                this.playerScoreButtons.pop();
-            }
-        }
+        this.playerNameButtons.pop();
+        this.playerScoreButtons.pop();
     },
     
     init: function () {
-        if(window.innerWidth >= 1100){
-            //alle Schlangen in ein lokales Array packen, welches über die Update-Funktion sortiert wird
-            this.sizetosmall = false;
-            this.sync();
-            //Definition und Inititalisierung des Highscore-Canvas
-            this.highScoreCanvas = document.createElement("canvas");
-            this.highScoreCanvas.id = "highScore";
-            this.highScoreCanvas.width = this.highScoreCanvasWidth;
-            this.highScoreCanvas.height = this.highScoreCanvasHeight;
-            this.highScoreCanvas.position = this.highScoreCanvasPosition;
-            this.highScoreCanvas.style.marginRight = this.highScoreCanvasRight;
-            this.highScoreCanvas.style.marginTop = this.highScoreCanvasTop;
-            this.highScoreCanvasContext = this.highScoreCanvas.getContext("2d");
-            document.body.insertBefore(this.highScoreCanvas, document.body.childNodes[2]);
+        //alle Schlangen in ein lokales Array packen, welches über die Update-Funktion sortiert wird
+        this.sync();
 
-            //Einfügen der Buttons zur Darstellung der Highscore-Tabelle
-            this.highScoreCanvasButtons.push(new MenuButton("Head", "ScoreTable", null, this.highScoreCanvasWidth/5, 50, 100, 50,"24pt Courier", "white"));
-            this.highScoreCanvasButtons.push(new MenuButton("Player", "Player", null, this.highScoreCanvasWidth/8, 100, 100, 50, "22pt Courier", "white"));
-            this.highScoreCanvasButtons.push(new MenuButton("Score", "Score", null, this.highScoreCanvasWidth/1.8, 100, 100, 50, "22pt Courier", "white"));
+        //Definition und Inititalisierung des Highscore-Canvas
+        this.highScoreCanvas = document.createElement("canvas");
+        this.highScoreCanvas.id = "highScore";
+        this.highScoreCanvas.width = this.highScoreCanvasWidth;
+        this.highScoreCanvas.height = this.highScoreCanvasHeight;
+        this.highScoreCanvas.position = this.highScoreCanvasPosition;
+        this.highScoreCanvas.style.marginRight = this.highScoreCanvasRight;
+        this.highScoreCanvas.style.marginTop = this.highScoreCanvasTop;
+        this.highScoreCanvasContext = this.highScoreCanvas.getContext("2d");
+        document.body.insertBefore(this.highScoreCanvas, document.body.childNodes[2]);
+
+        //Einfügen der Buttons zur Darstellung der Highscore-Tabelle
+        this.highScoreCanvasButtons.push(new MenuButton("Time", "Time ", null, this.highScoreCanvasWidth/5, 40, 100, 50,"24pt Courier", "white"));
+        this.highScoreCanvasButtons.push(new MenuButton("Head", "HighscoreTable", null, this.highScoreCanvasWidth/5, 80, 100, 50,"24pt Courier", "white"));
+        this.highScoreCanvasButtons.push(new MenuButton("Player", "Player", null, this.highScoreCanvasWidth/10, 120, 100, 50, "20pt Courier", "white"));
+        this.highScoreCanvasButtons.push(new MenuButton("Score", "Score", null, this.highScoreCanvasWidth/1.8, 120, 100, 50, "20pt Courier", "white"));
        
-            //Einfügen des Rankings
-            console.log(this.serpentRanking);
-            for (let i=0; i< this.serpentRanking.length; i++){
-                console.log(this.highScoreCanvasButtons);
-                this.playerNameButtons.push(new MenuButton(i, this.serpentRanking[i].name, null, this.highScoreCanvasWidth/8, 150+(i*60), 50,30, "22pt Courier", "white"));
-                this.playerScoreButtons.push(new MenuButton(i, this.serpentRanking[i].foodEaten, null, this.highScoreCanvasWidth/1.8, 150+(i*60), 50, 30, "22pt Courier", "white"));
-            }
-            this.renderButtons();
-        }else{
-            this.sizetosmall = true;
-            window.alert("Screen to small - To show Scoresheet reload on a bigger screen!");
+        //Einfügen des Rankings
+        this.timeButton = new MenuButton(1, "0", null, this.highScoreCanvasWidth/1.8, 40, 50,30, "20pt Courier", "white");
+        for (let i=0; i< this.serpentRanking.length; i++){
+            //console.log(this.highScoreCanvasButtons);
+            this.playerNameButtons.push(new MenuButton(i, this.serpentRanking[i].name, null, this.highScoreCanvasWidth/8, 160+(i*40), 50,30, "20pt Courier", "white"));
+            this.playerScoreButtons.push(new MenuButton(i, this.serpentRanking[i].foodEaten, null, this.highScoreCanvasWidth/1.8, 160+(i*40), 50, 30, "20pt Courier", "white"));
         }
+        this.renderButtons();
     },
 }
 
 var instruction ={
     instructionCanvas: null,
     instructionCanvasContext: null,
-    instructionCanvasWidth: screen.width/2.5,
-    instructionCanvasHeight: 620,
+    instructionCanvasWidth: screen.width/5,
+    instructionCanvasHeight: 500,
     instructionCanvasLeft: "2%",
-    instructionCanvasTop: "",
+    instructionCanvasTop: "9%",
     instructionCanvasPosition: "relative",
     instructionButtons: [],
-    sizeToSmall: false,
     feather: new Image(),
     bomb: new Image(),
     clover: new Image(),
-    arrows: new Image(),
-
-    update:function(){
-        if(window.innerWidth <1100){
-            if(this.instructionCanvas != null){
-                this.clear();
-            }
-        }else{
-            if(this.instructionCanvas == null){
-                this.init();
-            }
-        }
-    },
-
-    clear: function(){
-        for(let i=0;i<this.instructionButtons.length;i++){
-            this.instructionButtons.pop();
-        }
-        document.body.removeChild(this.instructionCanvas);
-        this.instructionCanvas = null;
-    },
 
     init: function(){
-        if(window.innerWidth>=1100){
+        if(this.instructionCanvasWidth>=300){
             this.instructionCanvas = document.createElement("canvas");
             this.instructionCanvas.id = "instruction";
             this.instructionCanvas.width = this.instructionCanvasWidth;
@@ -1759,16 +1717,13 @@ var instruction ={
             this.instructionCanvasContext = this.instructionCanvas.getContext("2d");
             document.body.insertBefore(this.instructionCanvas, document.body.childNodes[1]);
 
-            this.instructionButtons.push(new MenuButton("head","Instructions", null, 120, 50,150,20,"24pt Courier", "yellow"));
-            this.instructionButtons.push(new MenuButton("feather","The Feater...",null, 100,110, 150,20, "20pt Courier","white"));
-            this.instructionButtons.push(new MenuButton("clover","Länge +1 und Score +1",null, 100,180, 150,20, "20pt Courier","white"));
-            this.instructionButtons.push(new MenuButton("bomb","Explode - Ends the game",null, 100,255, 150,20, "20pt Courier","white"));
-            this.instructionButtons.push(new MenuButton("keyarrows", "Use Keyarrows for movement", null, 50, 580, 150, 20, "20pt Courier", "white"));
-
+            this.instructionButtons.push(new MenuButton("feather","The Feater...",null, 50,20, 150,20, "14pt Courier","white"));
+            this.instructionButtons.push(new MenuButton("clover","Länge +1 und Score +1",null, 50,50, 150,20, "14pt Courier","white"));
+            this.instructionButtons.push(new MenuButton("bomb","Explode - Ends the game",null, 50,90, 150,20, "14pt Courier","white"));
+        
             this.feather.src = 'sprites/feather.png';
             this.clover.src = 'sprites/clover.png';
             this.bomb.src = 'sprites/bomb.png';
-            this.arrows.src = 'sprites/keyarrows.png';
 
             this.render();
         }else{
@@ -1780,10 +1735,9 @@ var instruction ={
         this.instructionCanvasContext.clearRect(0,0,this.instructionCanvasWidth, this.instructionCanvasHeight);
         this.instructionCanvasContext.beginPath();
         
-        this.instructionCanvasContext.drawImage(this.feather, 30, 80, 50, 50);
-        this.instructionCanvasContext.drawImage(this.clover,30, 150, 50, 50);
-        this.instructionCanvasContext.drawImage(this.bomb, 30, 220, 50, 50);
-        this.instructionCanvasContext.drawImage(this.arrows, 75, 330, this.instructionCanvasWidth-150, 210);
+        this.instructionCanvasContext.drawImage(this.feather, 20,20, 20,20);
+        this.instructionCanvasContext.drawImage(this.clover,20, 50, 20,20);
+        this.instructionCanvasContext.drawImage(this.bomb, 20, 90, 20,20);
         
 
         this.instructionCanvasContext.fillStyle = "rgb(200,200,0)";
@@ -2503,7 +2457,8 @@ function killSerpent(serpent, playField, itemlist) {
     serpent.removeAllSerpentParts();
     serpent.dx = 0;
     serpent.dy = 0;
-    highScoreTable.popScoreSheetButtons();
+    // ist hier ein bug, denke ich
+    this.highScoreTable.popScoreSheetButtons();
 
 }
 

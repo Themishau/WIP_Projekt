@@ -46,7 +46,6 @@ Mitglieder:
 - SubspaceAudio - https://opengameart.org/content/512-sound-effects-8-bit-style - CC by 0
 - Music: Eric Skiff - Song Name - Resistor Anthems - Available at http://EricSkiff.com/music - CC by 4.0
 - Soluna Software - https://opengameart.org/content/space-backgrounds-with-stars-and-nubular - CC by 0
-- Arrows image - https://www.pngwing.com/de/free-png-pzfjk - CC
 
 ## code:
 - https://stackoverflow.com/questions/19764018/controlling-fps-with-requestanimationframe
@@ -56,5 +55,3 @@ Mitglieder:
 - https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Number/toPrecision
 - https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Math/floor
 
-## Problems in the System
-- Wenn der Screengröße zu oft angepasst wird und somit der ScoreSheet öfter initialisiert wird, schreibt der dies doppelt
