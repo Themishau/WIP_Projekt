@@ -6,7 +6,7 @@ var gridSizeScale = 40;
 var gridSizey = 40; // 1000 / gridSizeScale = 
 var gridSizex = 40; // 1000 % gridSizeScale
 var gridfield = 25;
-
+var gSoundVolume = 0.05;
 // Decimal round
 const round10 = (value, exp) => decimalAdjust('round', value, exp);
 // Decimal floor
@@ -267,8 +267,8 @@ class playground {
     constructor(id, bgSpace, bg_img, bgsound) {
         this.id = id,
             this.name = "playground",
-            this.xSize = gameField.canvas.width / gridSizeScale,
-            this.ySize = gameField.canvas.height / gridSizeScale,
+            this.xSize = Math.ceil(gameField.canvas.height / gridSizeScale),
+            this.ySize = Math.ceil(gameField.canvas.height / gridSizeScale),
             this.fields = [],
             this.bg_img = bg_img,
             this.bgSpace = bgSpace,
@@ -293,7 +293,6 @@ class playground {
     }
     changeCurrentImage(imageNumber) {
         this.currentImage = imageNumber;
-        console.log(this.bg_img[this.currentImage]);
     }
     changeCurrent(x, y, cX, cY) {
         this.bg_imgCurrentX = x;
@@ -339,10 +338,10 @@ class serpent {
     removeAllSerpentParts() {
         this.serpentParts = [];
     }
-    constructor(id, x, y, spritesheet, initSnakeParts) {
+    constructor(id, name, x, y, spritesheet, initSnakeParts) {
         this.id = id,
             this.alive = true,
-            this.name = names[getRandomIntInclusive(0,names.length-1)],
+            this.name = name,
             this.gridx = x, // init the serpents position regarding to the grid ex.: gridSizex = 20 ; x = gridnumber in row n;  25 * 20 = 500 -> the position is x = 500 on the canvas
             this.gridy = y,
             this.width = gridSizex,
@@ -390,22 +389,22 @@ class MenuConfig {
 
         this.serpentSprites = [assets.snake_head1, assets.snake_head_b_1, assets.snake_head_r_1];
         this.sound[1] = assets.blip003;
-        this.sound[1].volume = 0.1;
+        this.sound[1].volume = gSoundVolume;
         this.sound[2] = assets.blip001;
-        this.sound[2].volume = 0.1;
+        this.sound[2].volume = gSoundVolume;
         this.sound[3] = assets.wibl001;
-        this.sound[3].volume = 0.1;
+        this.sound[3].volume = gSoundVolume;
         this.backgroundImage = assets.bg_stars;
         this.scrollSound = assets.menuSelect;
-        this.scrollSound.volume = 0.1;
+        this.scrollSound.volume = gSoundVolume;
         this.selectSound = assets.menuSelect_long;
-        this.selectSound.volume = 0.1;
+        this.selectSound.volume = gSoundVolume;
         this.menuMusic = assets.intro;
-        this.menuMusic.volume = 0.1;
+        this.menuMusic.volume = gSoundVolume;
         this.afterGameScreenMusic = assets.Prologue;
-        this.afterGameScreenMusic.volume = 0.1;
+        this.afterGameScreenMusic.volume = gSoundVolume;
         this.creditsMusic = assets.Jumpshot;
-        this.creditsMusic.volume = 0.05;
+        this.creditsMusic.volume = gSoundVolume;
     }
     StartLoading = function () {
         this.loadLevel(globalassets);
@@ -419,10 +418,11 @@ class MenuConfig {
 }
 /* ----  state machine section  ---- */
 class LevelConfig {
-    constructor(name, level, levelOption) {
+    constructor(name, playerName, level, levelOption) {
         /* ---- init some variables ---- */
         this.name = name,
             this.level = level,
+            this.playerName = playerName,
             this.levelOption = levelOption,
             this.backGroudSpace = [],
             this.bg_image = new Image(),
@@ -448,26 +448,32 @@ class LevelConfig {
         // this.loadRessources(objects, soundEffects, this.loadLevel);
     }
     loadLevel(assets) {
-        console.log("assets", assets);
+        
+        let canvasDimensions = getGameDimensions();
         if (this.levelOption.playGroundSize == 2) {
-            gridSizeScale = 20;
-            gridSizey = 20; // 1000 / gridSizeScale = 
-            gridSizex = 20; // 1000 % gridSizeScale
+            console.log(canvasDimensions.height + "/" + 50 + "=" + canvasDimensions.height / 50);
             gridfield = 50;
+            gridSizeScale = canvasDimensions.height / gridfield;
+            gridSizey = canvasDimensions.height  / gridfield; // 1000 / gridSizeScale = 
+            gridSizex = canvasDimensions.height  / gridfield; // 1000 % gridSizeScale
+            
         }
         else if (this.levelOption.playGroundSize == 1) {
-            gridSizeScale = 31.25;
-            gridSizey = 31.25; // 1000 / gridSizeScale = 
-            gridSizex = 31.25; // 1000 % gridSizeScale
-            gridfield = 32;
+            gridfield = 35;
+            gridSizeScale =  canvasDimensions.height / gridfield;
+            gridSizey =  canvasDimensions.height  / gridfield; // 1000 / gridSizeScale = 
+            gridSizex =  canvasDimensions.height  / gridfield; // 1000 % gridSizeScale
+            
         }
         else if (this.levelOption.playGroundSize == 0) {
-            gridSizeScale = 40;
-            gridSizey = 40; // 1000 / gridSizeScale = 
-            gridSizex = 40; // 1000 % gridSizeScale
             gridfield = 25;
+            gridSizeScale = canvasDimensions.height  / gridfield;
+            gridSizey =  canvasDimensions.height  / gridfield; // 1000 / gridSizeScale = 
+            gridSizex =  canvasDimensions.height  / gridfield; // 1000 % gridSizeScale
+            
 
         }
+        console.log("assets", assets, gridSizeScale, gridfield);
         if (this.levelOption.movementAcc == 2) {
             this.speed = 0.35;
         }
@@ -503,31 +509,29 @@ class LevelConfig {
         this.playGroundLevel = new playground(0, this.backGroudSpace[getRandomIntInclusive(0, 5)], this.backGroundSprites, this.playGroundBGMusic[getRandomIntInclusive(0, this.playGroundBGMusic.length - 1)]);
         this.serpent_sprite = assets.serpent_sprite;
         this.sound[0] = assets.food;
-        this.sound[0].volume = 0.1;
+        this.sound[0].volume =gSoundVolume;
         this.sound[1] = assets.foodPlayer;
-        this.sound[1].volume = 0.1;
+        this.sound[1].volume = gSoundVolume;
         this.sound[2] = assets.backpack;
-        this.sound[2].volume = 0.1;
+        this.sound[2].volume = gSoundVolume;
         this.sound[3] = assets.explosion;
-        this.sound[3].volume = 0.1;
+        this.sound[3].volume = gSoundVolume;
         this.sound[4] = assets.blip001;
-        this.sound[4].volume = 0.1;
+        this.sound[4].volume = gSoundVolume;
         this.sound[5] = assets.wibl001;
-        this.sound[5].volume = 0.1;
+        this.sound[5].volume = gSoundVolume;
         this.sound[6] = assets.sfx_menu_select3;
-        this.sound[6].volume = 0.1;
+        this.sound[6].volume = gSoundVolume;
         this.sound[7] = assets.lost;
-        this.sound[7].volume = 0.1;
+        this.sound[7].volume = gSoundVolume;
         this.sound[8] = assets.loseSound;
-        this.sound[8].volume = 0.1;
-        console.log("sounds", this.sound);
-        this.sound.volume = 0.1;
+        this.sound[8].volume = gSoundVolume;
         //this.obstacleTable = new playground(1, null, null);
         // this.bg_universe = assets.spr_planet02;
         this.bg_stars = assets.bg_stars;
-        this.playGroundLevel.bgsound.volume = 0.1;
+        this.playGroundLevel.bgsound.volume = gSoundVolume;
         this.playGroundLevel.bgsound.loop = true;
-        this.serpentPlayer = new serpent(6, 5, 5, this.serpent_sprites[this.levelOption.serpentSpriteColor], 3);
+        this.serpentPlayer = new serpent(6, this.playerName, 5, 5, this.serpent_sprites[this.levelOption.serpentSpriteColor], 3);
         // delete the sprite from the list
         this.serpent_sprites.splice(this.levelOption.serpentSpriteColor, 1);
         this.itemlist[0] = new item(1, "food", getRandomIntInclusive(3, gridfield - 3), getRandomIntInclusive(3, gridfield - 3), assets.clover);
@@ -545,8 +549,7 @@ class LevelConfig {
         }
 
         for (let i = 0; i <= this.levelOption.aiEnemys - 1; i++) {
-            // console.log(i % 2, i % 1);
-            this.aiSerpents[i] = new serpent(i + 7, getRandomIntInclusive(3, gridfield - 3), getRandomIntInclusive(3, gridfield - 3), this.serpent_sprites[getRandomIntInclusive(0, 1)], 3);
+            this.aiSerpents[i] = new serpent(i + 7,names[getRandomIntInclusive(0,names.length-1)], getRandomIntInclusive(3, gridfield - 3), getRandomIntInclusive(3, gridfield - 3), this.serpent_sprites[getRandomIntInclusive(0, 1)], 3);
             /*
             if (i % 2 == 0)
                 this.aiSerpents[i] = new serpent(i + 7, getRandomIntInclusive(3, gridfield - 3), getRandomIntInclusive(3, gridfield - 3), this.serpent_sprites[1], 3);
@@ -557,9 +560,8 @@ class LevelConfig {
             /*
             let ctx = gameField.canvasContext;
             let imgData = ctx.getImageData(0, 0, this.aiSerpents[i].width, this.aiSerpents[i].height);
-            console.log("beforecolorchange", imgData);
             imgData = invertColors(imgData);
-            console.log("aftercolorchange", imgData);
+
             ctx.putImageData(imgData, 0, 0);
             */
             // console.log(aiSerpents[i], aiSerpents[i].angle);
@@ -674,7 +676,6 @@ class level {
         this.levelConfig.playGroundLevel.bgsound.pause();
         this.levelConfig.playGroundLevel.bgsound.currentTime = 0;
         this.levelConfig.playGroundLevel.bgsound.play();
-        // console.log("onEnter triggered");
 
         window.onkeydown = this.KeyDownEvent;
         this.buttons.push(new MenuButton("LOST", "YOU DIED!", null, 100, 500, 100, 50, "100pt Courier", "red"));
@@ -688,8 +689,6 @@ class level {
     /* update section */
     update() {
         this.gameTime =  Date.now() - this.timeStart - this.timePauseSum;
-        //console.log("playmode: ", this.playMode, this.timeStart - this.gameTime);
-        //console.log(this.gameTime, this.levelConfig.levelOption.winCondition.condition);
         //check if keylistener are not null 
         if (window.onkeydown == null && window.onkeyup == null) {
             window.onkeydown = this.KeyDownEvent;
@@ -699,7 +698,6 @@ class level {
         instruction.update();
         //easy win condition
         for (let k = 0; k < this.levelConfig.aiSerpents.length; k++) {
-            //console.log(k, this.levelConfig.aiSerpents[k].foodEaten, "highestScore:", this.levelConfig.highestEnemy);
             if (this.levelConfig.aiSerpents[k].foodEaten >= this.levelConfig.highestEnemy)
             this.levelConfig.highestEnemy = this.levelConfig.aiSerpents[k].foodEaten;
         }
@@ -725,13 +723,10 @@ class level {
             if (this.levelConfig.serpentPlayer.alive == false)
             this.playerLose = true;
         }
-            //console.log(this.levelConfig.highestEnemy, this.levelConfig.aiSerpents[0].foodEaten);
             if (this.playerWin == true) {
                 this.levelConfig.playGroundLevel.bgsound.pause();
                 victorySoundeffect(this.levelConfig.sound);
                 let gameMode = getGameInstance();
-                //console.log("this state is: ", gameMode);
-                //console.log("menu", this.menuconfig);
                 this.menuconfig.changeMenuConfig("You Won!", null);
                 gameMode.push(new AfterGameScreen("AfterGameScreen", this.levelConfig, this.currentOption, this.menuconfig));
             }
@@ -742,8 +737,7 @@ class level {
                     this.levelConfig.sound[7].play();
                     //victorySoundeffect(this.levelConfig.sound);
                     let gameMode = getGameInstance();
-                    //console.log("this state is: ", gameMode);
-                    //console.log("menu", this.menuconfig);
+
                     this.canvas.font = this.buttons[0].font;
                     this.canvas.fillStyle = this.buttons[0].fillStyle;
                     this.canvas.fillText(this.buttons[0].text, this.buttons[0].buttonX, this.buttons[0].buttonY);
@@ -751,8 +745,6 @@ class level {
                     gameMode.push(new AfterGameScreen("AfterGameScreen", this.levelConfig, this.currentOption, this.menuconfig));
                     sleep(2000);
                 }
-                //console.log(this.levelConfig.playGroundLevel.fields);
-
 
         moveLevelBackground(this.levelConfig.playGroundLevel);
         this.globalDeltaLast = this.globalDeltaNow;
@@ -760,23 +752,20 @@ class level {
         this.globalDelta = this.globalDeltaNow - this.globalDeltaLast;
         this.currentDeltaFrame += this.globalDelta * this.speed;
         //this.currentDeltaFrame += round10((this.globalDelta * this.speed), -1);
-        //console.log(this.globalDelta, this.speed, this.globalDelta * this.speed, this.currentDeltaFrame);
-        //console.log(this.levelConfig.speed, this.levelConfig.levelOption.movementAcc, this.speed);
+
         // if (Math.ceil(this.currentDeltaFrame) == 1) {
-        //console.log("jetziger wert: ", round10((this.currentDeltaFrame), -1), "addiere: ", (this.globalDelta * this.speed) ,"round10: ", round10((this.globalDelta * this.speed), -1));
+      
         if (round10((this.currentDeltaFrame), -1) >= 1) {
             this.currentDeltaFrame = 0;
             update(this.levelConfig.serpentPlayer, this.levelConfig.aiSerpents, this.levelConfig.playGroundLevel, this.levelConfig.itemlist, this.levelConfig.sound);
-            //console.log("NULL GESETZT");
         }
         animations(this.levelConfig.serpentPlayer);
     };
     /* draw section */
     render() {
         gameField.canvasContext.clearRect(0, 0, gameField.canvas.width, gameField.canvas.height);
-        // console.log("stars", this.levelConfig.bg_stars, "bg", this.levelConfig.serpent_sprite, "serpent", this.levelConfig.serpentPlayer, "itemlist", this.levelConfig.itemlist, "aiserpent", this.levelConfig.aiSerpents);
         draw(this.levelConfig.bg_stars, this.levelConfig.playGroundLevel, this.levelConfig.serpentPlayer, this.levelConfig.itemlist, this.levelConfig.aiSerpents);
-        //console.log(this.buttons[0]);
+        
     };
     onPause() {
         window.onkeydown = null;
@@ -806,11 +795,12 @@ class MainMenu {
             this.canvas = getContext(),
             this.dimensions = getGameDimensions(),
             this.buttons = [],
-            this.selectedButton = 0,
-            this.playType = 0, // 0 = Food, 1 = Time, 2 = Endless
+            this.selectedButton = 9,
+            this.playType = 2, // 0 = Food, 1 = Time, 2 = Endless
+            this.playerName = names[getRandomIntInclusive(0,names.length-1)], 
             this.currentOption = [],
             this.currentOption[0] = 0, // PlayerSprite
-            this.currentOption[1] = 1, // Enemies
+            this.currentOption[1] = 0, // Enemies
             this.currentOption[2] = 0, // Playfieldsize
             this.currentOption[3] = 0, // Speed
             this.currentOption[4] = 1, // Food
@@ -826,7 +816,7 @@ class MainMenu {
             let stateData = getStateData();
             let keyCode = e.keyCode;
             stateData.menuconfig.menuMusic.play();
-            if ((keyCode === 13) && (stateData.selectedButton === 7)) {
+            if ((keyCode === 13) && (stateData.selectedButton === 9)) {
                 // Go to next State
                 stateData.menuconfig.selectSound.pause();
                 stateData.menuconfig.selectSound.currentTime = 0;
@@ -847,7 +837,7 @@ class MainMenu {
                     stateData.winCondition.condition = 10000;
                 }
                 console.log("options", stateData.currentOption[2], stateData.currentOption[1], stateData.currentOption[0], stateData.menuconfig, stateData.winCondition);
-                let levelConfig = new LevelConfig("level" + 1, 1, new LevelOption("level" + 1, stateData.currentOption[3], stateData.currentOption[2], stateData.currentOption[1], stateData.currentOption[0], null, null, stateData.winCondition));
+                let levelConfig = new LevelConfig("level" + 1, stateData.playerName, 1, new LevelOption("level" + 1, stateData.currentOption[3], stateData.currentOption[2], stateData.currentOption[1], stateData.currentOption[0], null, null, stateData.winCondition));
                 levelConfig.StartLoading();
                 gameMode.push(new level("level" + (levelConfig.level), levelConfig, stateData.menuconfig));
                 highScoreTable.init(stateData);
@@ -855,7 +845,7 @@ class MainMenu {
                  *  from the list. it just adds Level1State on top of it.
                  */
             }
-            if ((keyCode === 13) && (stateData.selectedButton === 8)) {
+            if ((keyCode === 13) && (stateData.selectedButton === 10)) {
                 // Go to next State
                 stateData.menuconfig.selectSound.pause();
                 stateData.menuconfig.selectSound.currentTime = 0;
@@ -870,25 +860,33 @@ class MainMenu {
             }
             // left
             else if (keyCode === 37) {
-                if (stateData.selectedButton == 0) {
+                if (stateData.selectedButton == 5) {
                     stateData.playType--;
                     if (stateData.playType < 0)
                         stateData.playType = 2;
 
-                }                
+                }
+                else if (stateData.selectedButton == 0) {
+                        stateData.playerName = names[getRandomIntInclusive(0,names.length-1)];
+                        stateData.buttons[11].text = stateData.playerName;    
+                }
+                //playerSprite         
                 else if (stateData.selectedButton == 1) {
                     stateData.currentOption[0]--;
                     if (stateData.currentOption[0] < 0)
                         stateData.currentOption[0] = 2;
 
                 }
+                //enemies
                 else if (stateData.selectedButton == 2) {
                     stateData.currentOption[1]--;
-                    if (stateData.currentOption[1] < 1)
-                        stateData.currentOption[1] = 1;
-
-                    stateData.buttons[11].text = stateData.currentOption[1];
+                    if (stateData.currentOption[1] < 0)
+                        stateData.currentOption[1] = 0;
+                    
+                    // enemies
+                    stateData.buttons[13].text = stateData.currentOption[1];
                 }
+                //fieldsize
                 else if (stateData.selectedButton == 3) {
                     stateData.currentOption[2]--;
                     if (stateData.currentOption[2] < 0)
@@ -899,40 +897,55 @@ class MainMenu {
                     if (stateData.currentOption[3] < 0)
                         stateData.currentOption[3] = 0;
                 }
-                else if (stateData.selectedButton == 5) {
+                else if (stateData.selectedButton == 6) {
                     stateData.currentOption[4]--;
                     if (stateData.currentOption[4] < 1)
                         stateData.currentOption[4] = 1;
 
-                    stateData.buttons[14].text = stateData.currentOption[4];
+                    stateData.buttons[17].text = stateData.currentOption[4];
                 }
-                else if (stateData.selectedButton == 6) {
+                else if (stateData.selectedButton == 7) {
                     stateData.currentOption[5]--;
                     if (stateData.currentOption[5] < 1)
                         stateData.currentOption[5] = 1;
 
-                    stateData.buttons[15].text = stateData.currentOption[5] + " minute(s)";
+                    stateData.buttons[18].text = stateData.currentOption[5] + " minute(s)";
+                }
+                else if (stateData.selectedButton == 8) {
+                    gSoundVolume = round10(gSoundVolume - 0.01, -2);
+                    if (gSoundVolume <= 0.0)
+                        gSoundVolume = 0.0;
+                    stateData.menuconfig.menuMusic.volume = gSoundVolume;
+                    stateData.buttons[19].text =  1000*gSoundVolume;
+
                 }
             }
             // right
             else if (keyCode === 39) {
-                if (stateData.selectedButton == 0) {
+                if (stateData.selectedButton == 5) {
                     stateData.playType++;
                     if (stateData.playType > 2)
                         stateData.playType = 0;
                 }
+                else if (stateData.selectedButton == 0) {
+                    stateData.playerName = names[getRandomIntInclusive(0,names.length-1)];   
+                    stateData.buttons[11].text = stateData.playerName;    
+                }
+                //playerSprite
                 else if (stateData.selectedButton == 1) {
                     stateData.currentOption[0]++;
                     if (stateData.currentOption[0] > 2)
                         stateData.currentOption[0] = 0;
                 }
+                //enemies
                 else if (stateData.selectedButton == 2) {
                     stateData.currentOption[1]++;
                     if (stateData.currentOption[1] > 5)
                         stateData.currentOption[1] = 5;
 
-                    stateData.buttons[11].text = stateData.currentOption[1];
+                    stateData.buttons[13].text = stateData.currentOption[1];
                 }
+
                 else if (stateData.selectedButton == 3) {
                     stateData.currentOption[2]++;
                     if (stateData.currentOption[2] > 2)
@@ -943,29 +956,37 @@ class MainMenu {
                     if (stateData.currentOption[3] > 2)
                         stateData.currentOption[3] = 2;
                 }
-                else if (stateData.selectedButton == 5) {
+                else if (stateData.selectedButton == 6) {
                     stateData.currentOption[4]++;
                     if (stateData.currentOption[4] > 50)
                         stateData.currentOption[4] = 50;
 
-                    stateData.buttons[14].text = stateData.currentOption[4];
+                    stateData.buttons[17].text = stateData.currentOption[4];
                 }
-                else if (stateData.selectedButton == 6) {
+                else if (stateData.selectedButton == 7) {
                     stateData.currentOption[5]++;
                     if (stateData.currentOption[5] > 10)
                         stateData.currentOption[5] = 10;
 
-                    stateData.buttons[15].text = stateData.currentOption[5] + " minute(s)";
+                    stateData.buttons[18].text = stateData.currentOption[5] + " minute(s)";
+                }
+                else if (stateData.selectedButton == 8) {
+                    gSoundVolume = round10(gSoundVolume + 0.01, -2); // 0.05
+                    if (gSoundVolume >= 0.1)
+                        gSoundVolume = 0.1;
+                    stateData.menuconfig.menuMusic.volume = gSoundVolume;
+                    stateData.buttons[19].text = 1000*gSoundVolume;
+
                 }
             }
             // up
             else if (keyCode === 38) {
                 stateData.selectedButton--;
                 
-                if ((stateData.playType == 0 && stateData.selectedButton == 6) || stateData.playType == 1 && stateData.selectedButton == 5 ){
+                if ((stateData.playType == 0 && stateData.selectedButton == 7) || stateData.playType == 1 && stateData.selectedButton == 6 ){
                         stateData.selectedButton--; 
                 }
-                else if (stateData.playType == 2 && (stateData.selectedButton == 5 || stateData.selectedButton == 6))
+                else if (stateData.playType == 2 && (stateData.selectedButton == 6 || stateData.selectedButton == 7))
                     stateData.selectedButton = stateData.selectedButton - 2; 
                 if (stateData.selectedButton < 0)
                     stateData.selectedButton = 0;
@@ -974,19 +995,19 @@ class MainMenu {
             else if (keyCode === 40) {
                 stateData.selectedButton++;
                 
-                if ((stateData.playType == 0 && stateData.selectedButton == 6) || stateData.playType == 1 && stateData.selectedButton == 5 ){
+                if ((stateData.playType == 0 && stateData.selectedButton == 7) || stateData.playType == 1 && stateData.selectedButton == 6 ){
                     stateData.selectedButton++; 
                 }
-                else if (stateData.playType == 2 && (stateData.selectedButton == 5 || stateData.selectedButton == 6))
+                else if (stateData.playType == 2 && (stateData.selectedButton == 6 || stateData.selectedButton == 7))
                     stateData.selectedButton = stateData.selectedButton + 2; 
                 
-                if (stateData.selectedButton > 8)
-                    stateData.selectedButton = 8;
+                if (stateData.selectedButton > 10)
+                    stateData.selectedButton = 10;
             }
             stateData.menuconfig.scrollSound.pause();
             stateData.menuconfig.scrollSound.currentTime = 0;
             stateData.menuconfig.scrollSound.play();
-        console.log("currentButton: ", stateData.selectedButton);
+            console.log(stateData.selectedButton);
         };
     }
     onEnter() {
@@ -1026,14 +1047,14 @@ class MainMenu {
         this.canvas.fillRect(0, 0, this.dimensions.width, this.dimensions.height);
         this.canvas.fillStyle = this.menuconfig.textColor;
         this.canvas.drawImage(this.menuconfig.backgroundImage, 0, this.menuconfig.backgroundImageY);
-        this.canvas.font = "40pt Courier";
-        this.canvas.fillText(this.menuconfig.mainText, this.dimensions.width / 2 - 225, 200);
+        this.canvas.font = this.dimensions.width /14+"pt Courier";
+        this.canvas.fillText(this.menuconfig.mainText, this.dimensions.width / 8, this.dimensions.width / 7);
         //this.canvas.strokeStyle = "blue";
         //this.canvas.strokeRect(this.dimensions.width / 2 - 265, 150, 500, 100);
         this.canvas.beginPath();
         
 
-            for (let i = 0; i <= 8; i++) {
+            for (let i = 0; i <= 10; i++) {
                 if (i == this.selectedButton) {
                     if (this.menuconfig.colorIndexSelected == this.menuconfig.colorsArraySelected.length) {
                         this.menuconfig.colorIndexSelected = 0;
@@ -1047,7 +1068,7 @@ class MainMenu {
                     // console.log(this.menuconfig.serpentSprites);
                 }
                 else {
-                        if ((this.playType == 0 && i != 6) || (this.playType == 1 && i != 5) || (this.playType == 2 && i != 6 && i != 5)) {
+                        if ((this.playType == 0 && i != 7) || (this.playType == 1 && i != 6) || (this.playType == 2 && i != 6 && i != 7)) {
                             this.canvas.beginPath();
                             this.canvas.fillStyle = this.buttons[i].fillStyle;
                             this.canvas.font = this.buttons[i].font;
@@ -1056,41 +1077,59 @@ class MainMenu {
                         }
             }
 
-            this.canvas.beginPath();
-            this.canvas.fillStyle = this.buttons[9].fillStyle;
-            this.canvas.font = this.buttons[9].font;
-            this.canvas.fillText(this.buttons[9].text[this.playType], this.buttons[9].buttonX, this.buttons[9].buttonY);            
-            this.canvas.drawImage(this.buttons[10].img[this.currentOption[0]], this.buttons[10].buttonX, this.buttons[10].buttonY);
+            this.canvas.beginPath();   
+            // playerName
             this.canvas.fillStyle = this.buttons[11].fillStyle;
             this.canvas.font = this.buttons[11].font;
             this.canvas.fillText(this.buttons[11].text, this.buttons[11].buttonX, this.buttons[11].buttonY);
-            this.canvas.fillStyle = this.buttons[12].fillStyle;
-            this.canvas.font = this.buttons[12].font;
-            this.canvas.fillText(this.buttons[12].text[this.currentOption[2]], this.buttons[12].buttonX, this.buttons[12].buttonY);
+            // playerSprite
+            this.canvas.drawImage(this.buttons[12].img[this.currentOption[0]], this.buttons[12].buttonX, this.buttons[12].buttonY);
+            // enemies
             this.canvas.fillStyle = this.buttons[13].fillStyle;
             this.canvas.font = this.buttons[13].font;
-            this.canvas.fillText(this.buttons[13].text[this.currentOption[3]], this.buttons[13].buttonX, this.buttons[13].buttonY);
-        }
-        if (this.playType == 0){ 
+            this.canvas.fillText(this.buttons[13].text, this.buttons[13].buttonX, this.buttons[13].buttonY);
+            // field size
             this.canvas.fillStyle = this.buttons[14].fillStyle;
             this.canvas.font = this.buttons[14].font;
-            this.canvas.fillText(this.buttons[14].text, this.buttons[14].buttonX, this.buttons[14].buttonY);
-            this.canvas.closePath();
-        }
-        else if (this.playType == 1){ 
+            this.canvas.fillText(this.buttons[14].text[this.currentOption[2]], this.buttons[14].buttonX, this.buttons[14].buttonY);
+            // speed
             this.canvas.fillStyle = this.buttons[15].fillStyle;
             this.canvas.font = this.buttons[15].font;
-            this.canvas.fillText(this.buttons[15].text, this.buttons[15].buttonX, this.buttons[15].buttonY);
+            this.canvas.fillText(this.buttons[15].text[this.currentOption[3]], this.buttons[15].buttonX, this.buttons[15].buttonY);
+            // game mode
+            this.canvas.fillStyle = this.buttons[16].fillStyle;
+            this.canvas.font = this.buttons[16].font;
+            this.canvas.fillText(this.buttons[16].text[this.playType], this.buttons[16].buttonX, this.buttons[16].buttonY);  
+        }
+        //highscore mode
+        if (this.playType == 0){ 
+            //food button
+            this.canvas.fillStyle = this.buttons[17].fillStyle;
+            this.canvas.font = this.buttons[17].font;
+            this.canvas.fillText(this.buttons[17].text, this.buttons[17].buttonX, this.buttons[17].buttonY);
+            this.canvas.closePath();
+        }
+        //time mode
+        else if (this.playType == 1){ 
+            //time button
+            this.canvas.fillStyle = this.buttons[18].fillStyle;
+            this.canvas.font = this.buttons[18].font;
+            this.canvas.fillText(this.buttons[18].text, this.buttons[18].buttonX, this.buttons[18].buttonY);
             this.canvas.closePath();
         }
         else if (this.playType == 2){ 
             this.currentOption[4] = 10000; // we set food to 10.000 
             this.canvas.closePath();
         }
+        // credits
         this.canvas.beginPath();
-        this.canvas.fillStyle = this.buttons[16].fillStyle;
-        this.canvas.font = this.buttons[16].font;
-        this.canvas.fillText(this.buttons[16].text, this.buttons[16].buttonX, this.buttons[16].buttonY);
+        this.canvas.fillStyle = this.buttons[19].fillStyle;
+        this.canvas.font = this.buttons[19].font;
+        this.canvas.fillText(this.buttons[19].text, this.buttons[19].buttonX, this.buttons[19].buttonY);
+
+        this.canvas.fillStyle = this.buttons[20].fillStyle;
+        this.canvas.font = this.buttons[20].font;
+        this.canvas.fillText(this.buttons[20].text, this.buttons[20].buttonX, this.buttons[20].buttonY);
         this.canvas.closePath();
     };
     update() {
@@ -1102,24 +1141,36 @@ class MainMenu {
         }
     };
     addToButtons() {
-        //console.log(this.menuconfig.serpentSprites);
-        this.buttons.push(new MenuButton("WinCondition", "Game Mode: ", null, 150, 450, 100, 50, "20pt Courier", "white"));
-        this.buttons.push(new MenuButton("ChoosePlayer", "choose Player:", null, 150, 500, 100, 50, "20pt Courier", "white"));
-        this.buttons.push(new MenuButton("Enemies", "Enemies: ", null, 150, 550, 100, 50, "20pt Courier", "white"));
-        this.buttons.push(new MenuButton("playfieldsize", "Field Size: ", null, 150, 600, 100, 50, "20pt Courier", "white"));
-        this.buttons.push(new MenuButton("Speed", "Speed: ", null, 150, 650, 100, 50, "20pt Courier", "white"));
-        this.buttons.push(new MenuButton("Food", "Food: ", null, 150, 700, 100, 50, "20pt Courier", "white"));
-        this.buttons.push(new MenuButton("Time", "Time: ", null, 150, 750, 100, 50, "20pt Courier", "white"));
-        this.buttons.push(new MenuButton("startText", "Start Game", null, 450, 800, 100, 50, "20pt Courier", "white"));
-        this.buttons.push(new MenuButton("Credits", "See Credits", null, 550, 900, 100, 50, "20pt Courier", "white"));
-        this.buttons.push(new MenuButton("WinCondition", ["Highscore", "Time", "Endless"], null, 450, 450, 100, 50, "20pt Courier", "yellow"));
-        this.buttons.push(new MenuButton("Player", "Player:", this.menuconfig.serpentSprites, 450, 470, 100, 50, "20pt Courier", "white"));
-        this.buttons.push(new MenuButton("Enemy", 1, null, 450, 550, 100, 50, "20pt Courier", "white"));
-        this.buttons.push(new MenuButton("fieldSize", ["small", "normal", "big"], null, 450, 600, 100, 50, "20pt Courier", "white"));
-        this.buttons.push(new MenuButton("Speed", ["slow", "normal", "fast"], null, 450, 650, 100, 50, "20pt Courier", "white"));
-        this.buttons.push(new MenuButton("Food", 1, null, 450, 700, 100, 50, "20pt Courier", "white"));
-        this.buttons.push(new MenuButton("Time", 1 + " minute(s)", null, 450, 750, 100, 50, "20pt Courier", "white"));
-        this.buttons.push(new MenuButton("Credit", "Copyright (c) 2020 KaBra, MaSiPi, MaZa", null, 500, 970, 100, 50, "14pt Courier", "blue"));
+        let buttonSize = this.dimensions.width /50+"pt Courier";
+        let creditButtonSize = this.dimensions.width /70+"pt Courier";
+        let creditNamePosition = this.dimensions.width /2;
+        let buttonNamePosition = this.dimensions.width /7; 
+        let buttonDataPosition = this.dimensions.width /2;
+
+        this.buttons.push(new MenuButton("playerName", "Playername:", null, buttonNamePosition, this.dimensions.height - 600, 100, 50, buttonSize, "white"));
+        this.buttons.push(new MenuButton("ChoosePlayer", "choose Player:", null, buttonNamePosition, this.dimensions.height - 550, 100, 50, buttonSize, "white"));
+        this.buttons.push(new MenuButton("Enemies", "Enemies: ", null, buttonNamePosition,  this.dimensions.height - 500, 100, 50, buttonSize, "white"));
+        this.buttons.push(new MenuButton("playfieldsize", "Field Size: ", null, buttonNamePosition, this.dimensions.height - 450, 100, 50, buttonSize, "white"));
+        this.buttons.push(new MenuButton("Speed", "Speed: ", null, buttonNamePosition, this.dimensions.height - 400, 100, 50, buttonSize, "white"));
+        this.buttons.push(new MenuButton("WinCondition", "Game Mode: ", null, buttonNamePosition, this.dimensions.height - 350, 100, 50, buttonSize, "white"));
+        this.buttons.push(new MenuButton("Food", "Food: ", null, buttonNamePosition, this.dimensions.height - 300, 100, 50, buttonSize, "white"));
+        this.buttons.push(new MenuButton("Time", "Time: ", null, buttonNamePosition, this.dimensions.height - 300, 100, 50, buttonSize, "white"));
+        this.buttons.push(new MenuButton("Volume", "Volume: ", null, buttonNamePosition, this.dimensions.height - 250, 100, 50, buttonSize, "white"));
+        this.buttons.push(new MenuButton("startText", "Start Game", null, buttonNamePosition, this.dimensions.height - 200, 100, 50, buttonSize, "white"));
+        this.buttons.push(new MenuButton("Credits", "See Credits", null, buttonDataPosition, this.dimensions.height - 60, 100, 50, buttonSize, "white"));
+        
+        // 11+
+        console.log(this.playerName);
+        this.buttons.push(new MenuButton("playerName", this.playerName, null, buttonDataPosition, this.dimensions.height - 600, 100, 50, buttonSize, "white"));
+        this.buttons.push(new MenuButton("Player", "Player:", this.menuconfig.serpentSprites, buttonDataPosition, this.dimensions.height - 580, 100, 50, buttonSize, "white"));
+        this.buttons.push(new MenuButton("Enemy", this.currentOption[1], null, buttonDataPosition,  this.dimensions.height - 500, 100, 50, buttonSize, "white"));
+        this.buttons.push(new MenuButton("fieldSize", ["small", "normal", "big"], null, buttonDataPosition, this.dimensions.height - 450, 100, 50, buttonSize, "white"));
+        this.buttons.push(new MenuButton("Speed", ["slow", "normal", "fast"], null, buttonDataPosition, this.dimensions.height - 400, 100, 50, buttonSize, "white"));
+        this.buttons.push(new MenuButton("WinCondition", ["Highscore", "Time", "Endless"], null, buttonDataPosition, this.dimensions.height - 350, 100, 50, buttonSize, "yellow"));
+        this.buttons.push(new MenuButton("Food", 1, null, buttonDataPosition, this.dimensions.height - 300, 100, 50, buttonSize, "white"));
+        this.buttons.push(new MenuButton("Time", 1 + " minute(s)", null, buttonDataPosition, this.dimensions.height - 300, 100, 50, buttonSize, "white"));
+        this.buttons.push(new MenuButton("Volume",  1000*gSoundVolume, null, buttonDataPosition, this.dimensions.height - 250, 100, 50, buttonSize, "yellow"));
+        this.buttons.push(new MenuButton("Credit", "Copyright (c) 2020 KaBra, MaSiPi, MaZa", null, creditNamePosition, this.dimensions.height - 30, 100, 50, creditButtonSize, "blue"));
     
     };
 
@@ -1180,15 +1231,22 @@ class PauseMenu {
     };
 
     render() {
+        let buttonSize = this.dimensions.width /50+"pt Courier";
+        let creditButtonSize = this.dimensions.width /70+"pt Courier";
+        let creditNamePosition = this.dimensions.width /2;
+        let buttonNamePosition = this.dimensions.width /7; 
+        let buttonDataPosition = this.dimensions.width /2;
         this.canvas.clearRect(0, 0, this.dimensions.width, this.dimensions.height)
         // redraw
         this.canvas.fillStyle = this.backgroundColor;
         this.canvas.fillColor = this.backgroundColor;
         this.canvas.fillRect(100 / -2, 100 / -2, 100, 100);
         this.canvas.fillStyle = this.textColor;
-        this.canvas.font = "24pt Courier";
+        this.canvas.font = buttonSize;
         this.canvas.fillText(this.mainText, 200, 350);
         this.canvas.fillText(this.mainText2, 200, 400);
+        this.canvas.font = this.dimensions.width /14+"pt Courier";
+        this.canvas.fillText("Pause Menu", this.dimensions.width / 5.5, this.dimensions.width / 7);
 
 
 
@@ -1254,7 +1312,7 @@ class AfterGameScreen {
                 let levelConfig = getCurrentLevelConfig();
                 stateData.menuconfig.afterGameScreenMusic.pause();
                 stateData.menuconfig.afterGameScreenMusic.currentTime = 0;
-                let newlevelconfig = new LevelConfig("level" + (levelConfig.level + 1), levelConfig.level + 1, new LevelOption("level" + (levelConfig.level + 1), levelConfig.levelOption.movementAcc, levelConfig.levelOption.playGroundSize, levelConfig.levelOption.aiEnemys, levelConfig.levelOption.serpentSpriteColor, null, null, levelConfig.levelOption.winCondition));
+                let newlevelconfig = new LevelConfig("level" + (levelConfig.level + 1), stateData.playerName, levelConfig.level + 1, new LevelOption("level" + (levelConfig.level + 1), levelConfig.levelOption.movementAcc, levelConfig.levelOption.playGroundSize, levelConfig.levelOption.aiEnemys, levelConfig.levelOption.serpentSpriteColor, null, null, levelConfig.levelOption.winCondition));
                 newlevelconfig.StartLoading();
                 gameMode.push(new level("level" + (levelConfig.level + 1), newlevelconfig, stateData.menuconfig));
                 this.highScoreTable.clear();
@@ -1304,8 +1362,8 @@ class AfterGameScreen {
         this.canvas.fillRect(0, 0, this.dimensions.width, this.dimensions.height);
         this.canvas.fillStyle = this.menuconfig.textColor;
         this.canvas.drawImage(this.menuconfig.backgroundImage, 0, this.menuconfig.backgroundImageY);
-        this.canvas.font = "64pt Courier";
-        this.canvas.fillText(this.menuconfig.mainText, this.dimensions.width / 2 - 225, 200);
+        this.canvas.font = this.dimensions.width /14+"pt Courier";
+        this.canvas.fillText(this.menuconfig.mainText, this.dimensions.width / 5, this.dimensions.width / 7);
         this.canvas.beginPath();
         for (let i = 0; i <= 4; i++) {
             if (i == -1) {
@@ -1339,14 +1397,14 @@ class AfterGameScreen {
         this.menuconfig.backgroundImageY = moveMenuBackground(this.menuconfig.backgroundImageY, this.menuconfig.scrollSpeedBackground);
     };
     addToButtons() {
-        console.log(this.levelConfig.serpentPlayer.foodEaten, this.levelConfig.aiSerpents[0].foodEaten);
-        this.buttons.push(new MenuButton("Credit", "Copyright (c) 2020 KaBra, MaSiPi, MaZa", null, 500, 970, 100, 50, "14pt Courier", "white"));
+        this.buttons.push(new MenuButton("Credit", "Copyright (c) 2020 KaBra, MaSiPi, MaZa", null, this.dimensions.width - 500, this.dimensions.height - 30, 100, 50, "14pt Courier", "blue"));
         this.buttons.push(new MenuButton("Your Score:", "Your Highscore", null, 150, 500, 100, 50, "20pt Courier", "white"));
         this.buttons.push(new MenuButton("Enemy's Highscore:", "Enemy's Highscore", null, 150, 600, 100, 50, "20pt Courier", "white"));
         this.buttons.push(new MenuButton("startText", "Press Enter To Start Next Round", null, 300, 800, 100, 50, "20pt Courier", "white"));
         this.buttons.push(new MenuButton("startText", "Or Press Space To Return To Main Menu", null, 300, 850, 100, 50, "20pt Courier", "white"));
         this.buttons.push(new MenuButton("Food Eaten Player", this.levelConfig.serpentPlayer.foodEaten, null, 500, 500, 100, 50, "20pt Courier", "white"));
-        this.buttons.push(new MenuButton("Food Eaten Player", this.levelConfig.highestEnemy, null, 500, 600, 100, 50, "20pt Courier", "white"));
+        if (this.levelConfig.highestEnemy != undefined || this.levelConfig.highestEnemy != null)
+            this.buttons.push(new MenuButton("Food Eaten Player", this.levelConfig.highestEnemy, null, 500, 600, 100, 50, "20pt Courier", "white"));
     };
 }
 class CreditScreen {
@@ -1423,7 +1481,7 @@ class CreditScreen {
         this.canvas.fillStyle = this.menuconfig.textColor;
         this.canvas.drawImage(this.menuconfig.backgroundImage, 0, this.menuconfig.backgroundImageY);
         this.canvas.font = "64pt Courier";
-        this.canvas.fillText(this.menuconfig.mainText, this.dimensions.width / 2 - 225, 200);
+        this.canvas.fillText(this.menuconfig.mainText, this.dimensions.height / 4, 200);
         this.canvas.beginPath();
         for (let i = 0; i < this.buttons.length; i++) {
             this.canvas.beginPath();
@@ -1531,8 +1589,8 @@ class StateStack {
 var gameField = {
     canvas: null,
     canvasContext: null,
-    canvas_width: 1000,
-    canvas_height: 1000,
+    canvas_width: Math.ceil(window.innerWidth),
+    canvas_height: Math.ceil(window.innerHeight),
     gameMode: new StateStack(),
     //then: null,
     //startTime: null,
@@ -1565,8 +1623,11 @@ var gameField = {
         //this.then = Date.now(),
         //this.startTime = this.then,
         this.canvas = document.createElement("canvas");
-        this.canvas.width = this.canvas_width;
-        this.canvas.height = this.canvas_height;
+        this.canvas.id = "game";
+        this.canvas.width = Math.ceil(this.canvas_height - this.canvas_height / 4);
+        this.canvas.height = Math.ceil(this.canvas_height - this.canvas_height / 4);
+        this.canvas_width = this.canvas.width;
+        this.canvas_height = this.canvas.height;
         this.canvasContext = this.canvas.getContext("2d");
         this.canvas.style.border = "1px solid white";
         //this.deltaTime = (0.35 / (1000/this.FPS));
@@ -1580,6 +1641,7 @@ var gameField = {
 var highScoreTable = {
     highScoreCanvas: null,
     highScoreCanvasContext: null,
+    gamePosition: null,
     highScoreCanvasWidth: 500, //Auch window.innerWidth verwendebar
     highScoreCanvasHeight: 540,
     highScoreCanvasRight: "2%",
@@ -1694,6 +1756,9 @@ var highScoreTable = {
             //alle Schlangen in ein lokales Array packen, welches über die Update-Funktion sortiert wird
             this.sync();
             this.sizeToSmall = false;
+            this.gamePosition = getGameDimensions();
+            this.highScoreCanvasWidth = this.gamePosition.width - 400; //Auch window.innerWidth verwendebar
+            this.highScoreCanvasHeight = this.gamePosition.height - 540;
             //Definition und Inititalisierung des Highscore-Canvas
             this.highScoreCanvas = document.createElement("canvas");
             this.highScoreCanvas.id = "highScore";
@@ -1729,6 +1794,7 @@ var highScoreTable = {
 var instruction ={
     instructionCanvas: null,
     instructionCanvasContext: null,
+    gamePosition: null,
     instructionCanvasWidth: 500, //window.innerWidth
     instructionCanvasHeight: 620,
     instructionCanvasLeft: "2%",
@@ -1761,7 +1827,10 @@ var instruction ={
     },
 
     init: function(){
-        if(window.innerWidth>=2000){
+        if(window.innerWidth>=1500){
+            this.gamePosition = getGameDimensions();
+            this.instructionCanvasWidth = this.gamePosition.width - 400; //Auch window.innerWidth verwendebar
+            this.instructionCanvasHeight = this.gamePosition.height - 540;
             this.instructionCanvas = document.createElement("canvas");
             this.instructionCanvas.id = "instruction";
             this.instructionCanvas.width = this.instructionCanvasWidth;
@@ -1772,12 +1841,16 @@ var instruction ={
             this.instructionCanvas.style.border = "2px solid black";
             this.instructionCanvasContext = this.instructionCanvas.getContext("2d");
             document.body.insertBefore(this.instructionCanvas, document.body.childNodes[1]);
-
-            this.instructionButtons.push(new MenuButton("head","Instructions", null, 120, 50,150,20,"24pt Courier", "yellow"));
-            this.instructionButtons.push(new MenuButton("feather","The Feater...",null, 100,110, 150,20, "20pt Courier","white"));
-            this.instructionButtons.push(new MenuButton("clover","Länge +1 und Score +1",null, 100,180, 150,20, "20pt Courier","white"));
-            this.instructionButtons.push(new MenuButton("bomb","Explode - Ends the game",null, 100,255, 150,20, "20pt Courier","white"));
-            this.instructionButtons.push(new MenuButton("keyarrows", "Use Keyarrows for movement", null, 75, 580, 150, 20, "20pt Courier", "white"));        
+            let buttonSize = this.instructionCanvasWidth /30+"pt Courier";
+            let creditButtonSize = this.instructionCanvasWidth /70+"pt Courier";
+            let creditNamePosition = this.instructionCanvasWidth /2;
+            let buttonNamePosition = this.instructionCanvasWidth /7; 
+            let buttonDataPosition = this.instructionCanvasWidth /2;
+            this.instructionButtons.push(new MenuButton("head","Instructions", null, 120, 50,150,20,buttonSize, "yellow"));
+            this.instructionButtons.push(new MenuButton("feather","The Feater...",null, 100,110, 150,20, buttonSize,"white"));
+            this.instructionButtons.push(new MenuButton("clover","Länge +1 und Score +1",null, 100,180, 150,20, buttonSize,"white"));
+            this.instructionButtons.push(new MenuButton("bomb","Explode - Ends the game",null, 100,255, 150,20, buttonSize,"white"));
+            this.instructionButtons.push(new MenuButton("keyarrows", "Use Keyarrows for movement", null, 75, 580, 150, 20, buttonSize, "white"));        
             
             this.feather.src = 'sprites/feather.png';
             this.clover.src = 'sprites/clover.png';
@@ -1797,7 +1870,7 @@ var instruction ={
         this.instructionCanvasContext.drawImage(this.feather, 30, 80, 50, 50);
         this.instructionCanvasContext.drawImage(this.clover,30, 150, 50, 50);
         this.instructionCanvasContext.drawImage(this.bomb, 30, 220, 50, 50);
-        this.instructionCanvasContext.drawImage(this.arrows, 30, 330, 500, 220);
+        this.instructionCanvasContext.drawImage(this.arrows, 30, 300, 100, 100);
         
 
         this.instructionCanvasContext.fillStyle = "rgb(200,200,0)";
@@ -2118,31 +2191,20 @@ function drawKiSerpent(aiSerpents) {
 }
 // created this function for visualization reasons
 function drawBackground(bg_stars, playGroundImage) {
-    /*
+    
     var groundx = 0;
     var groundy = 0;
     
-    for (var column = 0; column <= playGroundLevel.fields.length; column++) {
-        for (var row = 0; row <= playGroundLevel.fields.length; row++) {
-            gameField.canvasContext.beginPath();
-            //gameField.canvasContext.fillStyle = "grey";
-            gameField.canvasContext.fillRect(groundx, groundy, gridSizex, gridSizey);
-            //gameField.canvasContext.strokeStyle = "grey";
-            gameField.canvasContext.strokeRect(groundx, groundy, gridSizex, gridSizey);
-            gameField.canvasContext.closePath();
-            groundx += gridSizeScale;
-            // console.log(column, row, groundy, groundx);
-        }
-        groundx = 0;
-        groundy += gridSizeScale;
-    }
-    */
+
+    
+    let canvasDimensions = getGameDimensions();
+
     if (playGroundImage.bgSpace != null)
         gameField.canvasContext.drawImage(playGroundImage.bgSpace,
             0,
             0,
-            1000,
-            1000
+            canvasDimensions.height,
+            canvasDimensions.width
         );
     playGroundImage.angle = playGroundImage.angle - 0.5 * Math.PI / 180;
     var ctxPlanet1 = null;
@@ -2259,7 +2321,23 @@ function drawBackground(bg_stars, playGroundImage) {
     //playGroundImage.bg_starCurrentX,
     //playGroundImage.bg_starCurrentY,
 
-}
+    /*
+    for (var column = 0; column <= playGroundImage.fields.length; column++) {
+        for (var row = 0; row <= playGroundImage.fields.length; row++) {
+            gameField.canvasContext.beginPath();
+            //gameField.canvasContext.fillStyle = "grey";
+            gameField.canvasContext.fillRect(groundx, groundy, gridSizex, gridSizey);
+            //gameField.canvasContext.strokeStyle = "grey";
+            gameField.canvasContext.strokeRect(groundx, groundy, gridSizex, gridSizey);
+            gameField.canvasContext.closePath();
+            groundx += gridSizeScale;
+            // console.log(column, row, groundy, groundx);
+        }
+        groundx = 0;
+        groundy += gridSizeScale;
+    }
+    */
+} 
 function moveMenuBackground(backgroundY, speed) {
     backgroundY -= speed;
     if (backgroundY == -1 * gameField.canvas_height) {
@@ -2444,8 +2522,9 @@ function aStar(obstaclesTable, goalPosition, startPosition) {
 
 /* ----  movement section  ---- */
 function moveSerpents(serpentPlayer, aiSerpents, playGroundLevel, items, sound) {
-    executeSerpentMovement(serpentPlayer, playGroundLevel, items, sound);
-    moveAiSerpents(aiSerpents, playGroundLevel, items, sound);
+    if (serpentPlayer.alive)
+        executeSerpentMovement(serpentPlayer, playGroundLevel, items, sound);
+        moveAiSerpents(aiSerpents, playGroundLevel, items, sound);
 }
 function getTargetPosition(aiSerpent, items, playField, serpentHeadPosition) {
     let targetStillExists = (playField.fields[aiSerpent.nextTarget.x][aiSerpent.nextTarget.y] == aiSerpent.nextTarget.objectID) ? true : false;
@@ -2718,7 +2797,7 @@ function hasEatenItem(serpent, items, playField, sound) {
 
 
 function generateRandomPosition(playField) {
-    let randomPosition = { x: getRandomIntInclusive(3, gridfield - 3), y: getRandomIntInclusive(3, gridfield - 3) }
+    let randomPosition = { x: getRandomIntInclusive(3, gridfield - 3), y: getRandomIntInclusive(3, gridfield - 3) };
     if (playField.fields[randomPosition.x][randomPosition.y] != 0) {
         return generateRandomPosition(playField);
     }
