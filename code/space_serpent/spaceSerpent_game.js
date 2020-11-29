@@ -340,7 +340,7 @@ class serpent {
     constructor(id, x, y, spritesheet, initSnakeParts) {
         this.id = id,
             this.alive = true,
-            this.name = names[getRandomIntInclusive(0,names.length-1)],
+            this.name = names[getRandomIntInclusive(0, names.length - 1)],
             this.gridx = x, // init the serpents position regarding to the grid ex.: gridSizex = 20 ; x = gridnumber in row n;  25 * 20 = 500 -> the position is x = 500 on the canvas
             this.gridy = y,
             this.width = gridSizex,
@@ -685,7 +685,7 @@ class level {
     };
     /* update section */
     update() {
-        this.gameTime =  Date.now() - this.timeStart - this.timePauseSum;
+        this.gameTime = Date.now() - this.timeStart - this.timePauseSum;
         //console.log("playmode: ", this.playMode, this.timeStart - this.gameTime);
         //console.log(this.gameTime, this.levelConfig.levelOption.winCondition.condition);
         //check if keylistener are not null 
@@ -698,57 +698,57 @@ class level {
         for (let k = 0; k < this.levelConfig.aiSerpents.length; k++) {
             //console.log(k, this.levelConfig.aiSerpents[k].foodEaten, "highestScore:", this.levelConfig.highestEnemy);
             if (this.levelConfig.aiSerpents[k].foodEaten >= this.levelConfig.highestEnemy)
-            this.levelConfig.highestEnemy = this.levelConfig.aiSerpents[k].foodEaten;
+                this.levelConfig.highestEnemy = this.levelConfig.aiSerpents[k].foodEaten;
         }
         // Food Mode 
-        if (this.playMode == 0){
+        if (this.playMode == 0) {
             if (this.levelConfig.serpentPlayer.foodEaten == this.levelConfig.levelOption.winCondition.condition)
                 this.playerWin = true;
             else if (this.levelConfig.highestEnemy == this.levelConfig.levelOption.winCondition.condition || this.levelConfig.serpentPlayer.alive == false)
                 this.playerLose = true;
         }
         // Time Mode
-        else if (this.playMode == 1){
+        else if (this.playMode == 1) {
             console.log(this.timeStart - this.gameTime);
             console.log(this.gameTime, this.levelConfig.levelOption.winCondition.condition);
 
             if ((this.levelConfig.serpentPlayer.foodEaten > this.levelConfig.highestEnemy) && this.gameTime >= this.levelConfig.levelOption.winCondition.condition)
                 this.playerWin = true;
-            else if (((this.levelConfig.serpentPlayer.foodEaten < this.levelConfig.highestEnemy ) && this.gameTime >= this.levelConfig.levelOption.winCondition.condition )|| this.levelConfig.serpentPlayer.alive == false)
+            else if (((this.levelConfig.serpentPlayer.foodEaten < this.levelConfig.highestEnemy) && this.gameTime >= this.levelConfig.levelOption.winCondition.condition) || this.levelConfig.serpentPlayer.alive == false)
                 this.playerLose = true;
         }
         // Endless Mode
-        else if (this.playMode == 2){
+        else if (this.playMode == 2) {
             if (this.levelConfig.serpentPlayer.alive == false)
-            this.playerLose = true;
+                this.playerLose = true;
         }
-            //console.log(this.levelConfig.highestEnemy, this.levelConfig.aiSerpents[0].foodEaten);
-            if (this.playerWin == true) {
-                this.levelConfig.playGroundLevel.bgsound.pause();
-                victorySoundeffect(this.levelConfig.sound);
-                let gameMode = getGameInstance();
-                //console.log("this state is: ", gameMode);
-                //console.log("menu", this.menuconfig);
-                this.menuconfig.changeMenuConfig("You Won!", null);
-                gameMode.push(new AfterGameScreen("AfterGameScreen", this.levelConfig, this.currentOption, this.menuconfig));
-            }
-            else if (this.playerLose == true) {
-                //else if (this.levelConfig.highestEnemy == this.levelConfig.levelOption.winCondition || this.levelConfig.serpentPlayer.isAlive == false) {    
-                    this.levelConfig.playGroundLevel.bgsound.pause();
-                    this.levelConfig.playGroundLevel.bgsound.currentTime = 0;
-                    this.levelConfig.sound[7].play();
-                    //victorySoundeffect(this.levelConfig.sound);
-                    let gameMode = getGameInstance();
-                    //console.log("this state is: ", gameMode);
-                    //console.log("menu", this.menuconfig);
-                    this.canvas.font = this.buttons[0].font;
-                    this.canvas.fillStyle = this.buttons[0].fillStyle;
-                    this.canvas.fillText(this.buttons[0].text, this.buttons[0].buttonX, this.buttons[0].buttonY);
-                    this.menuconfig.changeMenuConfig("You Lost!", null);
-                    gameMode.push(new AfterGameScreen("AfterGameScreen", this.levelConfig, this.currentOption, this.menuconfig));
-                    sleep(2000);
-                }
-                //console.log(this.levelConfig.playGroundLevel.fields);
+        //console.log(this.levelConfig.highestEnemy, this.levelConfig.aiSerpents[0].foodEaten);
+        if (this.playerWin == true) {
+            this.levelConfig.playGroundLevel.bgsound.pause();
+            victorySoundeffect(this.levelConfig.sound);
+            let gameMode = getGameInstance();
+            //console.log("this state is: ", gameMode);
+            //console.log("menu", this.menuconfig);
+            this.menuconfig.changeMenuConfig("You Won!", null);
+            gameMode.push(new AfterGameScreen("AfterGameScreen", this.levelConfig, this.currentOption, this.menuconfig));
+        }
+        else if (this.playerLose == true) {
+            //else if (this.levelConfig.highestEnemy == this.levelConfig.levelOption.winCondition || this.levelConfig.serpentPlayer.isAlive == false) {    
+            this.levelConfig.playGroundLevel.bgsound.pause();
+            this.levelConfig.playGroundLevel.bgsound.currentTime = 0;
+            this.levelConfig.sound[7].play();
+            //victorySoundeffect(this.levelConfig.sound);
+            let gameMode = getGameInstance();
+            //console.log("this state is: ", gameMode);
+            //console.log("menu", this.menuconfig);
+            this.canvas.font = this.buttons[0].font;
+            this.canvas.fillStyle = this.buttons[0].fillStyle;
+            this.canvas.fillText(this.buttons[0].text, this.buttons[0].buttonX, this.buttons[0].buttonY);
+            this.menuconfig.changeMenuConfig("You Lost!", null);
+            gameMode.push(new AfterGameScreen("AfterGameScreen", this.levelConfig, this.currentOption, this.menuconfig));
+            sleep(2000);
+        }
+        //console.log(this.levelConfig.playGroundLevel.fields);
 
 
         moveLevelBackground(this.levelConfig.playGroundLevel);
@@ -812,10 +812,10 @@ class MainMenu {
             this.currentOption[3] = 0, // Speed
             this.currentOption[4] = 1, // Food
             this.currentOption[5] = 1  // Time
-            this.winCondition = {
-                playType: 0,  // food mode
-                condition: 10 // ten Food
-            }
+        this.winCondition = {
+            playType: 0,  // food mode
+            condition: 10 // ten Food
+        }
 
         /* keyboard listener */
         window.onkeydown = null;
@@ -831,15 +831,15 @@ class MainMenu {
                 stateData.menuconfig.menuMusic.pause();
                 let gameMode = getGameInstance();
                 // get winCondition 
-                if (stateData.playType == 0){
+                if (stateData.playType == 0) {
                     stateData.winCondition.playType = 0;
                     stateData.winCondition.condition = stateData.currentOption[4];
                 }
-                else if (stateData.playType == 1){
+                else if (stateData.playType == 1) {
                     stateData.winCondition.playType = 1;
                     stateData.winCondition.condition = stateData.currentOption[5] * 60 * 1000;
                 }
-                else if (stateData.playType == 2){
+                else if (stateData.playType == 2) {
                     stateData.winCondition.playType = 2;
                     stateData.winCondition.condition = 10000;
                 }
@@ -872,7 +872,7 @@ class MainMenu {
                     if (stateData.playType < 0)
                         stateData.playType = 2;
 
-                }                
+                }
                 else if (stateData.selectedButton == 1) {
                     stateData.currentOption[0]--;
                     if (stateData.currentOption[0] < 0)
@@ -958,32 +958,32 @@ class MainMenu {
             // up
             else if (keyCode === 38) {
                 stateData.selectedButton--;
-                
-                if ((stateData.playType == 0 && stateData.selectedButton == 6) || stateData.playType == 1 && stateData.selectedButton == 5 ){
-                        stateData.selectedButton--; 
+
+                if ((stateData.playType == 0 && stateData.selectedButton == 6) || stateData.playType == 1 && stateData.selectedButton == 5) {
+                    stateData.selectedButton--;
                 }
                 else if (stateData.playType == 2 && (stateData.selectedButton == 5 || stateData.selectedButton == 6))
-                    stateData.selectedButton = stateData.selectedButton - 2; 
+                    stateData.selectedButton = stateData.selectedButton - 2;
                 if (stateData.selectedButton < 0)
                     stateData.selectedButton = 0;
             }
             // down
             else if (keyCode === 40) {
                 stateData.selectedButton++;
-                
-                if ((stateData.playType == 0 && stateData.selectedButton == 6) || stateData.playType == 1 && stateData.selectedButton == 5 ){
-                    stateData.selectedButton++; 
+
+                if ((stateData.playType == 0 && stateData.selectedButton == 6) || stateData.playType == 1 && stateData.selectedButton == 5) {
+                    stateData.selectedButton++;
                 }
                 else if (stateData.playType == 2 && (stateData.selectedButton == 5 || stateData.selectedButton == 6))
-                    stateData.selectedButton = stateData.selectedButton + 2; 
-                
+                    stateData.selectedButton = stateData.selectedButton + 2;
+
                 if (stateData.selectedButton > 8)
                     stateData.selectedButton = 8;
             }
             stateData.menuconfig.scrollSound.pause();
             stateData.menuconfig.scrollSound.currentTime = 0;
             stateData.menuconfig.scrollSound.play();
-        console.log("currentButton: ", stateData.selectedButton);
+            console.log("currentButton: ", stateData.selectedButton);
         };
     }
     onEnter() {
@@ -1028,35 +1028,35 @@ class MainMenu {
         //this.canvas.strokeStyle = "blue";
         //this.canvas.strokeRect(this.dimensions.width / 2 - 265, 150, 500, 100);
         this.canvas.beginPath();
-        
 
-            for (let i = 0; i <= 8; i++) {
-                if (i == this.selectedButton) {
-                    if (this.menuconfig.colorIndexSelected == this.menuconfig.colorsArraySelected.length) {
-                        this.menuconfig.colorIndexSelected = 0;
-                    }
-                    this.menuconfig.textColorSelected = "rgb(" + this.menuconfig.colorsArraySelected[this.menuconfig.colorIndexSelected] / 3 + "," + this.menuconfig.colorsArraySelected[this.menuconfig.colorIndexSelected] + "," + this.menuconfig.colorsArraySelected[this.menuconfig.colorIndexSelected] / 2 + ")";
-                    this.menuconfig.colorIndexSelected++;
+
+        for (let i = 0; i <= 8; i++) {
+            if (i == this.selectedButton) {
+                if (this.menuconfig.colorIndexSelected == this.menuconfig.colorsArraySelected.length) {
+                    this.menuconfig.colorIndexSelected = 0;
+                }
+                this.menuconfig.textColorSelected = "rgb(" + this.menuconfig.colorsArraySelected[this.menuconfig.colorIndexSelected] / 3 + "," + this.menuconfig.colorsArraySelected[this.menuconfig.colorIndexSelected] + "," + this.menuconfig.colorsArraySelected[this.menuconfig.colorIndexSelected] / 2 + ")";
+                this.menuconfig.colorIndexSelected++;
+                this.canvas.font = this.buttons[i].font;
+                this.canvas.fillStyle = this.menuconfig.textColorSelected;
+                this.canvas.fillText(this.buttons[i].text, this.buttons[i].buttonX, this.buttons[i].buttonY);
+                this.canvas.closePath();
+                // console.log(this.menuconfig.serpentSprites);
+            }
+            else {
+                if ((this.playType == 0 && i != 6) || (this.playType == 1 && i != 5) || (this.playType == 2 && i != 6 && i != 5)) {
+                    this.canvas.beginPath();
+                    this.canvas.fillStyle = this.buttons[i].fillStyle;
                     this.canvas.font = this.buttons[i].font;
-                    this.canvas.fillStyle = this.menuconfig.textColorSelected;
                     this.canvas.fillText(this.buttons[i].text, this.buttons[i].buttonX, this.buttons[i].buttonY);
                     this.canvas.closePath();
-                    // console.log(this.menuconfig.serpentSprites);
                 }
-                else {
-                        if ((this.playType == 0 && i != 6) || (this.playType == 1 && i != 5) || (this.playType == 2 && i != 6 && i != 5)) {
-                            this.canvas.beginPath();
-                            this.canvas.fillStyle = this.buttons[i].fillStyle;
-                            this.canvas.font = this.buttons[i].font;
-                            this.canvas.fillText(this.buttons[i].text, this.buttons[i].buttonX, this.buttons[i].buttonY);
-                            this.canvas.closePath();
-                        }
             }
 
             this.canvas.beginPath();
             this.canvas.fillStyle = this.buttons[9].fillStyle;
             this.canvas.font = this.buttons[9].font;
-            this.canvas.fillText(this.buttons[9].text[this.playType], this.buttons[9].buttonX, this.buttons[9].buttonY);            
+            this.canvas.fillText(this.buttons[9].text[this.playType], this.buttons[9].buttonX, this.buttons[9].buttonY);
             this.canvas.drawImage(this.buttons[10].img[this.currentOption[0]], this.buttons[10].buttonX, this.buttons[10].buttonY);
             this.canvas.fillStyle = this.buttons[11].fillStyle;
             this.canvas.font = this.buttons[11].font;
@@ -1068,19 +1068,19 @@ class MainMenu {
             this.canvas.font = this.buttons[13].font;
             this.canvas.fillText(this.buttons[13].text[this.currentOption[3]], this.buttons[13].buttonX, this.buttons[13].buttonY);
         }
-        if (this.playType == 0){ 
+        if (this.playType == 0) {
             this.canvas.fillStyle = this.buttons[14].fillStyle;
             this.canvas.font = this.buttons[14].font;
             this.canvas.fillText(this.buttons[14].text, this.buttons[14].buttonX, this.buttons[14].buttonY);
             this.canvas.closePath();
         }
-        else if (this.playType == 1){ 
+        else if (this.playType == 1) {
             this.canvas.fillStyle = this.buttons[15].fillStyle;
             this.canvas.font = this.buttons[15].font;
             this.canvas.fillText(this.buttons[15].text, this.buttons[15].buttonX, this.buttons[15].buttonY);
             this.canvas.closePath();
         }
-        else if (this.playType == 2){ 
+        else if (this.playType == 2) {
             this.currentOption[4] = 10000; // we set food to 10.000 
             this.canvas.closePath();
         }
@@ -1117,7 +1117,7 @@ class MainMenu {
         this.buttons.push(new MenuButton("Food", 1, null, 450, 700, 100, 50, "20pt Courier", "white"));
         this.buttons.push(new MenuButton("Time", 1 + " minute(s)", null, 450, 750, 100, 50, "20pt Courier", "white"));
         this.buttons.push(new MenuButton("Credit", "Copyright (c) 2020 KaBra, MaSiPi, MaZa", null, 500, 970, 100, 50, "14pt Courier", "blue"));
-    
+
     };
 
 }
@@ -1572,7 +1572,7 @@ var gameField = {
 var highScoreTable = {
     highScoreCanvas: null,
     highScoreCanvasContext: null,
-    highScoreCanvasWidth: screen.width/5,
+    highScoreCanvasWidth: screen.width / 5,
     highScoreCanvasHeight: 500,
     highScoreCanvasRight: "2%",
     highScoreCanvasTop: "9%",
@@ -1582,84 +1582,84 @@ var highScoreTable = {
     stateData: null,
     timeButton: null,
     highScoreCanvasButtons: [],
-    playerNameButtons:[],
+    playerNameButtons: [],
     playerScoreButtons: [],
 
-    clear: function(){
+    clear: function () {
         //this.highScoreCanvasContext.clearRect(0,0, this.highScoreCanvasWidth, this.highScoreCanvasHeight);
-        for(let i=0;i<this.playerScoreButtons.length;i++){
+        for (let i = 0; i < this.playerScoreButtons.length; i++) {
             this.popScoreSheetButtons();
         }
         document.body.removeChild(this.highScoreCanvas);
     },
 
-    update: function() {
+    update: function () {
         this.sync();
         let time = this.stateData;
         this.timeButton.text = time;
         //console.log(this.serpentRanking);
         // Bubblesort auf die Serpentlist -> vergleicht die Nachbarn jeweils darauf, ob foodEaten < als der Nachfolger ist
-        for( let n=this.serpentRanking.length-1; n>0; n--){
-            for(let i=0; i<n; i++){
-               if(this.serpentRanking[i].foodEaten < this.serpentRanking[i+1].foodEaten){
-                   //wenn "foodEaten" des Nachfolgers größer ist dann folgt ein Swap
-                   if(i == this.serpentRank){
-                        this.serpentRank = i+1;
-                   }else if(i+1 == this.serpentRank){
-                       this.serpentRank = i;
-                   }
+        for (let n = this.serpentRanking.length - 1; n > 0; n--) {
+            for (let i = 0; i < n; i++) {
+                if (this.serpentRanking[i].foodEaten < this.serpentRanking[i + 1].foodEaten) {
+                    //wenn "foodEaten" des Nachfolgers größer ist dann folgt ein Swap
+                    if (i == this.serpentRank) {
+                        this.serpentRank = i + 1;
+                    } else if (i + 1 == this.serpentRank) {
+                        this.serpentRank = i;
+                    }
                     this.temp = this.serpentRanking[i];
-                    this.serpentRanking[i] = this.serpentRanking[i+1];
-                    this.serpentRanking[i+1] = this.temp;
+                    this.serpentRanking[i] = this.serpentRanking[i + 1];
+                    this.serpentRanking[i + 1] = this.temp;
                 }
             }
         }
         //HighScoreTable aktualisieren (machen)
-        for( let i=0; i <this.serpentRanking.length; i++){
+        for (let i = 0; i < this.serpentRanking.length; i++) {
             this.playerNameButtons[i].text = this.serpentRanking[i].name;
             this.playerScoreButtons[i].text = this.serpentRanking[i].foodEaten;
         }
         this.renderButtons();
     },
 
-    sync: function(){
+    sync: function () {
         this.stateData = round10(getStateData().gameTime / 1000, -1);
         this.copyAiSerpents = getStateData().levelConfig.aiSerpents.slice(0, getStateData().levelConfig.aiSerpents.length);
         this.serpentRanking = this.copyAiSerpents;
         //console.log(this.serpentRanking, "this.stateData", this.stateData, "this.timebutton",this.timeButton);
         this.copySerpent = copyObject(getStateData().levelConfig.serpentPlayer);
         this.serpentRanking.push(this.copySerpent);
-        this.serpentRank = this.serpentRanking.length-1;
+        this.serpentRank = this.serpentRanking.length - 1;
         //console.log(this.serpentRanking);
     },
 
-    renderButtons: function(){
-        this.highScoreCanvasContext.clearRect(0,0,this.highScoreCanvasWidth,this.highScoreCanvasHeight);
+    renderButtons: function () {
+        this.highScoreCanvasContext.clearRect(0, 0, this.highScoreCanvasWidth, this.highScoreCanvasHeight);
         this.highScoreCanvasContext.beginPath();
         this.highScoreCanvasContext.fillStyle = "rgb(200,200,0)";
-        this.highScoreCanvasContext.fillText(this.timeButton.text,this.timeButton.buttonX, this.timeButton.buttonY);
-        for(let i=0; i< this.highScoreCanvasButtons.length; i++){
+        this.highScoreCanvasContext.fillText(this.timeButton.text, this.timeButton.buttonX, this.timeButton.buttonY);
+        for (let i = 0; i < this.highScoreCanvasButtons.length; i++) {
             this.highScoreCanvasContext.font = this.highScoreCanvasButtons[i].font;
-            this.highScoreCanvasContext.fillText(this.highScoreCanvasButtons[i].text,this.highScoreCanvasButtons[i].buttonX, this.highScoreCanvasButtons[i].buttonY);
+            this.highScoreCanvasContext.fillText(this.highScoreCanvasButtons[i].text, this.highScoreCanvasButtons[i].buttonX, this.highScoreCanvasButtons[i].buttonY);
         }
-        for(let i=0; i < this.playerNameButtons.length; i++){
+        for (let i = 0; i < this.playerNameButtons.length; i++) {
             //this.highScoreCanvasContext.strokeRect(this.highScoreCanvasButtons[i].buttonX, this.highScoreCanvasButtons[i].buttonY,this.highScoreCanvasButtons[i].buttonWidth, this.highScoreCanvasButtons[i].buttonHeight)
-            if(i == this.serpentRank){
+            if (i == this.serpentRank) {
                 this.highScoreCanvasContext.fillStyle = "rgb(0,200,200)";
-            }else{
+            } else {
                 this.highScoreCanvasContext.fillStyle = "rgb(200,0,0)";
             }
             this.highScoreCanvasContext.font = this.playerNameButtons[i].font;
-            this.highScoreCanvasContext.fillText(this.playerNameButtons[i].text,this.playerNameButtons[i].buttonX, this.playerNameButtons[i].buttonY);
-            this.highScoreCanvasContext.fillText(this.playerScoreButtons[i].text,this.playerScoreButtons[i].buttonX, this.playerScoreButtons[i].buttonY);
+            this.highScoreCanvasContext.fillText(this.playerNameButtons[i].text, this.playerNameButtons[i].buttonX, this.playerNameButtons[i].buttonY);
+            this.highScoreCanvasContext.fillText(this.playerScoreButtons[i].text, this.playerScoreButtons[i].buttonX, this.playerScoreButtons[i].buttonY);
         }
     },
 
-    popScoreSheetButtons: function(){
+    popScoreSheetButtons: function () {
         this.playerNameButtons.pop();
         this.playerScoreButtons.pop();
     },
-    
+
     init: function () {
         //alle Schlangen in ein lokales Array packen, welches über die Update-Funktion sortiert wird
         this.sync();
@@ -1676,26 +1676,26 @@ var highScoreTable = {
         document.body.insertBefore(this.highScoreCanvas, document.body.childNodes[2]);
 
         //Einfügen der Buttons zur Darstellung der Highscore-Tabelle
-        this.highScoreCanvasButtons.push(new MenuButton("Time", "Time ", null, this.highScoreCanvasWidth/5, 40, 100, 50,"24pt Courier", "white"));
-        this.highScoreCanvasButtons.push(new MenuButton("Head", "HighscoreTable", null, this.highScoreCanvasWidth/5, 80, 100, 50,"24pt Courier", "white"));
-        this.highScoreCanvasButtons.push(new MenuButton("Player", "Player", null, this.highScoreCanvasWidth/10, 120, 100, 50, "20pt Courier", "white"));
-        this.highScoreCanvasButtons.push(new MenuButton("Score", "Score", null, this.highScoreCanvasWidth/1.8, 120, 100, 50, "20pt Courier", "white"));
-       
+        this.highScoreCanvasButtons.push(new MenuButton("Time", "Time ", null, this.highScoreCanvasWidth / 5, 40, 100, 50, "24pt Courier", "white"));
+        this.highScoreCanvasButtons.push(new MenuButton("Head", "HighscoreTable", null, this.highScoreCanvasWidth / 5, 80, 100, 50, "24pt Courier", "white"));
+        this.highScoreCanvasButtons.push(new MenuButton("Player", "Player", null, this.highScoreCanvasWidth / 10, 120, 100, 50, "20pt Courier", "white"));
+        this.highScoreCanvasButtons.push(new MenuButton("Score", "Score", null, this.highScoreCanvasWidth / 1.8, 120, 100, 50, "20pt Courier", "white"));
+
         //Einfügen des Rankings
-        this.timeButton = new MenuButton(1, "0", null, this.highScoreCanvasWidth/1.8, 40, 50,30, "20pt Courier", "white");
-        for (let i=0; i< this.serpentRanking.length; i++){
+        this.timeButton = new MenuButton(1, "0", null, this.highScoreCanvasWidth / 1.8, 40, 50, 30, "20pt Courier", "white");
+        for (let i = 0; i < this.serpentRanking.length; i++) {
             //console.log(this.highScoreCanvasButtons);
-            this.playerNameButtons.push(new MenuButton(i, this.serpentRanking[i].name, null, this.highScoreCanvasWidth/8, 160+(i*40), 50,30, "20pt Courier", "white"));
-            this.playerScoreButtons.push(new MenuButton(i, this.serpentRanking[i].foodEaten, null, this.highScoreCanvasWidth/1.8, 160+(i*40), 50, 30, "20pt Courier", "white"));
+            this.playerNameButtons.push(new MenuButton(i, this.serpentRanking[i].name, null, this.highScoreCanvasWidth / 8, 160 + (i * 40), 50, 30, "20pt Courier", "white"));
+            this.playerScoreButtons.push(new MenuButton(i, this.serpentRanking[i].foodEaten, null, this.highScoreCanvasWidth / 1.8, 160 + (i * 40), 50, 30, "20pt Courier", "white"));
         }
         this.renderButtons();
     },
 }
 
-var instruction ={
+var instruction = {
     instructionCanvas: null,
     instructionCanvasContext: null,
-    instructionCanvasWidth: screen.width/5,
+    instructionCanvasWidth: screen.width / 5,
     instructionCanvasHeight: 500,
     instructionCanvasLeft: "2%",
     instructionCanvasTop: "9%",
@@ -1705,8 +1705,8 @@ var instruction ={
     bomb: new Image(),
     clover: new Image(),
 
-    init: function(){
-        if(this.instructionCanvasWidth>=300){
+    init: function () {
+        if (this.instructionCanvasWidth >= 300) {
             this.instructionCanvas = document.createElement("canvas");
             this.instructionCanvas.id = "instruction";
             this.instructionCanvas.width = this.instructionCanvasWidth;
@@ -1717,33 +1717,33 @@ var instruction ={
             this.instructionCanvasContext = this.instructionCanvas.getContext("2d");
             document.body.insertBefore(this.instructionCanvas, document.body.childNodes[1]);
 
-            this.instructionButtons.push(new MenuButton("feather","The Feater...",null, 50,20, 150,20, "14pt Courier","white"));
-            this.instructionButtons.push(new MenuButton("clover","Länge +1 und Score +1",null, 50,50, 150,20, "14pt Courier","white"));
-            this.instructionButtons.push(new MenuButton("bomb","Explode - Ends the game",null, 50,90, 150,20, "14pt Courier","white"));
-        
+            this.instructionButtons.push(new MenuButton("feather", "The Feater...", null, 50, 20, 150, 20, "14pt Courier", "white"));
+            this.instructionButtons.push(new MenuButton("clover", "Länge +1 und Score +1", null, 50, 50, 150, 20, "14pt Courier", "white"));
+            this.instructionButtons.push(new MenuButton("bomb", "Explode - Ends the game", null, 50, 90, 150, 20, "14pt Courier", "white"));
+
             this.feather.src = 'sprites/feather.png';
             this.clover.src = 'sprites/clover.png';
             this.bomb.src = 'sprites/bomb.png';
 
             this.render();
-        }else{
+        } else {
             window.alert("Screen is too small - Please load the game on a bigger screen")
-        } 
+        }
     },
 
-    render: function(){
-        this.instructionCanvasContext.clearRect(0,0,this.instructionCanvasWidth, this.instructionCanvasHeight);
+    render: function () {
+        this.instructionCanvasContext.clearRect(0, 0, this.instructionCanvasWidth, this.instructionCanvasHeight);
         this.instructionCanvasContext.beginPath();
-        
-        this.instructionCanvasContext.drawImage(this.feather, 20,20, 20,20);
-        this.instructionCanvasContext.drawImage(this.clover,20, 50, 20,20);
-        this.instructionCanvasContext.drawImage(this.bomb, 20, 90, 20,20);
-        
+
+        this.instructionCanvasContext.drawImage(this.feather, 20, 20, 20, 20);
+        this.instructionCanvasContext.drawImage(this.clover, 20, 50, 20, 20);
+        this.instructionCanvasContext.drawImage(this.bomb, 20, 90, 20, 20);
+
 
         this.instructionCanvasContext.fillStyle = "rgb(200,200,0)";
-        for(let i=0; i< this.instructionButtons.length; i++){
+        for (let i = 0; i < this.instructionButtons.length; i++) {
             this.instructionCanvasContext.font = this.instructionButtons[i].font;
-            this.instructionCanvasContext.fillText(this.instructionButtons[i].text,this.instructionButtons[i].buttonX, this.instructionButtons[i].buttonY);
+            this.instructionCanvasContext.fillText(this.instructionButtons[i].text, this.instructionButtons[i].buttonX, this.instructionButtons[i].buttonY);
         }
     }
 }
@@ -2384,7 +2384,8 @@ function aStar(obstaclesTable, goalPosition, startPosition) {
 
 /* ----  movement section  ---- */
 function moveSerpents(serpentPlayer, aiSerpents, playGroundLevel, items, sound) {
-    executeSerpentMovement(serpentPlayer, playGroundLevel, items, sound);
+    if (serpentPlayer.alive)
+        executeSerpentMovement(serpentPlayer, playGroundLevel, items, sound);
     moveAiSerpents(aiSerpents, playGroundLevel, items, sound);
 }
 function getTargetPosition(aiSerpent, items, playField, serpentHeadPosition) {
@@ -2398,7 +2399,7 @@ function generateNewTarget(items) {
     items.forEach(goodItem => {
         if (goodItem.id == 1)
             targets.push(goodItem);
-});
+    });
     //console.log("target:", targets);
     let randomInt = getRandomIntInclusive(0, targets.length - 1);
     let newTarget = targets[randomInt];
@@ -2459,27 +2460,6 @@ function killSerpent(serpent, playField, itemlist) {
     serpent.dy = 0;
     // ist hier ein bug, denke ich
     this.highScoreTable.popScoreSheetButtons();
-
-}
-
-function movePlayer(serpent, playField, items, sound) {
-    if (serpent.alive){
-        let nextXPosition = serpent.serpentParts[0].x + serpent.dx;
-        let nextYPositon = serpent.serpentParts[0].y + serpent.dy;
-        let leavesPlayfield = (nextXPosition < 0 || nextXPosition >= playField.xSize) || (nextYPositon < 0 || nextYPositon >= playField.ySize) ? true : false;
-        if (!leavesPlayfield) {
-            let touchesEnemySerpent = (playField.fields[nextXPosition][nextYPositon] >= 7) ? true : false;
-            let touchesBomb = (playField.fields[nextXPosition][nextYPositon] == 3) ? true : false;
-            if (!touchesEnemySerpent && !touchesBomb) {
-                executeSerpentMovement(serpent, playField, items, sound);
-                return;
-            }
-
-        }
-        killSerpent(serpent, playField, items);
-        playField.bgsound.pause();
-        sound[8].play();
-    }
 }
 
 function changeCurrentPointOfView(serpent) {
@@ -2507,6 +2487,7 @@ function changeBodyDirectionAnimation(serpent) {
 }
 
 function getNextXPosition(serpent, playField) {
+
     let nextXPosition = serpent.serpentParts[0].x + serpent.dx;
 
     if (nextXPosition < 0)
@@ -2524,7 +2505,7 @@ function getNextYPosition(serpent, playField) {
     return nextYPosition;
 }
 
-function serpentLost(serpent, playField, items, nextXPosition, nextYPosition, sound){
+function serpentLost(serpent, playField, items, nextXPosition, nextYPosition, sound) {
     let touchesEnemySerpent = (playField.fields[nextXPosition][nextYPosition] >= 7) ? true : false;
     let touchesBomb = (playField.fields[nextXPosition][nextYPosition] == 3) ? true : false;
     if (touchesEnemySerpent || touchesBomb) {
@@ -2546,118 +2527,71 @@ function executeSerpentMovement(serpent, playField, items, sound) {
         return;
 
     var newHead = new serpentPart(nextXPosition, nextYPosition, serpent.serpentParts[0].currentPointOfView);
+    serpent.serpentParts.unshift(newHead);
 
     changeBodyDirectionAnimation(serpent);
-    serpent.serpentParts.unshift(newHead);
 
     for (let serpentPartIndex = 0; serpentPartIndex < serpent.serpentParts.length; serpentPartIndex++) {
         playField.addToPlayground(serpent.serpentParts[serpentPartIndex].x, serpent.serpentParts[serpentPartIndex].y, serpent.id);
     }
 
-    const chasEatenFood = hasEatenFood(serpent, items, playField, sound);
+    itemCollision(serpent, items, playField, sound);
+}
 
-    if (chasEatenFood) {
-        generateNewItem(1, items, playField, generateRandomPosition(playField));
+function itemCollision(serpent, items, playField, sound) {
+
+    let hasEatenFood = false;
+
+    for (let i = 0; i < items.length; i++) {
+        playField.addToPlayground(items[i].gridx, items[i].gridy, items[i].id);
+
+        if (positionsAreEqual({ x: serpent.serpentParts[0].x, y: serpent.serpentParts[0].y }, { x: items[i].gridx, y: items[i].gridy })) {
+
+            if (items[i].name == "food")
+                hasEatenFood = true;
+            eatItem(serpent, i, items, playField, sound);
+
+            break;
+        }
     }
-    else {
+    if (!hasEatenFood) {
         let lastSerpentPart = serpent.serpentParts[serpent.serpentParts.length - 1];
         playField.removeFromPlayground(lastSerpentPart.x, lastSerpentPart.y);
         serpent.serpentParts.pop();
     }
-    const chasEatenItem = hasEatenItem(serpent, items, playField, sound);
-
-    if (chasEatenItem) {
-        // Remove the last part of snake body
-        //generateNewItem(getRandomIntInclusive(3), items, playField);
-        generateNewItem(3, items, playField, generateRandomPosition(playField));
-        serpent.serpentParts.pop();
-    }
-
 }
 
+function eatItem(serpent, itemIndex, items, playField, sound) {
+    switch (items[itemIndex].name) {
+        case "food":
+            eatFoodSoundeffect(sound);
+            serpent.foodEaten++;
+            break;
 
-function hasEatenFood(serpent, items, playField, sound) {
-    for (let i = 0; i < items.length; i++) {
+        case "backpack":
+            eatBackpackSoundeffect(sound);
+            serpent.inventory.push(items[itemIndex]);
+            break;
 
-        playField.addToPlayground(items[i].gridx, items[i].gridy, items[i].id);
+        case "bomb":
+            eatBombSoundeffect(sound);
+            return;
 
-        // if item == 1 , food is 1
-        if (items[i].id == 1) {
-            const chasEatenFood = (serpent.serpentParts[0].x == items[i].gridx && serpent.serpentParts[0].y == items[i].gridy) ? true : false;
+        case "book":
+            eatBookSoundeffect(sound);
+            serpent.inventory.push(items[itemIndex]);
+            break;
 
-            if (chasEatenFood) {
-                eatFoodSoundeffect(sound);
-                serpent.foodEaten++;
-                playField.removeFromPlayground(items[i].gridx, items[i].gridy);
-                items.splice(i, 1);
-                return chasEatenFood;
-            }
-        }
+        case "feather":
+            eatFeatherSoundeffect(sound);
+            serpent.inventory.push(items[itemIndex]);
+            break;
+
+        default:
+            break;
     }
-    return false;
-}
-
-function hasEatenItem(serpent, items, playField, sound) {
-    for (let i = 0; i < items.length; i++) {
-        var chasEatenItem;
-
-        if (items[i].id == 2 && items[i] != null && items[i] != undefined) {
-            // console.log("eatenfood", serpent.serpentParts[0].x, items[i].gridx);
-            chasEatenItem = serpent.serpentParts[0].x === items[i].gridx && serpent.serpentParts[0].y === items[i].gridy;
-            // return if true 
-            if (chasEatenItem) {
-                eatBackpackSoundeffect(sound);
-                //playField.removeFromPlayground(items[i].gridx, items[i].gridy);
-                serpent.inventory.push(items[i]);
-                items.splice(i, 1);
-                //console.log("chasEatenFood", items);
-                return chasEatenItem;
-            }
-        }
-        else if (items[i].id == 3 && items[i] != null && items[i] != undefined) {
-            // console.log("eatenfood", serpent.serpentParts[0].x, items[i].gridx);
-            chasEatenItem = serpent.serpentParts[0].x === items[i].gridx && serpent.serpentParts[0].y === items[i].gridy;
-            // return if true 
-            if (chasEatenItem) {
-                eatBombSoundeffect(sound);
-                //serpent.foodEaten++;
-                playField.removeFromPlayground(items[i].gridx, items[i].gridy);
-                serpent.inventory.push(items[i]);
-                items.splice(i, 1);
-                //console.log("chasEatenFood", items);
-                return chasEatenItem;
-            }
-        }
-        else if (items[i].id == 4 && items[i] != null && items[i] != undefined) {
-            // console.log("eatenfood", serpent.serpentParts[0].x, items[i].gridx);
-            chasEatenItem = serpent.serpentParts[0].x === items[i].gridx && serpent.serpentParts[0].y === items[i].gridy;
-            // return if true 
-            if (chasEatenItem) {
-                eatBookSoundeffect(sound);
-                //serpent.foodEaten++;
-                playField.removeFromPlayground(items[i].gridx, items[i].gridy);
-                serpent.inventory.push(items[i]);
-                items.splice(i, 1);
-                //console.log("chasEatenFood", items);
-                return chasEatenItem;
-            }
-        }
-        else if (items[i].id == 5 && items[i] != null && items[i] != undefined) {
-            // console.log("eatenfood", serpent.serpentParts[0].x, items[i].gridx);
-            chasEatenItem = serpent.serpentParts[0].x === items[i].gridx && serpent.serpentParts[0].y === items[i].gridy;
-            // return if true 
-            if (chasEatenItem) {
-                eatFeatherSoundeffect(sound);
-                //serpent.foodEaten++;
-                playField.removeFromPlayground(items[i].gridx, items[i].gridy);
-                serpent.inventory.push(items[i]);
-                items.splice(i, 1);
-                //console.log("chasEatenFood", items);
-                return chasEatenItem;
-            }
-        }
-    }
-    return false;
+    generateNewItem(items[itemIndex].id, items, playField, generateRandomPosition(playField));
+    items.splice(itemIndex, 1);
 }
 
 
