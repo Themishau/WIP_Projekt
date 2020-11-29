@@ -4,14 +4,23 @@ Organisation geschieht über Microsoft Teams und Github <br/>
 PSP: https://lucid.app/invitations/accept/d683a7b4-9c19-4de9-8bde-1c2fd71712a9
 <br/>
 
+## Inhalt
+1. [General Info]
+2. [Quellen]
+3. [Organisation]
+4. [Aufgabenteilung]
+
+# General Info
+## Projektbeschreibung
+Das Ziel des Projektes ist die Entwicklung eines PvE-Spieles (Player versus Environment) basierend auf dem Spielprinzip des Retro-Spiels "Snake". Die wesentlichen Bestandteile und Erweiterung besteht in der
+
+# Organisation
 ## Termine
 Weeklys: sonntags wird sich um 16 getroffen <br/>
 - Pair Programming <br/>
 - Aufgaben klären <br/>
 
 ## Zusammenfassung
-
-
 23.10.2020
 Hauptprojekte: Space Serpent, <br/>
 Nebenprojekte: Arkanoid (NES), Snake <br/>
@@ -46,6 +55,8 @@ Mitglieder:
 - SubspaceAudio - https://opengameart.org/content/512-sound-effects-8-bit-style - CC by 0
 - Music: Eric Skiff - Song Name - Resistor Anthems - Available at http://EricSkiff.com/music - CC by 4.0
 - Soluna Software - https://opengameart.org/content/space-backgrounds-with-stars-and-nubular - CC by 0
+- SpaceBackground - https://pixabay.com/de/photos/milchstra%C3%9Fe-raum-universum-galaxien-67504/
+
 
 ## code:
 - https://stackoverflow.com/questions/19764018/controlling-fps-with-requestanimationframe
