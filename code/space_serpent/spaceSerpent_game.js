@@ -1397,14 +1397,22 @@ class AfterGameScreen {
         this.menuconfig.backgroundImageY = moveMenuBackground(this.menuconfig.backgroundImageY, this.menuconfig.scrollSpeedBackground);
     };
     addToButtons() {
+        let buttonSize = this.dimensions.width /50+"pt Courier";
+        let creditButtonSize = this.dimensions.width /70+"pt Courier";
+        let creditNamePosition = this.dimensions.width /2;
+        let buttonNamePosition = this.dimensions.width /7; 
+        let buttonDataPosition = this.dimensions.width /2;
         this.buttons.push(new MenuButton("Credit", "Copyright (c) 2020 KaBra, MaSiPi, MaZa", null, this.dimensions.width - 500, this.dimensions.height - 30, 100, 50, "14pt Courier", "blue"));
-        this.buttons.push(new MenuButton("Your Score:", "Your Highscore", null, 150, 500, 100, 50, "20pt Courier", "white"));
-        this.buttons.push(new MenuButton("Enemy's Highscore:", "Enemy's Highscore", null, 150, 600, 100, 50, "20pt Courier", "white"));
-        this.buttons.push(new MenuButton("startText", "Press Enter To Start Next Round", null, 300, 800, 100, 50, "20pt Courier", "white"));
-        this.buttons.push(new MenuButton("startText", "Or Press Space To Return To Main Menu", null, 300, 850, 100, 50, "20pt Courier", "white"));
-        this.buttons.push(new MenuButton("Food Eaten Player", this.levelConfig.serpentPlayer.foodEaten, null, 500, 500, 100, 50, "20pt Courier", "white"));
+        
+        this.buttons.push(new MenuButton("Your Score:", "Your Highscore", null, buttonNamePosition, this.dimensions.height- 400, 100, 50, buttonSize, "white"));
+        this.buttons.push(new MenuButton("Enemy's Highscore:", "Enemy's Highscore", null, buttonNamePosition, this.dimensions.height- 450, 100, 50, buttonSize, "white"));
+       
+        this.buttons.push(new MenuButton("Continue", "Press Enter To Start Next Round", null, creditNamePosition - 300, this.dimensions.height- 300, 50, buttonSize, "white"));
+        this.buttons.push(new MenuButton("Leave", "Or Press Space To Return To Main Menu", null, creditNamePosition - 300, this.dimensions.height- 250, 100, 50, buttonSize, "white"));
+        
+        this.buttons.push(new MenuButton("Food Eaten Player", this.levelConfig.serpentPlayer.foodEaten, null, buttonDataPosition, this.dimensions.height- 400, 100, 50, buttonSize, "white"));
         if (this.levelConfig.highestEnemy != undefined || this.levelConfig.highestEnemy != null)
-            this.buttons.push(new MenuButton("Food Eaten Player", this.levelConfig.highestEnemy, null, 500, 600, 100, 50, "20pt Courier", "white"));
+            this.buttons.push(new MenuButton("Food Eaten Player", this.levelConfig.highestEnemy, null, buttonDataPosition, this.dimensions.height- 450, 100, 50, buttonSize, "white"));
     };
 }
 class CreditScreen {
