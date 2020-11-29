@@ -816,6 +816,9 @@ class MainMenu {
             let stateData = getStateData();
             let keyCode = e.keyCode;
             stateData.menuconfig.menuMusic.play();
+            if ((keyCode === 13) && (stateData.selectedButton === 0)) {
+                // stateData.addCustomName();
+            }
             if ((keyCode === 13) && (stateData.selectedButton === 9)) {
                 // Go to next State
                 stateData.menuconfig.selectSound.pause();
@@ -1173,6 +1176,14 @@ class MainMenu {
         this.buttons.push(new MenuButton("Credit", "Copyright (c) 2020 KaBra, MaSiPi, MaZa", null, creditNamePosition, this.dimensions.height - 30, 100, 50, creditButtonSize, "blue"));
     
     };
+    addCustomName (){
+        var x = document.createElement("INPUT");
+        x.setAttribute("type", "text");
+        x.setAttribute("value", "HI!");
+        document.body.appendChild(x);
+        this.playerName = x.value;
+
+    }
 
 }
 class PauseMenu {
@@ -1837,8 +1848,8 @@ var instruction ={
     init: function(){
         if(window.innerWidth>=1500){
             this.gamePosition = getGameDimensions();
-            this.instructionCanvasWidth = this.gamePosition.width - 400; //Auch window.innerWidth verwendebar
-            this.instructionCanvasHeight = this.gamePosition.height - 540;
+            this.instructionCanvasWidth = 400; //Auch window.innerWidth verwendebar
+            this.instructionCanvasHeight = 540;
             this.instructionCanvas = document.createElement("canvas");
             this.instructionCanvas.id = "instruction";
             this.instructionCanvas.width = this.instructionCanvasWidth;
@@ -1849,16 +1860,12 @@ var instruction ={
             this.instructionCanvas.style.border = "2px solid black";
             this.instructionCanvasContext = this.instructionCanvas.getContext("2d");
             document.body.insertBefore(this.instructionCanvas, document.body.childNodes[1]);
-            let buttonSize = this.instructionCanvasWidth /30+"pt Courier";
-            let creditButtonSize = this.instructionCanvasWidth /70+"pt Courier";
-            let creditNamePosition = this.instructionCanvasWidth /2;
-            let buttonNamePosition = this.instructionCanvasWidth /7; 
-            let buttonDataPosition = this.instructionCanvasWidth /2;
-            this.instructionButtons.push(new MenuButton("head","Instructions", null, 120, 50,150,20,buttonSize, "yellow"));
-            this.instructionButtons.push(new MenuButton("feather","The Feater...",null, 100,110, 150,20, buttonSize,"white"));
-            this.instructionButtons.push(new MenuButton("clover","Länge +1 und Score +1",null, 100,180, 150,20, buttonSize,"white"));
-            this.instructionButtons.push(new MenuButton("bomb","Explode - Ends the game",null, 100,255, 150,20, buttonSize,"white"));
-            this.instructionButtons.push(new MenuButton("keyarrows", "Use Keyarrows for movement", null, 75, 580, 150, 20, buttonSize, "white"));        
+
+            this.instructionButtons.push(new MenuButton("head","Instructions", null, 120, 50,150,20,"24pt Courier", "yellow"));
+            this.instructionButtons.push(new MenuButton("feather","The Feater...",null, 100,110, 150,20, "20pt Courier","white"));
+            this.instructionButtons.push(new MenuButton("clover","Länge +1 und Score +1",null, 100,180, 150,20, "20pt Courier","white"));
+            this.instructionButtons.push(new MenuButton("bomb","Explode - Ends the game",null, 100,255, 150,20, "20pt Courier","white"));
+            this.instructionButtons.push(new MenuButton("keyarrows", "Use Keyarrows for movement", null, 75, 580, 150, 20, "20pt Courier", "white"));        
             
             this.feather.src = 'sprites/feather.png';
             this.clover.src = 'sprites/clover.png';
