@@ -795,6 +795,11 @@ class MainMenu {
             this.canvas = getContext(),
             this.dimensions = getGameDimensions(),
             this.buttons = [],
+            this.buttonSize = this.dimensions.width / 50 + "pt Courier",
+            this.creditButtonSize = this.dimensions.width / 70 + "pt Courier",
+            this.creditNamePosition = this.dimensions.width / 2,
+            this.buttonNamePosition = this.dimensions.width / 7,
+            this.buttonDataPosition = this.dimensions.width / 2
             this.selectedButton = 9,
             this.playType = 2, // 0 = Food, 1 = Time, 2 = Endless
             this.playerName = names[getRandomIntInclusive(0, names.length - 1)],
@@ -804,7 +809,7 @@ class MainMenu {
             this.currentOption[2] = 0, // Playfieldsize
             this.currentOption[3] = 0, // Speed
             this.currentOption[4] = 1, // Food
-            this.currentOption[5] = 1  // Time
+            this.currentOption[5] = 1,  // Time
         this.winCondition = {
             playType: 0,  // food mode
             condition: 10 // ten Food
@@ -1141,36 +1146,32 @@ class MainMenu {
         }
     };
     addToButtons() {
-        let buttonSize = this.dimensions.width / 50 + "pt Courier";
-        let creditButtonSize = this.dimensions.width / 70 + "pt Courier";
-        let creditNamePosition = this.dimensions.width / 2;
-        let buttonNamePosition = this.dimensions.width / 7;
-        let buttonDataPosition = this.dimensions.width / 2;
 
-        this.buttons.push(new MenuButton("playerName", "Playername:", null, buttonNamePosition, this.dimensions.height - 600, 100, 50, buttonSize, "white"));
-        this.buttons.push(new MenuButton("ChoosePlayer", "choose Player:", null, buttonNamePosition, this.dimensions.height - 550, 100, 50, buttonSize, "white"));
-        this.buttons.push(new MenuButton("Enemies", "Enemies: ", null, buttonNamePosition, this.dimensions.height - 500, 100, 50, buttonSize, "white"));
-        this.buttons.push(new MenuButton("playfieldsize", "Field Size: ", null, buttonNamePosition, this.dimensions.height - 450, 100, 50, buttonSize, "white"));
-        this.buttons.push(new MenuButton("Speed", "Speed: ", null, buttonNamePosition, this.dimensions.height - 400, 100, 50, buttonSize, "white"));
-        this.buttons.push(new MenuButton("WinCondition", "Game Mode: ", null, buttonNamePosition, this.dimensions.height - 350, 100, 50, buttonSize, "white"));
-        this.buttons.push(new MenuButton("Food", "Food: ", null, buttonNamePosition, this.dimensions.height - 300, 100, 50, buttonSize, "white"));
-        this.buttons.push(new MenuButton("Time", "Time: ", null, buttonNamePosition, this.dimensions.height - 300, 100, 50, buttonSize, "white"));
-        this.buttons.push(new MenuButton("Volume", "Volume: ", null, buttonNamePosition, this.dimensions.height - 250, 100, 50, buttonSize, "white"));
-        this.buttons.push(new MenuButton("startText", "Start Game", null, buttonNamePosition, this.dimensions.height - 200, 100, 50, buttonSize, "white"));
-        this.buttons.push(new MenuButton("Credits", "See Credits", null, buttonDataPosition, this.dimensions.height - 60, 100, 50, buttonSize, "white"));
+
+        this.buttons.push(new MenuButton("playerName", "Playername:", null, this.buttonNamePosition, this.dimensions.height - 600, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("ChoosePlayer", "choose Player:", null, this.buttonNamePosition, this.dimensions.height - 550, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("Enemies", "Enemies: ", null, this.buttonNamePosition, this.dimensions.height - 500, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("playfieldsize", "Field Size: ", null, this.buttonNamePosition, this.dimensions.height - 450, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("Speed", "Speed: ", null, this.buttonNamePosition, this.dimensions.height - 400, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("WinCondition", "Game Mode: ", null, this.buttonNamePosition, this.dimensions.height - 350, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("Food", "Food: ", null, this.buttonNamePosition, this.dimensions.height - 300, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("Time", "Time: ", null, this.buttonNamePosition, this.dimensions.height - 300, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("Volume", "Volume: ", null, this.buttonNamePosition, this.dimensions.height - 250, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("startText", "Start Game", null, this.buttonNamePosition, this.dimensions.height - 200, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("Credits", "See Credits", null, this.buttonDataPosition, this.dimensions.height - 60, 100, 50, this.buttonSize, "white"));
 
         // 11+
         console.log(this.playerName);
-        this.buttons.push(new MenuButton("playerName", this.playerName, null, buttonDataPosition, this.dimensions.height - 600, 100, 50, buttonSize, "white"));
-        this.buttons.push(new MenuButton("Player", "Player:", this.menuconfig.serpentSprites, buttonDataPosition, this.dimensions.height - 580, 100, 50, buttonSize, "white"));
-        this.buttons.push(new MenuButton("Enemy", this.currentOption[1], null, buttonDataPosition, this.dimensions.height - 500, 100, 50, buttonSize, "white"));
-        this.buttons.push(new MenuButton("fieldSize", ["small", "normal", "big"], null, buttonDataPosition, this.dimensions.height - 450, 100, 50, buttonSize, "white"));
-        this.buttons.push(new MenuButton("Speed", ["slow", "normal", "fast"], null, buttonDataPosition, this.dimensions.height - 400, 100, 50, buttonSize, "white"));
-        this.buttons.push(new MenuButton("WinCondition", ["Highscore", "Time", "Endless"], null, buttonDataPosition, this.dimensions.height - 350, 100, 50, buttonSize, "yellow"));
-        this.buttons.push(new MenuButton("Food", 1, null, buttonDataPosition, this.dimensions.height - 300, 100, 50, buttonSize, "white"));
-        this.buttons.push(new MenuButton("Time", 1 + " minute(s)", null, buttonDataPosition, this.dimensions.height - 300, 100, 50, buttonSize, "white"));
-        this.buttons.push(new MenuButton("Volume", 1000 * gSoundVolume, null, buttonDataPosition, this.dimensions.height - 250, 100, 50, buttonSize, "yellow"));
-        this.buttons.push(new MenuButton("Credit", "Copyright (c) 2020 KaBra, MaSiPi, MaZa", null, creditNamePosition, this.dimensions.height - 30, 100, 50, creditButtonSize, "blue"));
+        this.buttons.push(new MenuButton("playerName", this.playerName, null, this.buttonDataPosition, this.dimensions.height - 600, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("Player", "Player:", this.menuconfig.serpentSprites, this.buttonDataPosition, this.dimensions.height - 580, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("Enemy", this.currentOption[1], null, this.buttonDataPosition, this.dimensions.height - 500, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("fieldSize", ["small", "normal", "big"], null, this.buttonDataPosition, this.dimensions.height - 450, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("Speed", ["slow", "normal", "fast"], null, this.buttonDataPosition, this.dimensions.height - 400, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("WinCondition", ["Highscore", "Time", "Endless"], null, this.buttonDataPosition, this.dimensions.height - 350, 100, 50, this.buttonSize, "yellow"));
+        this.buttons.push(new MenuButton("Food", 1, null, this.buttonDataPosition, this.dimensions.height - 300, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("Time", 1 + " minute(s)", null, this.buttonDataPosition, this.dimensions.height - 300, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("Volume", 1000 * gSoundVolume, null, this.buttonDataPosition, this.dimensions.height - 250, 100, 50, this.buttonSize, "yellow"));
+        this.buttons.push(new MenuButton("Credit", "Copyright (c) 2020 KaBra, MaSiPi, MaZa", null, this.creditNamePosition, this.dimensions.height - 30, 100, 50, this.creditButtonSize, "blue"));
 
     };
     addCustomName() {
@@ -1605,8 +1606,8 @@ class StateStack {
 var gameField = {
     canvas: null,
     canvasContext: null,
-    canvas_width: Math.ceil(window.innerWidth),
-    canvas_height: Math.ceil(window.innerHeight),
+    canvas_width: null,
+    canvas_height: null,
     gameMode: new StateStack(),
     //then: null,
     //startTime: null,
@@ -1615,6 +1616,7 @@ var gameField = {
     deltaTime: 0,
     fpsInterval: null,
     update: function () {
+        //this.resizeCanvas();
         this.gameMode.update();
         this.gameMode.render();
     },
@@ -1640,18 +1642,23 @@ var gameField = {
         //this.startTime = this.then,
         this.canvas = document.createElement("canvas");
         this.canvas.id = "game";
+        this.resizeCanvas();
+        this.canvasContext = this.canvas.getContext("2d");
+        //this.canvas.style.border = "1px solid white";
+        //this.deltaTime = (0.35 / (1000/this.FPS));
+        this.deltaTime = (1000 / this.FPS);
+        document.body.insertBefore(this.canvas, document.body.childNodes[1]); // due to some loading issues with images and sprites w want to insert it before
+        this.timer = 1000 / this.FPS;
+        this.startGame();
+    },
+    resizeCanvas: function (){
+        this.canvas_width  = Math.ceil(window.innerWidth);
+        this.canvas_height = Math.ceil(window.innerHeight);
         this.canvas.width = Math.ceil(this.canvas_height - this.canvas_height / 4);
         this.canvas.height = Math.ceil(this.canvas_height - this.canvas_height / 4);
         this.canvas_width = this.canvas.width;
         this.canvas_height = this.canvas.height;
-        this.canvasContext = this.canvas.getContext("2d");
-        this.canvas.style.border = "1px solid white";
-        //this.deltaTime = (0.35 / (1000/this.FPS));
-        this.deltaTime = (1000 / this.FPS);
-        document.body.insertBefore(this.canvas, document.body.childNodes[0]); // due to some loading issues with images and sprites w want to insert it before
-        this.timer = 1000 / this.FPS;
-        this.startGame();
-    },
+    }
 }
 
 var highScoreTable = {
@@ -1660,9 +1667,9 @@ var highScoreTable = {
     gamePosition: null,
     highScoreCanvasWidth: 500, //Auch window.innerWidth verwendebar
     highScoreCanvasHeight: 540,
-    highScoreCanvasRight: "2%",
-    highScoreCanvasTop: "",
-    highScoreCanvasPosition: "relative",
+    //highScoreCanvasRight: "2%",
+    //highScoreCanvasTop: "",
+    //highScoreCanvasPosition: "right",
     serpentRanking: null,
     serpentRank: 0,
     sizeToSmall: false,
@@ -1780,10 +1787,10 @@ var highScoreTable = {
             this.highScoreCanvas.id = "highScore";
             this.highScoreCanvas.width = this.highScoreCanvasWidth;
             this.highScoreCanvas.height = this.highScoreCanvasHeight;
-            this.highScoreCanvas.position = this.highScoreCanvasPosition;
-            this.highScoreCanvas.style.marginRight = this.highScoreCanvasRight;
-            this.highScoreCanvas.style.marginTop = this.highScoreCanvasTop;
-            this.highScoreCanvas.style.border = "2px solid black";
+            //this.highScoreCanvas.position = this.highScoreCanvasPosition;
+            //this.highScoreCanvas.style.marginRight = this.highScoreCanvasRight;
+            //this.highScoreCanvas.style.marginTop = this.highScoreCanvasTop;
+            //this.highScoreCanvas.style.border = "2px solid white";
             this.highScoreCanvasContext = this.highScoreCanvas.getContext("2d");
             document.body.insertBefore(this.highScoreCanvas, document.body.childNodes[2]);
 
@@ -1813,9 +1820,9 @@ var instruction = {
     gamePosition: null,
     instructionCanvasWidth: 500, //window.innerWidth
     instructionCanvasHeight: 620,
-    instructionCanvasLeft: "2%",
-    instructionCanvasTop: "",
-    instructionCanvasPosition: "relative",
+    instructionCanvasLeft: "auto",
+    instructionCanvasTop: "auto",
+    //instructionCanvasPosition: "fixed",
     instructionButtons: [],
     feather: new Image(),
     bomb: new Image(),
@@ -1852,11 +1859,11 @@ var instruction = {
             this.instructionCanvas.width = this.instructionCanvasWidth;
             this.instructionCanvas.height = this.instructionCanvasHeight;
             this.instructionCanvas.position = this.instructionCanvasPosition;
-            this.instructionCanvas.style.marginLeft = this.instructionCanvasLeft;
-            this.instructionCanvas.style.marginTop = this.instructionCanvasTop;
-            this.instructionCanvas.style.border = "2px solid black";
+            //this.instructionCanvas.style.marginLeft = this.instructionCanvasLeft;
+            //this.instructionCanvas.style.marginTop = this.instructionCanvasTop;
+            //this.instructionCanvas.style.border = "2px solid white";
             this.instructionCanvasContext = this.instructionCanvas.getContext("2d");
-            document.body.insertBefore(this.instructionCanvas, document.body.childNodes[1]);
+            document.body.insertBefore(this.instructionCanvas, document.body.childNodes[0]);
 
             this.instructionButtons.push(new MenuButton("head", "Instructions", null, 120, 50, 150, 20, "24pt Courier", "yellow"));
             this.instructionButtons.push(new MenuButton("feather", "The Feater...", null, 100, 110, 150, 20, "20pt Courier", "white"));

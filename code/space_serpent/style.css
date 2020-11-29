@@ -1,14 +1,43 @@
-canvas {
+#game {
     border: 2px solid white;
     padding: 0;
     margin: auto;
-    display: block;
-    position: absolute;
+    display: auto;
+    position: fixed;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
 }
+#instruction {
+    background-image: url("sprites/Space003.png");
+    background-size: 100%;
+    background-repeat: no-repeat;
+    border: 2px solid black;
+    padding: 0;
+    margin: auto;
+    display: auto;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 58%;
+}
+#highScore {
+    background-image: url("sprites/Space003.png");
+    background-size: 100%;
+    background-repeat: no-repeat;
+    border: 2px solid black;
+    padding: 0;
+    margin: auto;
+    display: auto;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 67%;
+    right: 0;
+}
+
 
 html {
     height: 95%;
