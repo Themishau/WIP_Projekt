@@ -332,7 +332,7 @@ class serpentPart {
 class serpent {
     addSerpentPart(amount) {
         for (var i = 0; i < amount; i++) {
-            this.serpentParts.push(new serpentPart(this.gridx - i, this.gridy, 180));
+            this.serpentParts.push(new serpentPart(this.gridx - i, this.gridy, 270));
         }
     }
     removeAllSerpentParts() {
@@ -1063,6 +1063,7 @@ class MainMenu {
                 this.menuconfig.textColorSelected = "rgb(" + this.menuconfig.colorsArraySelected[this.menuconfig.colorIndexSelected] / 3 + "," + this.menuconfig.colorsArraySelected[this.menuconfig.colorIndexSelected] + "," + this.menuconfig.colorsArraySelected[this.menuconfig.colorIndexSelected] / 2 + ")";
                 this.menuconfig.colorIndexSelected++;
                 this.canvas.font = this.buttons[i].font;
+                this.canvas.fillStyle = this.menuconfig.textColorSelected;
                 this.canvas.fillText(this.buttons[i].text, this.buttons[i].buttonX, this.buttons[i].buttonY);
                 this.canvas.closePath();
             }
@@ -1772,8 +1773,8 @@ var highScoreTable = {
             this.sync();
             this.sizeToSmall = false;
             this.gamePosition = getGameDimensions();
-            this.highScoreCanvasWidth = this.gamePosition.width - 400; //Auch window.innerWidth verwendebar
-            this.highScoreCanvasHeight = this.gamePosition.height - 540;
+            this.highScoreCanvasWidth = 600; //Auch window.innerWidth verwendebar
+            this.highScoreCanvasHeight = 540;
             //Definition und Inititalisierung des Highscore-Canvas
             this.highScoreCanvas = document.createElement("canvas");
             this.highScoreCanvas.id = "highScore";
@@ -2203,8 +2204,6 @@ function drawKiSerpent(aiSerpents) {
 // created this function for visualization reasons
 function drawBackground(bg_stars, playGroundImage) {
 
-    var groundx = 0;
-    var groundy = 0;
 
 
 
@@ -2333,6 +2332,9 @@ function drawBackground(bg_stars, playGroundImage) {
     //playGroundImage.bg_starCurrentY,
 
     /*
+    var groundx = 0;
+    var groundy = 0;
+
     for (var column = 0; column <= playGroundImage.fields.length; column++) {
         for (var row = 0; row <= playGroundImage.fields.length; row++) {
             gameField.canvasContext.beginPath();
@@ -2577,6 +2579,7 @@ function moveAiSerpents(aiSerpents, playField, items, sound) {
             const nextMovement = calculateNextMove(obstaclesTable.fields, serpentHeadPosition, nextTargetPosition, aiSerpents[i]);
 
             if (nextMovement.movementIsPossible == false) {
+                highScoreTable.popScoreSheetButtons();
                 killSerpent(aiSerpents[i], playField, items, sound);
                 return;
             }
@@ -2607,7 +2610,6 @@ function killSerpent(serpent, playField, itemlist, sound) {
     serpent.dx = 0;
     serpent.dy = 0;
     // ist hier ein bug, denke ich
-    this.highScoreTable.popScoreSheetButtons();
 }
 
 function changeCurrentPointOfView(serpent) {
@@ -2657,6 +2659,7 @@ function serpentLost(serpent, playField, items, nextXPosition, nextYPosition, so
     let touchesEnemySerpent = (playField.fields[nextXPosition][nextYPosition] >= 7) ? true : false;
     let touchesBomb = (playField.fields[nextXPosition][nextYPosition] == 3) ? true : false;
     if (touchesEnemySerpent || touchesBomb) {
+        highScoreTable.popScoreSheetButtons();
         killSerpent(serpent, playField, items, sound);
         return true;
     }
@@ -2674,9 +2677,9 @@ function executeSerpentMovement(serpent, playField, items, sound) {
         return;
 
     var newHead = new serpentPart(nextXPosition, nextYPosition, serpent.serpentParts[0].currentPointOfView);
-    serpent.serpentParts.unshift(newHead);
-
+    
     changeBodyDirectionAnimation(serpent);
+    serpent.serpentParts.unshift(newHead);
 
     for (let serpentPartIndex = 0; serpentPartIndex < serpent.serpentParts.length; serpentPartIndex++) {
         playField.addToPlayground(serpent.serpentParts[serpentPartIndex].x, serpent.serpentParts[serpentPartIndex].y, serpent.id);
