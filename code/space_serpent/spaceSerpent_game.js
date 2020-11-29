@@ -1644,6 +1644,7 @@ var gameField = {
         this.canvas.id = "game";
         this.resizeCanvas();
         this.canvasContext = this.canvas.getContext("2d");
+        //document.body.style.background = 'url("sprites/Space003.png") no-repeat center center'
         //this.canvas.style.border = "1px solid white";
         //this.deltaTime = (0.35 / (1000/this.FPS));
         this.deltaTime = (1000 / this.FPS);
