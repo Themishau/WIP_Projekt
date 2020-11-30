@@ -689,6 +689,9 @@ class level {
     /* update section */
     update() {
         this.gameTime = Date.now() - this.timeStart - this.timePauseSum;
+        if (round10(getStateData().gameTime / 1000, -1) % 10 == 0)
+            generateNewItem(3, this.levelConfig.itemlist, this.levelConfig.playGroundLevel, generateRandomPosition(this.levelConfig.playGroundLevel, this.levelConfig.serpentPlayer, true));
+
         //check if keylistener are not null 
         if (window.onkeydown == null && window.onkeyup == null) {
             window.onkeydown = this.KeyDownEvent;
@@ -1666,7 +1669,7 @@ var highScoreTable = {
     highScoreCanvas: null,
     highScoreCanvasContext: null,
     gamePosition: null,
-    highScoreCanvasWidth: 500, //Auch window.innerWidth verwendebar
+    highScoreCanvasWidth: 400, //Auch window.innerWidth verwendebar
     highScoreCanvasHeight: 540,
     //highScoreCanvasRight: "2%",
     //highScoreCanvasTop: "",
@@ -1821,8 +1824,8 @@ var instruction = {
     gamePosition: null,
     instructionCanvasWidth: 500, //window.innerWidth
     instructionCanvasHeight: 620,
-    instructionCanvasLeft: "auto",
-    instructionCanvasTop: "auto",
+    //instructionCanvasLeft: "auto",
+    //instructionCanvasTop: "auto",
     //instructionCanvasPosition: "fixed",
     instructionButtons: [],
     feather: new Image(),
@@ -2588,7 +2591,6 @@ function moveAiSerpents(aiSerpents, playField, items, sound) {
 
             if (nextMovement.movementIsPossible == false) {
                 killSerpent(aiSerpents[i], playField, items, sound);
-                highScoreTable.popScoreSheetButtons();
                 return;
             }
 
@@ -2605,6 +2607,7 @@ function moveAiSerpents(aiSerpents, playField, items, sound) {
 }
 
 function killSerpent(serpent, playField, itemlist, sound) {
+    highScoreTable.popScoreSheetButtons();
     serpent.alive = false;
     sound[8].play();
     for (let serpentPartIndex = 0; serpentPartIndex < serpent.serpentParts.length; serpentPartIndex++) {
@@ -2612,7 +2615,7 @@ function killSerpent(serpent, playField, itemlist, sound) {
     }
 
     for (let i = 0; i < 3; i++) {
-        generateNewItem(3, itemlist, playField, generateRandomPosition(playField));
+        generateNewItem(3, itemlist, playField, generateRandomPosition(playField, serpent, true));
     }
     serpent.removeAllSerpentParts();
     serpent.dx = 0;
@@ -2668,7 +2671,6 @@ function serpentLost(serpent, playField, items, nextXPosition, nextYPosition, so
     let touchesBomb = (playField.fields[nextXPosition][nextYPosition] == 3) ? true : false;
     if (touchesEnemySerpent || touchesBomb) {
         killSerpent(serpent, playField, items, sound);
-        highScoreTable.popScoreSheetButtons();
         return true;
     }
     return false;
@@ -2748,16 +2750,25 @@ function eatItem(serpent, itemIndex, items, playField, sound) {
         default:
             break;
     }
-    generateNewItem(items[itemIndex].id, items, playField, generateRandomPosition(playField));
+    generateNewItem(items[itemIndex].id, items, playField, generateRandomPosition(playField, serpent, true));
     items.splice(itemIndex, 1);
 }
 
 
-function generateRandomPosition(playField) {
+function generateRandomPosition(playField, serpent, bgenerateItem) {
     let randomPosition = { x: getRandomIntInclusive(3, gridfield - 3), y: getRandomIntInclusive(3, gridfield - 3) };
-    if (playField.fields[randomPosition.x][randomPosition.y] != 0) {
-        return generateRandomPosition(playField);
+    if (playField.fields[randomPosition.x][randomPosition.y] != 0 ) {
+        return generateRandomPosition(playField, serpent, bgenerateItem);
     }
+    // when we are generating new items we do not want them to be generated in front of the serpents
+    // we need to check whether the serpent already died or not 
+    if (serpent.serpentParts[0] != undefined && bgenerateItem === true)
+        if ((serpent.serpentParts[0].x + 1 == randomPosition.x 
+            || serpent.serpentParts[0].x - 1 == randomPosition.x 
+            || serpent.serpentParts[0].y - 1 == randomPosition.y 
+            || serpent.serpentParts[0].y + 1 == randomPosition.y))
+            return generateRandomPosition(playField, serpent, bgenerateItem); 
+
     return randomPosition;
 }
 
