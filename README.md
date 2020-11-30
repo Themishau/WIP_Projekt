@@ -1,6 +1,9 @@
 # WIP_Projekt (Stand: 30.11.2020, Version: 0.95)
 Hauptprojekt: Space Serpent, <br/>
 Kleines Spiel in Javascript/HTML <br/>
+Organisation geschieht über Microsoft Teams und Github <br/>
+PSP: https://lucid.app/invitations/accept/d683a7b4-9c19-4de9-8bde-1c2fd71712a9
+<br/>
 
 ## Browserkompatibilität:
 - Firefox 83.0 (64-Bit)
@@ -13,9 +16,7 @@ Kleines Spiel in Javascript/HTML <br/>
 - Schlangen können manchmal übereinander laufen
 
 
-Organisation geschieht über Microsoft Teams und Github <br/>
-PSP: https://lucid.app/invitations/accept/d683a7b4-9c19-4de9-8bde-1c2fd71712a9
-<br/>
+
 
 ## Termine:
 Weeklys: sonntags wird sich um 16 getroffen <br/>
