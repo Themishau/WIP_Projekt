@@ -1,5 +1,8 @@
 # WIP_Projekt
+Hauptprojekte: Space Serpent, <br/>
+- 
 Kleines Spiel in Javascript/HTML <br/>
+
 Organisation geschieht über Microsoft Teams und Github <br/>
 PSP: https://lucid.app/invitations/accept/d683a7b4-9c19-4de9-8bde-1c2fd71712a9
 <br/>
@@ -7,25 +10,29 @@ PSP: https://lucid.app/invitations/accept/d683a7b4-9c19-4de9-8bde-1c2fd71712a9
 ## Termine
 Weeklys: sonntags wird sich um 16 getroffen <br/>
 - Pair Programming <br/>
-- Aufgaben klären <br/>
+- Parallel-Programmierung <br/>
+Zusätzliche Termine: <br/>
+- Unter der Woche wurden weitere Termine <br/>
 
-## Zusammenfassung
+
+## grobe Aufteilung der Aufgaben (nähere Informationen aus Githubs Kanban-System und dem PSP entnehmen): 
+- Programmierstruktur anlegen (Alle)
+
+- HTML-Seite erstellen (Mark Silas)
+- Highscore-Canvas und Instruction-Canvas erstellen (Mark Silas)
+- README-Datei vervollständigen erstellen (Mark Silas)
+
+- Pitchslide erstellen (Kai)
+- KI-Programmierung durchführen (Kai)
+- Kill-Methoden erstellen(Kai)
+- Itemdesign erstellen (Kai) 
+
+- PSP erstellen (Markus)
+- Spielfeld erstellen (Markus)
+- Sound und Animation erstellen (Markus)
+- State Machine umsetzen (Markus)
 
 
-23.10.2020
-Hauptprojekte: Space Serpent, <br/>
-Nebenprojekte: Arkanoid (NES), Snake <br/>
-
-Aufgaben: 
-- Programmierstruktur anlegen 
-- KI-Programmierung (Kai)
-- Spielfeld 
-- Kamerafixierung auf Player
-- Theme: Weltraum
-- Sound 
-- Sprites und Animation 
-
-- (Levelgenerierung automatisch)
 
 
 ## Mitglieder

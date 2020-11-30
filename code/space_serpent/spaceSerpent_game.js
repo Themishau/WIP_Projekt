@@ -2587,8 +2587,8 @@ function moveAiSerpents(aiSerpents, playField, items, sound) {
             const nextMovement = calculateNextMove(obstaclesTable.fields, serpentHeadPosition, nextTargetPosition, aiSerpents[i]);
 
             if (nextMovement.movementIsPossible == false) {
-                highScoreTable.popScoreSheetButtons();
                 killSerpent(aiSerpents[i], playField, items, sound);
+                highScoreTable.popScoreSheetButtons();
                 return;
             }
 
@@ -2667,8 +2667,8 @@ function serpentLost(serpent, playField, items, nextXPosition, nextYPosition, so
     let touchesEnemySerpent = (playField.fields[nextXPosition][nextYPosition] >= 7) ? true : false;
     let touchesBomb = (playField.fields[nextXPosition][nextYPosition] == 3) ? true : false;
     if (touchesEnemySerpent || touchesBomb) {
-        highScoreTable.popScoreSheetButtons();
         killSerpent(serpent, playField, items, sound);
+        highScoreTable.popScoreSheetButtons();
         return true;
     }
     return false;
