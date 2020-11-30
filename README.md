@@ -1,13 +1,23 @@
-# WIP_Projekt
-Hauptprojekte: Space Serpent, <br/>
-- 
+# WIP_Projekt (Stand: 30.11.2020, Version: 0.95)
+Hauptprojekt: Space Serpent, <br/>
 Kleines Spiel in Javascript/HTML <br/>
+
+## Browserkompatibilität:
+- Firefox 83.0 (64-Bit)
+- Google Chrome Version 87.0.4280.66 (Offizieller Build) (64-Bit)
+- Edge V2 (ohne Highscore und Instruction)
+
+
+
+## Known Bugs:
+- Schlangen können manchmal übereinander laufen
+
 
 Organisation geschieht über Microsoft Teams und Github <br/>
 PSP: https://lucid.app/invitations/accept/d683a7b4-9c19-4de9-8bde-1c2fd71712a9
 <br/>
 
-## Termine
+## Termine:
 Weeklys: sonntags wird sich um 16 getroffen <br/>
 - Pair Programming <br/>
 - Parallel-Programmierung <br/>
@@ -32,18 +42,13 @@ Zusätzliche Termine: <br/>
 - Sound und Animation erstellen (Markus)
 - State Machine umsetzen (Markus)
 
-
-
-
-## Mitglieder
-Mitglieder: 
+## Mitglieder:
 - Mark Silas
 - Markus 
 - Kai
 
 ## Quellen:
-
-## Musik und Sprites
+## genutzte Musik und Sprites:
 - AhNinniah - https://opengameart.org/content/free-game-items-pack-2 - CC by 3.0
 - "Free Game Items Pack #2" Olga Bikmullina (http://ahninniah.graphics) - CC by 3.0
 - Bonsaiheldin - https://opengameart.org/content/stars-parallax-backgrounds - CC by 0
@@ -54,7 +59,7 @@ Mitglieder:
 - Music: Eric Skiff - Song Name - Resistor Anthems - Available at http://EricSkiff.com/music - CC by 4.0
 - Soluna Software - https://opengameart.org/content/space-backgrounds-with-stars-and-nubular - CC by 0
 
-## code:
+## Referenzcode:
 - https://stackoverflow.com/questions/19764018/controlling-fps-with-requestanimationframe
 - https://codeincomplete.com/articles/javascript-game-foundations-loading-assets/
 - https://codeincomplete.com/articles/javascript-game-foundations-state-management/
@@ -62,3 +67,7 @@ Mitglieder:
 - https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Number/toPrecision
 - https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Math/floor
 
+## Lizenz (unter License nachzulesen): 
+
+MIT License
+Copyright (c) 2020 Themishau, KaBra, MarkSilasPiechowiak
