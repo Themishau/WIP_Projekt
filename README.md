@@ -15,7 +15,7 @@ Zusätzliche Termine: <br/>
 - Unter der Woche wurden weitere Termine <br/>
 
 
-## grobe Aufteilung der Aufgaben (nähere Informationen aus Githubs Kanban-System und dem PSP entnehmen): 
+## Grobe Aufteilung der Aufgaben (nähere Informationen aus Github -> Projects -> Space Serpent und dem PSP entnehmen): 
 - Programmierstruktur anlegen (Alle)
 
 - HTML-Seite erstellen (Mark Silas)
