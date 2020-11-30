@@ -2608,19 +2608,19 @@ function moveAiSerpents(aiSerpents, playField, items, sound) {
 }
 
 function killSerpent(serpent, playField, itemlist, sound) {
-    highScoreTable.popScoreSheetButtons();
     serpent.alive = false;
     sound[8].play();
     for (let serpentPartIndex = 0; serpentPartIndex < serpent.serpentParts.length; serpentPartIndex++) {
         playField.removeFromPlayground(serpent.serpentParts[serpentPartIndex].x, serpent.serpentParts[serpentPartIndex].y)
     }
-
+    
     for (let i = 0; i < 3; i++) {
         generateNewItem(3, itemlist, playField, generateRandomPosition(playField, serpent, true));
     }
     serpent.removeAllSerpentParts();
     serpent.dx = 0;
     serpent.dy = 0;
+    highScoreTable.popScoreSheetButtons();
     // ist hier ein bug, denke ich
 }
 
