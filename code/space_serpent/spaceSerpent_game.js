@@ -347,7 +347,7 @@ class serpent {
             this.width = gridSizex,
             this.height = gridSizey,
             this.animation = new serpentSpritesheet(0, spritesheet),
-            this.dx = 0,  /* speed x */
+            this.dx = 1,  /* speed x */
             this.dy = 0,   /* speed y */
             this.OldDx = 1,
             this.OldDy = 0,
@@ -538,10 +538,11 @@ class LevelConfig {
         this.itemlist[1] = new item(1, "food", getRandomIntInclusive(3, gridfield - 3), getRandomIntInclusive(3, gridfield - 3), assets.clover);
         this.itemlist[2] = new item(1, "food", getRandomIntInclusive(3, gridfield - 3), getRandomIntInclusive(3, gridfield - 3), assets.clover);
         this.itemlist[3] = new item(3, "bomb", getRandomIntInclusive(1, gridfield - 3), getRandomIntInclusive(1, gridfield - 3), assets.bomb);
+        this.itemlist[4] = new item(5, "feather", getRandomIntInclusive(1, gridfield - 3), getRandomIntInclusive(1, gridfield - 3), assets.feather);
         /*
         this.itemlist[3] = new item(2, "backpack", getRandomIntInclusive(1, gridfield - 3), getRandomIntInclusive(1, gridfield - 3), assets.backpack);
         this.itemlist[5] = new item(4, "book", getRandomIntInclusive(1, gridfield - 3), getRandomIntInclusive(1, gridfield - 3), assets.book);
-        this.itemlist[6] = new item(5, "feather", getRandomIntInclusive(1, gridfield - 3), getRandomIntInclusive(1, gridfield - 3), assets.feather);
+        
         */
 
         for (let i = 0; i < this.itemlist.length; i++) {
@@ -803,7 +804,7 @@ class MainMenu {
             this.creditNamePosition = this.dimensions.width / 2,
             this.buttonNamePosition = this.dimensions.width / 7,
             this.buttonDataPosition = this.dimensions.width / 2
-            this.selectedButton = 9,
+        this.selectedButton = 9,
             this.playType = 2, // 0 = Food, 1 = Time, 2 = Endless
             this.playerName = names[getRandomIntInclusive(0, names.length - 1)],
             this.currentOption = [],
@@ -813,10 +814,10 @@ class MainMenu {
             this.currentOption[3] = 0, // Speed
             this.currentOption[4] = 1, // Food
             this.currentOption[5] = 1,  // Time
-        this.winCondition = {
-            playType: 0,  // food mode
-            condition: 10 // ten Food
-        }
+            this.winCondition = {
+                playType: 0,  // food mode
+                condition: 10 // ten Food
+            }
 
         /* keyboard listener */
         window.onkeydown = null;
@@ -1655,8 +1656,8 @@ var gameField = {
         this.timer = 1000 / this.FPS;
         this.startGame();
     },
-    resizeCanvas: function (){
-        this.canvas_width  = Math.ceil(window.innerWidth);
+    resizeCanvas: function () {
+        this.canvas_width = Math.ceil(window.innerWidth);
         this.canvas_height = Math.ceil(window.innerHeight);
         this.canvas.width = Math.ceil(this.canvas_height - this.canvas_height / 4);
         this.canvas.height = Math.ceil(this.canvas_height - this.canvas_height / 4);
@@ -2667,9 +2668,17 @@ function getNextYPosition(serpent, playField) {
 }
 
 function serpentLost(serpent, playField, items, nextXPosition, nextYPosition, sound) {
-    let touchesEnemySerpent = (playField.fields[nextXPosition][nextYPosition] >= 7) ? true : false;
+
+    let featherInBackpack = false;
+    serpent.inventory.forEach(item => {
+        if (item.name == "feather")
+            featherInBackpack = true;
+    });
+
+    let touchesSelf = (playField.fields[nextXPosition][nextYPosition] == serpent.id) ? true : false;
+    let touchesEnemySerpent = (playField.fields[nextXPosition][nextYPosition] >= 6 && playField.fields[nextXPosition][nextYPosition] != serpent.id) ? true : false;
     let touchesBomb = (playField.fields[nextXPosition][nextYPosition] == 3) ? true : false;
-    if (touchesEnemySerpent || touchesBomb) {
+    if (touchesEnemySerpent || touchesBomb || (touchesSelf && !featherInBackpack)) {
         killSerpent(serpent, playField, items, sound);
         return true;
     }
@@ -2687,7 +2696,7 @@ function executeSerpentMovement(serpent, playField, items, sound) {
         return;
 
     var newHead = new serpentPart(nextXPosition, nextYPosition, serpent.serpentParts[0].currentPointOfView);
-    
+
     changeBodyDirectionAnimation(serpent);
     serpent.serpentParts.unshift(newHead);
 
@@ -2757,17 +2766,17 @@ function eatItem(serpent, itemIndex, items, playField, sound) {
 
 function generateRandomPosition(playField, serpent, bgenerateItem) {
     let randomPosition = { x: getRandomIntInclusive(3, gridfield - 3), y: getRandomIntInclusive(3, gridfield - 3) };
-    if (playField.fields[randomPosition.x][randomPosition.y] != 0 ) {
+    if (playField.fields[randomPosition.x][randomPosition.y] != 0) {
         return generateRandomPosition(playField, serpent, bgenerateItem);
     }
     // when we are generating new items we do not want them to be generated in front of the serpents
     // we need to check whether the serpent already died or not 
     if (serpent.serpentParts[0] != undefined && bgenerateItem === true)
-        if ((serpent.serpentParts[0].x + 1 == randomPosition.x 
-            || serpent.serpentParts[0].x - 1 == randomPosition.x 
-            || serpent.serpentParts[0].y - 1 == randomPosition.y 
+        if ((serpent.serpentParts[0].x + 1 == randomPosition.x
+            || serpent.serpentParts[0].x - 1 == randomPosition.x
+            || serpent.serpentParts[0].y - 1 == randomPosition.y
             || serpent.serpentParts[0].y + 1 == randomPosition.y))
-            return generateRandomPosition(playField, serpent, bgenerateItem); 
+            return generateRandomPosition(playField, serpent, bgenerateItem);
 
     return randomPosition;
 }
