@@ -8,9 +8,23 @@ var gameAutomat = {
 
     
     init: function(){
+        this.loadCanvas();
+        this.gameAutomatCanvasContext.clearRect(0,0,this.gameAutomatCanvas.width, this.gameAutomatCanvas.height);
+        this.gameAutomatCanvasContext.beginPath();
         this.loadImage();
         this.loadAnimation();
         this.loadButton();
+    },
+
+    loadCanvas: function (){
+        this.gameAutomatCanvas = document.createElement("canvas");
+        this.gameAutomatCanvas.id = "Gameautomat";
+        this.gameAutomatCanvas.width = 1000;
+        this.gameAutomatCanvas.height = window.innerHeight;
+        this.gameAutomatCanvas.style.border = "2px solid black";
+        this.gameAutomatCanvasContext = this.gameAutomatCanvas.getContext("2d");
+        this.currentElement = document.getElementById("div_gamingAutomat");
+        this.currentElement.insertBefore(this.gameAutomatCanvas, this.currentElement.childNodes[0]);
     },
 
     startGame: function(){
@@ -18,24 +32,19 @@ var gameAutomat = {
     },
 
     loadButton: function(){
-        this.startButton = document.createElement("img");
-        this.startButton.onclick = this.startGame();
+       
     },
 
     loadAnimation:function(){
-        this.gameAnimation = document.createElement("img");
-        this.gameAnimation.height = window.innerHeight/5;
-        this.gameAnimation.width = window.innerHeight/5;
-        this.currentElement = document.getElementById("gameDiv");
-        this.currentElement.insertBefore(this.gameAnimation, this.currentElement.childNodes[0]);
+        this.gameAnimation = new Image();
+        this.gameAnimation.src = "img_folder/animation1.png";
+        this.gameAutomatCanvasContext.drawImage(this.gameAnimation, 0, 0, this.gameAutomatCanvas.height/5, this.gameAutomatCanvas.height/5);
     },
 
     loadImage: function(){
-        this.gameAutomatImage = document.createElement("img");
+        this.gameAutomatImage = new Image();
         this.gameAutomatImage.src = "img_folder/gamingautomat.png";
-        this.gameAutomatImage.height = window.innerHeight;
-        this.currentElement = document.getElementById("div_gamingAutomat");
-        this.currentElement.insertBefore(this.gameAutomatImage, this.currentElement.childNodes[0]);
+        this.gameAutomatCanvasContext.drawImage(this.gameAutomatImage, 0, 0, this.gameAutomatCanvas.height, this.gameAutomatCanvas.height/2);
     }
 }
 
