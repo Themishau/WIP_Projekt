@@ -5,6 +5,7 @@ var gameAutomat = {
     gameAnimation: null,
     startButton: null,
     currentElement: null,
+    counter: 0,
 
     
     init: function(){
@@ -38,21 +39,47 @@ var gameAutomat = {
     loadAnimation:function(){
         this.gameAnimation = new Image();
         this.gameAnimation.src = "img_folder/animation1.png";
-        this.gameAutomatCanvasContext.drawImage(this.gameAnimation, 0, 0, this.gameAutomatCanvas.height/5, this.gameAutomatCanvas.height/5);
+        this.gameAutomatCanvasContext.drawImage(this.gameAnimation,125 ,this.gameAutomatCanvas.height/3.3, this.gameAutomatCanvas.height/1.41, this.gameAutomatCanvas.height/1.67);
     },
 
     loadImage: function(){
         this.gameAutomatImage = new Image();
         this.gameAutomatImage.src = "img_folder/gamingautomat.png";
-        this.gameAutomatCanvasContext.drawImage(this.gameAutomatImage, 0, 0, this.gameAutomatCanvas.height, this.gameAutomatCanvas.height/2);
+        this.gameAutomatCanvasContext.drawImage(this.gameAutomatImage, 0, 0, this.gameAutomatCanvas.height, this.gameAutomatCanvas.height);
+    },
+
+    animate: function(){
+        this.gameAutomatCanvasContext.clearRect(this.gameAnimation,125 ,this.gameAutomatCanvas.height/3.3, this.gameAutomatCanvas.height/1.41, this.gameAutomatCanvas.height/1.67);
+        switch(this.counter){
+            case 0: this.gameAnimation.src="img_folder/animation1.png";
+                    this.counter++;
+                    break;
+            case 1: this.gameAnimation.src ="img_folder/animation2.png";
+                    this.counter++;
+                    break;
+            case 2: this.gameAnimation.src = "img_folder/animation3.png";
+                    this.counter = 0;
+                    break;
+            default: this.counter = 0;
+        }
+        this.gameAutomatCanvasContext.drawImage(this.gameAnimation,125 ,this.gameAutomatCanvas.height/3.3, this.gameAutomatCanvas.height/1.41, this.gameAutomatCanvas.height/1.67);
     }
 }
 
 window.onload = function(){
     gameAutomat.init();
-    if(startGame == false){
+    while(this.startGame == false){
+        this.gameAutomat.animate();
+        setTimeout(3000);
+    }
 
-    }else{
+    
+}
 
+function sleep(timestamp) {
+    let date = Date.now();
+    let currentDate = timestamp;
+    if(currentDate-date <3000){
+        window.requestAnimationFrame(sleep(currentDate));
     }
 }
