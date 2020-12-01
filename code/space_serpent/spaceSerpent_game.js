@@ -657,7 +657,7 @@ class level {
         this.timePauseStart = Date.now();
         this.timePauseEnd = Date.now();
         this.timePauseSum = 0;
-        this.gameTime;
+        this.gameTime = 0;
         this.playerLose = false;
         this.playerWin = false;
     };
@@ -709,7 +709,7 @@ class level {
     };
     /* update section */
     update() {
-        if (window.innerWidth <= 2000)
+        if (window.innerWidth <= 1800)
         this.gameMode.pause();
 
         this.gameTime = Date.now() - this.timeStart - this.timePauseSum;
@@ -800,7 +800,7 @@ class level {
         this.levelConfig.sound[6].play();
         let gameMode = getGameInstance();
         this.timePauseStart = Date.now();
-        if (window.innerWidth <= 2000)
+        if (window.innerWidth <= 1800)
             gameMode.push(new PauseMenu("WindowTooSmall", true));
         else
             gameMode.push(new PauseMenu("PauseMenuLevel0", false));
@@ -1741,12 +1741,12 @@ var highScoreTable = {
     },
 
     update: function () {
-        if (window.innerWidth >= 2000) {
+        if (window.innerWidth >= 1800) {
             if (this.highScoreCanvas == null) {
                 this.init();
             }
             this.sync();
-            let time = this.stateData;
+            let time = Math.ceil(this.stateData.gameTime);
             this.timeButton.text = time;
             // Bubblesort auf die Serpentlist -> vergleicht die Nachbarn jeweils darauf, ob foodEaten < als der Nachfolger ist
             for (let n = this.serpentRanking.length - 1; n > 0; n--) {
@@ -1858,13 +1858,13 @@ var highScoreTable = {
             document.body.insertBefore(this.highScoreCanvas, document.body.childNodes[2]);
 
             //Einfügen der Buttons zur Darstellung der Highscore-Tabelle
-            this.highScoreCanvasButtons.push(new MenuButton("Time", "Time ", null, this.buttonOtherPosition, this.buttonVerticalPosition - 50, 100, 50, this.itemButtonSize, "white"));
+            this.highScoreCanvasButtons.push(new MenuButton("Time", "Time ", null, this.buttonOtherPosition, this.buttonVerticalPosition - 70, 100, 50, this.itemButtonSize, "white"));
             this.highScoreCanvasButtons.push(new MenuButton("Head", "ScoreTable", null, this.buttonHeadPosition, this.buttonVerticalPosition - 490, 100, 50, this.headButtonSize, "white"));
             this.highScoreCanvasButtons.push(new MenuButton("Player", "Player", null, this.buttonNamePosition, this.buttonVerticalPosition - 440, 100, 50, this.itemButtonSize, "white"));
             this.highScoreCanvasButtons.push(new MenuButton("Score", "Score", null, this.buttonDataPosition, this.buttonVerticalPosition - 440, 100, 50, this.itemButtonSize, "white"));
 
             //Einfügen des Rankings
-            this.timeButton = new MenuButton(1, "0", null, this.buttonTime, this.buttonVerticalPosition - 50, 50, 30, this.itemButtonSize, "white");
+            this.timeButton = new MenuButton(1, "0", null, this.buttonTime, this.buttonVerticalPosition - 70, 50, 30, this.itemButtonSize, "white");
             for (let i = 0; i < this.serpentRanking.length; i++) {
                 //console.log(this.highScoreCanvasButtons);
                 this.playerNameButtons.push(new MenuButton(i, this.serpentRanking[i].name, null, this.buttonDataPosition, this.buttonVerticalPosition - 390 + (i * 50), 50, 30, this.itemButtonSize, "white"));
