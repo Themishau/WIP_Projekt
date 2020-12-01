@@ -2499,6 +2499,13 @@ function draw(bg_stars, playGroundImage, serpentPlayer, itemlist, aiSerpents) {
 /* ----  draw section end ---- */
 
 /* ----  AI section  ---- */
+
+/*
+This function determines to which position the AI will move next, using the aStar algorithm or a random free field
+in case of the aStar not finding a path. This can happen when there is no path to the goal, for example if the goal is encircled by
+obstacles. It returns if there is a free field to move at all, and if there is, the change on the x and y axis of the playfield needed
+in order to reach that next field.
+*/
 function calculateNextMove(obstaclesTable, currentPosition, itemPosition, serpent) {
 
     // aStar is the Pathfinding algorithm used to find a shortest path from the snakehead to the food
@@ -2551,6 +2558,16 @@ function calculateNextMove(obstaclesTable, currentPosition, itemPosition, serpen
         return { movementIsPossible: false, direction: { dx: 1, dy: 0 } };
     }
 }
+
+// Compares two positions
+function positionsAreEqual(positionA, positionB) {
+    return positionA.x == positionB.x && positionA.y == positionB.y;
+}
+
+/*
+The aStar algorithm delivers a path to the goal. Going it backwards to the first node of the path
+allows to find the next position to move, in order to follow the path calculated by aStar
+*/
 function reconstruct_path(current) {
     while (current.parent != null) {
         if (current.parent.parent != null)
@@ -2561,9 +2578,12 @@ function reconstruct_path(current) {
     }
     return current;
 }
-function positionsAreEqual(positionA, positionB) {
-    return positionA.x == positionB.x && positionA.y == positionB.y;
-}
+
+/* 
+The aStar is a commonly used algorithm for pathfinding. This is a custom implementation of the algorithm.
+It looks for the shortest path from a starting point to a given goal. Any obstacles, represented 
+through the obstacles Table, will not be traversed.
+*/
 function aStar(obstaclesTable, goalPosition, startPosition) {
     // The closedTable describes, which elements have already been visited by the algorithm
     var closedTable = new playground(obstaclesTable.length, obstaclesTable.length).fields;
@@ -2621,28 +2641,43 @@ function aStar(obstaclesTable, goalPosition, startPosition) {
 /* ----  AI section end ---- */
 
 /* ----  movement section  ---- */
+
+/*
+This functions moves all serpents on the playfield
+*/
 function moveSerpents(serpentPlayer, aiSerpents, playGroundLevel, items, sound) {
     if (serpentPlayer.alive)
         executeSerpentMovement(serpentPlayer, playGroundLevel, items, sound);
     moveAiSerpents(aiSerpents, playGroundLevel, items, sound);
 }
+
+/*
+This functions returns the serpents current target, or if the target was removed from the playfield, a new target
+*/
 function getTargetPosition(aiSerpent, items, playField, serpentHeadPosition) {
     let targetStillExists = (playField.fields[aiSerpent.nextTarget.x][aiSerpent.nextTarget.y] == aiSerpent.nextTarget.objectID) ? true : false;
     if (!targetStillExists || positionsAreEqual({ x: aiSerpent.nextTarget.x, y: aiSerpent.nextTarget.y }, serpentHeadPosition))
         aiSerpent.nextTarget = generateNewTarget(items);
     return { x: aiSerpent.nextTarget.x, y: aiSerpent.nextTarget.y };
 }
+
+/*
+This functions returns a new viable target from the items on the playfield
+*/
 function generateNewTarget(items) {
     let targets = [];
     items.forEach(goodItem => {
         if (goodItem.id == 1)
             targets.push(goodItem);
     });
-    //console.log("target:", targets);
     let randomInt = getRandomIntInclusive(0, targets.length - 1);
     let newTarget = targets[randomInt];
     return { objectID: newTarget.id, x: newTarget.gridx, y: newTarget.gridy };
 }
+
+/*
+saves the obstacles on the playfield which an AI serpent is not allowed to travel to in a table. 
+*/
 function createObstaclesTable(aiSerpent, playField) {
     let obstaclesTable = new playground();
     for (var column = 0; column < obstaclesTable.xSize; column++) {
@@ -2655,6 +2690,10 @@ function createObstaclesTable(aiSerpent, playField) {
     obstaclesTable.fields[aiSerpent.serpentParts[1].x][aiSerpent.serpentParts[1].y] = 1;
     return obstaclesTable;
 }
+
+/*
+calculcaletes the next movement for the ai Serpents and then executes the movements
+*/
 function moveAiSerpents(aiSerpents, playField, items, sound) {
     for (let i = 0; i < aiSerpents.length; i++) {
         if (aiSerpents[i].alive) {
@@ -2682,6 +2721,9 @@ function moveAiSerpents(aiSerpents, playField, items, sound) {
 
 }
 
+/*
+sets the serpents status to not alive, removes its represenation from the playfield, and spawns some bombs on the playfield
+*/
 function killSerpent(serpent, playField, itemlist, sound) {
     serpent.alive = false;
     sound[8].play();
@@ -2696,7 +2738,6 @@ function killSerpent(serpent, playField, itemlist, sound) {
     serpent.dx = 0;
     serpent.dy = 0;
     highScoreTable.popScoreSheetButtons();
-    // ist hier ein bug, denke ich
 }
 
 function changeCurrentPointOfView(serpent) {
@@ -2742,6 +2783,9 @@ function getNextYPosition(serpent, playField) {
     return nextYPosition;
 }
 
+/*
+determines if any of the losing conditions are met
+*/
 function serpentLost(serpent, playField, items, nextXPosition, nextYPosition, sound) {
 
     let featherInBackpack = false;
@@ -2760,6 +2804,11 @@ function serpentLost(serpent, playField, items, nextXPosition, nextYPosition, so
     return false;
 }
 
+/*
+spawns a new head and removes the tail, if no food has been eaten
+also checks for other items the serpent might be colliding with
+and adjusts the direction of the serpents graphical representation
+*/
 function executeSerpentMovement(serpent, playField, items, sound) {
 
     changeCurrentPointOfView(serpent);
@@ -2782,6 +2831,9 @@ function executeSerpentMovement(serpent, playField, items, sound) {
     itemCollision(serpent, items, playField, sound);
 }
 
+/*
+determines if any item was hit
+*/
 function itemCollision(serpent, items, playField, sound) {
 
     let hasEatenFood = false;
@@ -2798,6 +2850,7 @@ function itemCollision(serpent, items, playField, sound) {
             break;
         }
     }
+    // if the serpent has not eaten food, the tail´s last part is removed
     if (!hasEatenFood) {
         let lastSerpentPart = serpent.serpentParts[serpent.serpentParts.length - 1];
         playField.removeFromPlayground(lastSerpentPart.x, lastSerpentPart.y);
@@ -2805,6 +2858,9 @@ function itemCollision(serpent, items, playField, sound) {
     }
 }
 
+/*
+handles what happens when any item is eaten
+*/
 function eatItem(serpent, itemIndex, items, playField, sound) {
     switch (items[itemIndex].name) {
         case "food":
@@ -2883,7 +2939,6 @@ function generateNewItem(ObjectType, itemlist, playField, position) {
         itemlist.push(newFeather);
         playField.addToPlayground(newFeather.gridx, newFeather.gridy, 5);
     }
-    //console.log("newItem generated", itemlist);
 }
 /* ----  movement section end ---- */
 
