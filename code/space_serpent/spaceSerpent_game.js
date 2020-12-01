@@ -1200,7 +1200,7 @@ class MainMenu {
         // 11+
         console.log(this.playerName);
         this.buttons.push(new MenuButton("playerName", this.playerName, null, this.buttonDataPosition, this.dimensions.height - this.startPositionSettings + this.padding, 100, 50, this.buttonSize, "white"));
-        this.buttons.push(new MenuButton("Player", "Player:", this.menuconfig.serpentSprites, this.buttonDataPosition, this.dimensions.height - this.startPositionSettings + this.padding*2, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("Player", "Player:", this.menuconfig.serpentSprites, this.buttonDataPosition, this.dimensions.height - this.startPositionSettings + this.padding*2 - 25, 100, 50, this.buttonSize, "white"));
         this.buttons.push(new MenuButton("Enemy", this.currentOption[1], null, this.buttonDataPosition, this.dimensions.height - this.startPositionSettings + this.padding*3, 100, 50, this.buttonSize, "white"));
         this.buttons.push(new MenuButton("fieldSize", ["small", "normal", "big"], null, this.buttonDataPosition, this.dimensions.height - this.startPositionSettings + this.padding*4, 100, 50, this.buttonSize, "white"));
         this.buttons.push(new MenuButton("Speed", ["slow", "normal", "fast"], null, this.buttonDataPosition, this.dimensions.height - this.startPositionSettings + this.padding*5, 100, 50, this.buttonSize, "white"));
