@@ -636,6 +636,7 @@ class level {
     constructor(name, levelConfig, menuconfig) {
         this.name = name;
         this.canvas = getContext();
+        this.gameMode = getGameInstance();
         this.menuconfig = menuconfig;
         this.levelConfig = levelConfig;
         this.buttons = [];
@@ -708,6 +709,9 @@ class level {
     };
     /* update section */
     update() {
+        if (window.innerWidth <= 2000)
+        this.gameMode.pause();
+
         this.gameTime = Date.now() - this.timeStart - this.timePauseSum;
         if (round10(getStateData().gameTime / 1000, -1) % 10 == 0)
             generateNewItem(3, this.levelConfig.itemlist, this.levelConfig.playGroundLevel, generateRandomPosition(this.levelConfig.playGroundLevel, this.levelConfig.serpentPlayer, true));
@@ -796,7 +800,10 @@ class level {
         this.levelConfig.sound[6].play();
         let gameMode = getGameInstance();
         this.timePauseStart = Date.now();
-        gameMode.push(new PauseMenu("PauseMenuLevel0"));
+        if (window.innerWidth <= 2000)
+            gameMode.push(new PauseMenu("WindowTooSmall", true));
+        else
+            gameMode.push(new PauseMenu("PauseMenuLevel0", false));
     };
     onResume() {
         console.log("onResume");
@@ -1213,9 +1220,10 @@ class MainMenu {
 
 }
 class PauseMenu {
-    constructor(name) {
+    constructor(name, bWindowTooSmall) {
         this.name = name // Just to identify the State
         this.canvas = getContext(),
+        this.bWindowTooSmall = bWindowTooSmall,
             this.dimensions = getGameDimensions(),
             this.backgroundColor = "#000",
             this.mainText = "Press Escape To Continue",
@@ -1283,7 +1291,14 @@ class PauseMenu {
         this.canvas.fillText(this.mainText, 200, 350);
         this.canvas.fillText(this.mainText2, 200, 400);
         this.canvas.font = this.dimensions.width / 14 + "pt Courier";
-        this.canvas.fillText("Pause Menu", this.dimensions.width / 5.5, this.dimensions.width / 7);
+        if (this.bWindowTooSmall === true) {
+            this.canvas.font = this.dimensions.width / 30 + "pt Courier";
+            this.canvas.fillText("Maximize Screen to Continue", this.dimensions.width / 7, this.dimensions.width / 7);
+        }
+        else {
+            this.canvas.font = this.dimensions.width / 14 + "pt Courier";
+            this.canvas.fillText("Pause Menu", this.dimensions.width / 5.5, this.dimensions.width / 7);
+        }
 
 
 
@@ -1696,7 +1711,7 @@ var highScoreTable = {
     highScoreCanvas: null,
     highScoreCanvasContext: null,
     gamePosition: null,
-    highScoreCanvasWidth: 400, //Auch window.innerWidth verwendebar
+    highScoreCanvasWidth: 480, //Auch window.innerWidth verwendebar
     highScoreCanvasHeight: 540,
     //highScoreCanvasRight: "2%",
     //highScoreCanvasTop: "",
@@ -1751,8 +1766,11 @@ var highScoreTable = {
             }
             //HighScoreTable aktualisieren (machen)
             for (let i = 0; i < this.serpentRanking.length || i < this.playerNameButtons.length; i++) {
-                this.playerNameButtons[i].text = this.serpentRanking[i].name;
-                this.playerScoreButtons[i].text = this.serpentRanking[i].foodEaten;
+                
+                if (this.playerNameButtons[i] != undefined) {
+                    this.playerNameButtons[i].text = this.serpentRanking[i].name;
+                    this.playerScoreButtons[i].text = this.serpentRanking[i].foodEaten;
+                }
             }
             this.renderButtons();
         } else {
@@ -1781,7 +1799,7 @@ var highScoreTable = {
     renderButtons: function () {
         this.highScoreCanvasContext.clearRect(0, 0, this.highScoreCanvasWidth, this.highScoreCanvasHeight);
         this.highScoreCanvasContext.beginPath();
-        this.highScoreCanvasContext.fillStyle = "rgb(200,200,0)";
+        this.highScoreCanvasContext.fillStyle = "yellow";
         this.highScoreCanvasContext.fillText(this.timeButton.text, this.timeButton.buttonX, this.timeButton.buttonY);
         for (let i = 0; i < this.highScoreCanvasButtons.length; i++) {
             this.highScoreCanvasContext.font = this.highScoreCanvasButtons[i].font;
@@ -1790,9 +1808,9 @@ var highScoreTable = {
         for (let i = 0; i < this.playerNameButtons.length; i++) {
             //this.highScoreCanvasContext.strokeRect(this.highScoreCanvasButtons[i].buttonX, this.highScoreCanvasButtons[i].buttonY,this.highScoreCanvasButtons[i].buttonWidth, this.highScoreCanvasButtons[i].buttonHeight)
             if (i == this.serpentRank) {
-                this.highScoreCanvasContext.fillStyle = "rgb(0,200,200)";
+                this.highScoreCanvasContext.fillStyle = "aqua";
             } else {
-                this.highScoreCanvasContext.fillStyle = "rgb(200,0,0)";
+                this.highScoreCanvasContext.fillStyle = "white";
             }
             this.highScoreCanvasContext.font = this.playerNameButtons[i].font;
             this.highScoreCanvasContext.fillText(this.playerNameButtons[i].text, this.playerNameButtons[i].buttonX, this.playerNameButtons[i].buttonY);
@@ -1816,7 +1834,7 @@ var highScoreTable = {
             this.sync();
             this.sizeToSmall = false;
             this.gamePosition = getGameDimensions();
-            this.highScoreCanvasWidth = 500; //Auch window.innerWidth verwendebar
+            this.highScoreCanvasWidth = 480; //Auch window.innerWidth verwendebar
             this.highScoreCanvasHeight = 540;
             // button sizes
             this.headButtonSize = this.highScoreCanvasWidth / 17 + "pt Courier";
@@ -1929,7 +1947,7 @@ var instruction = {
             this.instructionButtons.push(new MenuButton("clover", "increases score", null, this.buttonDataPosition, this.buttonVerticalPosition - 380, 150, 20, this.itemButtonSize, "white"));
             this.instructionButtons.push(new MenuButton("bomb", "do not touch it!", null, this.buttonDataPosition, this.buttonVerticalPosition - 305, 150, 20, this.itemButtonSize, "white"));
             this.instructionButtons.push(new MenuButton("keyarrows", "keyarrows for movement", null, this.buttonOtherPosition, this.buttonVerticalPosition - 140, 150, 20, this.itemButtonSize, "white"));
-            this.instructionButtons.push(new MenuButton("keyarrows", "pause button is escape", null, this.buttonOtherPosition, this.buttonVerticalPosition - 110, 150, 20, this.itemButtonSize, "white"));
+            this.instructionButtons.push(new MenuButton("Escape", "press Escape to pause", null, this.buttonOtherPosition, this.buttonVerticalPosition - 110, 150, 20, this.itemButtonSize, "white"));
 
             this.feather.src = 'sprites/feather.png';
             this.clover.src = 'sprites/clover.png';
@@ -1952,7 +1970,7 @@ var instruction = {
         this.instructionCanvasContext.drawImage(this.arrows, this.buttonKeysPosition, this.buttonVerticalPosition - 270, 100, 100);
 
 
-        this.instructionCanvasContext.fillStyle = "rgb(200,200,0)";
+        this.instructionCanvasContext.fillStyle = "yellow";
         for (let i = 0; i < this.instructionButtons.length; i++) {
             this.instructionCanvasContext.font = this.instructionButtons[i].font;
             this.instructionCanvasContext.fillText(this.instructionButtons[i].text, this.instructionButtons[i].buttonX, this.instructionButtons[i].buttonY);

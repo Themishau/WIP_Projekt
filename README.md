@@ -32,8 +32,8 @@ Zusätzliche Termine: <br/>
 - HTML-Seite erstellen (Mark Silas)
 - Highscore-Canvas und Instruction-Canvas erstellen (Mark Silas)
 - README-Datei vervollständigen erstellen (Mark Silas)
+- Pitchslide erstellen (Mark Silas)
 
-- Pitchslide erstellen (Kai)
 - KI-Programmierung durchführen (Kai)
 - Kill-Methoden erstellen(Kai)
 - Itemdesign erstellen (Kai) 
