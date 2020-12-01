@@ -11,8 +11,8 @@
 }
 #instruction {
     background-image: url("sprites/Space003.png");
-    background-size: 100%;
-    background-repeat: no-repeat;
+    background-size: 200%;
+    background-repeat: repeat;
     border: 2px solid black;
     padding: 0;
     margin: auto;
