@@ -1546,10 +1546,12 @@ class CreditScreen {
         this.buttons.push(new MenuButton("Credit", "Music: Eric Skiff - Underclocked - Resistor Anthems - Available at http://EricSkiff.com/music", null, 20, 440, 100, 50, "8pt Courier", "white"));
         this.buttons.push(new MenuButton("Credit", "Music: Eric Skiff - Prologue - Resistor Anthems - Available at http://EricSkiff.com/music", null, 20, 460, 100, 50, "8pt Courier", "white"));
         this.buttons.push(new MenuButton("Credit", "Music: Eric Skiff - Arpanauts - Resistor Anthems - Available at http://EricSkiff.com/music", null, 20, 480, 100, 50, "8pt Courier", "white"));
-        this.buttons.push(new MenuButton("Credit", "https://opengameart.org/content/512-sound-effects-8-bit-style", null, 20, 500, 100, 50, "8pt Courier", "white"));
+        this.buttons.push(new MenuButton("Credit", "SubspaceAudio - https://opengameart.org/content/512-sound-effects-8-bit-style - CC by 0", null, 20, 500, 100, 50, "8pt Courier", "white"));
         this.buttons.push(new MenuButton("Credit", "Ctskelgysth Inauaruat - Ctskelgysth: https://opengameart.org/content/8-bit-sound-effects-0", null, 20, 520, 100, 50, "8pt Courier", "white"));
-        this.buttons.push(new MenuButton("Credit", "https://opengameart.org/content/colorful-planets-0", null, 20, 540, 100, 50, "8pt Courier", "white"));
-        this.buttons.push(new MenuButton("Credit", "https://opengameart.org/content/stars-parallax-backgrounds", null, 20, 560, 100, 50, "8pt Courier", "white"));
+        this.buttons.push(new MenuButton("Credit", "Bonsaiheldin - https://opengameart.org/content/colorful-planets-0 - CC by 0", null, 20, 540, 100, 50, "8pt Courier", "white"));
+        this.buttons.push(new MenuButton("Credit", "Bonsaiheldin - https://opengameart.org/content/stars-parallax-backgrounds - CC by 0", null, 20, 560, 100, 50, "8pt Courier", "white"));
+        this.buttons.push(new MenuButton("Credit", "AhNinniah - https://opengameart.org/content/free-game-items-pack-2 - CC by 3.0", null, 20, 580, 100, 50, "8pt Courier", "white"));
+        this.buttons.push(new MenuButton("Credit", "Soluna Software - https://opengameart.org/content/space-backgrounds-with-stars-and-nubular - CC by 0", null, 20, 60, 100, 50, "8pt Courier", "white"));
         this.buttons.push(new MenuButton("Credit", "Press Enter To Leave", null, 300, 900, 100, 50, "20pt Courier", "white"));
     };
 }
