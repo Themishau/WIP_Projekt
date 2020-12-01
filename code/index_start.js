@@ -29,11 +29,14 @@ var gameAutomat = {
     },
 
     startGame: function(){
+        window.alert("clicked");
         window.location.href = "space_serpent/space_serpent_main.html";
     },
 
     loadButton: function(){
-       
+        this.startButton = new Image();
+        this.startButton.src = "img_folder/buttonUnpressed.png";
+        this.gameAutomatCanvasContext.drawImage(this.startButton,320 ,this.gameAutomatCanvas.height/1.19, this.gameAutomatCanvas.height/6, this.gameAutomatCanvas.height/6);
     },
 
     loadAnimation:function(){
@@ -64,22 +67,26 @@ var gameAutomat = {
         }
         this.gameAutomatCanvasContext.drawImage(this.gameAnimation,125 ,this.gameAutomatCanvas.height/3.3, this.gameAutomatCanvas.height/1.41, this.gameAutomatCanvas.height/1.67);
     }
-}
-
-window.onload = function(){
-    gameAutomat.init();
-    while(this.startGame == false){
-        this.gameAutomat.animate();
-        setTimeout(3000);
-    }
 
     
 }
 
-function sleep(timestamp) {
-    let date = Date.now();
-    let currentDate = timestamp;
-    if(currentDate-date <3000){
-        window.requestAnimationFrame(sleep(currentDate));
-    }
+window.onload = function(){
+    gameAutomat.init();
+    window.addEventListener("keydown".window.alert("pressed"));
+    //sleep(5000);
+    /**while(this.startGame == false){
+        this.gameAutomat.animate();
+        setTimeout(100);
+    }**/
+
+    
+}
+
+function sleep(milliseconds) {
+    const date = Date.now();
+    let currentDate = null;
+    do {
+        currentDate = Date.now();
+    } while (currentDate - date < milliseconds);
 }
