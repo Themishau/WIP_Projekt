@@ -1,6 +1,8 @@
 'use strict';
 /* ---- global section ---- */
 var int = 1;
+var gMaxWindowSize = 1400;
+var gCurrentWindowSize = null;
 /* grid size scale */
 var gridSizeScale = 40;
 var gridSizey = 40; // 1000 / gridSizeScale = 
@@ -693,6 +695,7 @@ class level {
     };
     /* on enter this state */
     onEnter() {
+        gCurrentWindowSize = window.innerWidth;
         this.levelConfig.setSoundVolume();
         this.levelConfig.playGroundLevel.bgsound.pause();
         this.levelConfig.playGroundLevel.bgsound.currentTime = 0;
@@ -709,7 +712,14 @@ class level {
     };
     /* update section */
     update() {
-        if (window.innerWidth <= 1500)
+        if(window.innerWidth != gCurrentWindowSize) {
+            highScoreTable.clear();
+            highScoreTable.init();
+            instruction.clear();
+            instruction.init();
+        }
+
+        if (window.innerWidth <= gMaxWindowSize)
         this.gameMode.pause();
 
         this.gameTime = Date.now() - this.timeStart - this.timePauseSum;
@@ -800,12 +810,16 @@ class level {
         this.levelConfig.sound[6].play();
         let gameMode = getGameInstance();
         this.timePauseStart = Date.now();
-        if (window.innerWidth <= 1500)
+        if (window.innerWidth <= gMaxWindowSize)
             gameMode.push(new PauseMenu("WindowTooSmall", true));
         else
             gameMode.push(new PauseMenu("PauseMenuLevel0", false));
     };
     onResume() {
+        highScoreTable.clear();
+        instruction.clear();
+        console.log("level on resume", highScoreTable);
+        //this.highScoreTable.init();
         console.log("onResume");
         console.log(this.levelConfig.playGroundLevel);
         this.levelConfig.playGroundLevel.bgsound.play();
@@ -830,9 +844,9 @@ class MainMenu {
             this.creditButtonSize = this.dimensions.width / 70 + "pt Courier",
             this.creditNamePosition = this.dimensions.width / 2,
             this.buttonNamePosition = this.dimensions.width / 7,
-            this.buttonDataPosition = this.dimensions.width / 2,
-            this.startPositionSettings = 590,
-            this.padding = 50,
+            this.buttonDataPositionX = this.dimensions.width / 2,
+            this.deltaButtonPositionY = this.dimensions.width /1.5,
+            this.padding = this.dimensions.width / 20,
         this.selectedButton = 9,
             this.playType = 2, // 0 = Food, 1 = Time, 2 = Endless
             this.playerName = names[getRandomIntInclusive(0, names.length - 1)],
@@ -881,7 +895,11 @@ class MainMenu {
                 let levelConfig = new LevelConfig("level" + 1, stateData.playerName, 1, new LevelOption("level" + 1, stateData.currentOption[3], stateData.currentOption[2], stateData.currentOption[1], stateData.currentOption[0], null, null, stateData.winCondition));
                 levelConfig.StartLoading();
                 gameMode.push(new level("level" + (levelConfig.level), levelConfig, stateData.menuconfig));
-                highScoreTable.init(stateData);
+                highScoreTable.clear();
+                highScoreTable.init();
+                instruction.clear();
+                instruction.init();
+                console.log("newlevelpush main menu",highScoreTable);
                 /** Note that this does not remove the current state
                  *  from the list. it just adds Level1State on top of it.
                  */
@@ -1092,7 +1110,7 @@ class MainMenu {
         this.canvas.fillStyle = this.menuconfig.textColor;
         this.canvas.drawImage(this.menuconfig.backgroundImage, 0, this.menuconfig.backgroundImageY);
         this.canvas.font = this.dimensions.width / 14 + "pt Courier";
-        this.canvas.fillText(this.menuconfig.mainText, this.dimensions.width / 8, this.dimensions.width / 7);
+        this.canvas.fillText(this.menuconfig.mainText, this.dimensions.width / 8, this.dimensions.width / 8);
         //this.canvas.strokeStyle = "blue";
         //this.canvas.strokeRect(this.dimensions.width / 2 - 265, 150, 500, 100);
         this.canvas.beginPath();
@@ -1125,7 +1143,7 @@ class MainMenu {
             this.canvas.font = this.buttons[11].font;
             this.canvas.fillText(this.buttons[11].text, this.buttons[11].buttonX, this.buttons[11].buttonY);
             // playerSprite
-            this.canvas.drawImage(this.buttons[12].img[this.currentOption[0]], this.buttons[12].buttonX, this.buttons[12].buttonY);
+            this.canvas.drawImage(this.buttons[12].img[this.currentOption[0]], this.buttons[12].buttonX, this.buttons[12].buttonY, this.buttons[12].buttonWidth,this.buttons[12].buttonHeight,);
             // enemies
             this.canvas.fillStyle = this.buttons[13].fillStyle;
             this.canvas.font = this.buttons[13].font;
@@ -1185,29 +1203,29 @@ class MainMenu {
     addToButtons() {
 
 
-        this.buttons.push(new MenuButton("playerName", "Player Name:", null, this.buttonNamePosition, this.dimensions.height - this.startPositionSettings + this.padding, 100, 50, this.buttonSize, "white"));
-        this.buttons.push(new MenuButton("ChoosePlayer", "Player:", null, this.buttonNamePosition, this.dimensions.height - this.startPositionSettings + this.padding*2, 100, 50, this.buttonSize, "white"));
-        this.buttons.push(new MenuButton("Enemies", "Enemies: ", null, this.buttonNamePosition, this.dimensions.height - this.startPositionSettings + this.padding*3, 100, 50, this.buttonSize, "white"));
-        this.buttons.push(new MenuButton("playfieldsize", "Field Size: ", null, this.buttonNamePosition, this.dimensions.height - this.startPositionSettings + this.padding*4, 100, 50, this.buttonSize, "white"));
-        this.buttons.push(new MenuButton("Speed", "Speed: ", null, this.buttonNamePosition, this.dimensions.height - this.startPositionSettings + this.padding*5, 100, 50, this.buttonSize, "white"));
-        this.buttons.push(new MenuButton("WinCondition", "Game Mode: ", null, this.buttonNamePosition, this.dimensions.height - this.startPositionSettings + this.padding*6, 100, 50, this.buttonSize, "white"));
-        this.buttons.push(new MenuButton("Food", "Food: ", null, this.buttonNamePosition, this.dimensions.height - this.startPositionSettings + this.padding*7, 100, 50, this.buttonSize, "white"));
-        this.buttons.push(new MenuButton("Time", "Time: ", null, this.buttonNamePosition, this.dimensions.height - this.startPositionSettings + this.padding*7, 100, 50, this.buttonSize, "white"));
-        this.buttons.push(new MenuButton("Volume", "Volume: ", null, this.buttonNamePosition, this.dimensions.height - this.startPositionSettings + this.padding*9, 100, 50, this.buttonSize, "white"));
-        this.buttons.push(new MenuButton("startText", "Start Game", null, this.buttonNamePosition, this.dimensions.height - this.startPositionSettings + this.padding*10, 100, 50, this.buttonStartSize, "white"));
-        this.buttons.push(new MenuButton("Credits", "See Credits", null, this.buttonDataPosition, this.dimensions.height - this.startPositionSettings + this.padding*11 - 20, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("playerName", "Player Name:", null, this.buttonNamePosition, this.dimensions.height - this.deltaButtonPositionY + this.padding, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("ChoosePlayer", "Player:", null, this.buttonNamePosition, this.dimensions.height - this.deltaButtonPositionY + this.padding*2, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("Enemies", "Enemies: ", null, this.buttonNamePosition, this.dimensions.height - this.deltaButtonPositionY + this.padding*3, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("playfieldsize", "Field Size: ", null, this.buttonNamePosition, this.dimensions.height - this.deltaButtonPositionY + this.padding*4, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("Speed", "Speed: ", null, this.buttonNamePosition, this.dimensions.height - this.deltaButtonPositionY + this.padding*5, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("WinCondition", "Game Mode: ", null, this.buttonNamePosition, this.dimensions.height - this.deltaButtonPositionY + this.padding*6, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("Food", "Food: ", null, this.buttonNamePosition, this.dimensions.height - this.deltaButtonPositionY + this.padding*7, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("Time", "Time: ", null, this.buttonNamePosition, this.dimensions.height - this.deltaButtonPositionY + this.padding*7, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("Volume", "Volume: ", null, this.buttonNamePosition, this.dimensions.height - this.deltaButtonPositionY + this.padding*9, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("startText", "Start Game", null, this.buttonNamePosition, this.dimensions.height - this.deltaButtonPositionY + this.padding*10, 100, 50, this.buttonStartSize, "white"));
+        this.buttons.push(new MenuButton("Credits", "See Credits", null, this.buttonDataPositionX, this.dimensions.height - this.deltaButtonPositionY + this.padding*12 - 20, 100, 50, this.buttonSize, "white"));
 
         // 11+
         console.log(this.playerName);
-        this.buttons.push(new MenuButton("playerName", this.playerName, null, this.buttonDataPosition, this.dimensions.height - this.startPositionSettings + this.padding, 100, 50, this.buttonSize, "white"));
-        this.buttons.push(new MenuButton("Player", "Player:", this.menuconfig.serpentSprites, this.buttonDataPosition, this.dimensions.height - this.startPositionSettings + this.padding*2 - 25, 100, 50, this.buttonSize, "white"));
-        this.buttons.push(new MenuButton("Enemy", this.currentOption[1], null, this.buttonDataPosition, this.dimensions.height - this.startPositionSettings + this.padding*3, 100, 50, this.buttonSize, "white"));
-        this.buttons.push(new MenuButton("fieldSize", ["small", "normal", "big"], null, this.buttonDataPosition, this.dimensions.height - this.startPositionSettings + this.padding*4, 100, 50, this.buttonSize, "white"));
-        this.buttons.push(new MenuButton("Speed", ["slow", "normal", "fast"], null, this.buttonDataPosition, this.dimensions.height - this.startPositionSettings + this.padding*5, 100, 50, this.buttonSize, "white"));
-        this.buttons.push(new MenuButton("WinCondition", ["Highscore", "Time", "Endless"], null, this.buttonDataPosition, this.dimensions.height - this.startPositionSettings + this.padding*6, 100, 50, this.buttonSize, "yellow"));
-        this.buttons.push(new MenuButton("Food", 1, null, this.buttonDataPosition, this.dimensions.height - this.startPositionSettings + this.padding*7, 100, 50, this.buttonSize, "white"));
-        this.buttons.push(new MenuButton("Time", 1 + " minute(s)", null, this.buttonDataPosition, this.dimensions.height - this.startPositionSettings + this.padding*7, 100, 50, this.buttonSize, "white"));
-        this.buttons.push(new MenuButton("Volume", 1000 * gSoundVolume, null, this.buttonDataPosition, this.dimensions.height - this.startPositionSettings + this.padding*9, 100, 50, this.buttonSize, "yellow"));
+        this.buttons.push(new MenuButton("playerName", this.playerName, null, this.buttonDataPositionX, this.dimensions.height - this.deltaButtonPositionY + this.padding, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("Player", "Player:", this.menuconfig.serpentSprites, this.buttonDataPositionX, this.dimensions.height - this.deltaButtonPositionY + this.padding*2 - this.dimensions.height /25, this.dimensions.height /19, this.dimensions.height /19, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("Enemy", this.currentOption[1], null, this.buttonDataPositionX, this.dimensions.height - this.deltaButtonPositionY + this.padding*3, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("fieldSize", ["small", "normal", "big"], null, this.buttonDataPositionX, this.dimensions.height - this.deltaButtonPositionY + this.padding*4, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("Speed", ["slow", "normal", "fast"], null, this.buttonDataPositionX, this.dimensions.height - this.deltaButtonPositionY + this.padding*5, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("WinCondition", ["Highscore", "Time", "Endless"], null, this.buttonDataPositionX, this.dimensions.height - this.deltaButtonPositionY + this.padding*6, 100, 50, this.buttonSize, "yellow"));
+        this.buttons.push(new MenuButton("Food", 1, null, this.buttonDataPositionX, this.dimensions.height - this.deltaButtonPositionY + this.padding*7, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("Time", 1 + " minute(s)", null, this.buttonDataPositionX, this.dimensions.height - this.deltaButtonPositionY + this.padding*7, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("Volume", 1000 * gSoundVolume, null, this.buttonDataPositionX, this.dimensions.height - this.deltaButtonPositionY + this.padding*9, 100, 50, this.buttonSize, "yellow"));
         this.buttons.push(new MenuButton("Credit", "Copyright (c) 2020 KaBra, MaSiPi, MaZa", null, this.creditNamePosition, this.dimensions.height - 30, 100, 50, this.creditButtonSize, "blue"));
 
     };
@@ -1233,6 +1251,10 @@ class PauseMenu {
             this.textColor = "rgb(0,0,0)", // Starts with black
             this.colorsArray = [], // our fade values
             this.colorIndex = 0;
+            this.headlineFontSize = this.dimensions.width / 14 + "pt Courier";
+            this.textFontSize = this.dimensions.width / 50 + "pt Courier";
+            this.headlineTextPosition = this.dimensions.width / 2;
+            this.textPosition = this.dimensions.width / 7;
         this.angle = 0;
         this.update = function () {
             // update values
@@ -1244,6 +1266,7 @@ class PauseMenu {
         };
     }
     onEnter() {
+
         //resumeGame();
         var i = 1, l = 100, values = [];
         for (i; i <= l; i++) {
@@ -1266,7 +1289,7 @@ class PauseMenu {
                 let mainMenu = new MainMenu("MainMenu", new MenuConfig("MainMenu"));
                 mainMenu.menuconfig.StartLoading();
                 gameMode.push(mainMenu);
-                this.highScoreTable.clear();
+
             }
 
         };
@@ -1275,45 +1298,31 @@ class PauseMenu {
         // clear the keydown event
         window.onkeydown = null;
         console.log(" Pause Menu EVENT IS DELETED");
+        highScoreTable.clear();
+        instruction.clear();
+        console.log("pause menu leave", highScoreTable);
     };
 
     render() {
-        let buttonSize = this.dimensions.width / 50 + "pt Courier";
-        let creditButtonSize = this.dimensions.width / 70 + "pt Courier";
-        let creditNamePosition = this.dimensions.width / 2;
-        let buttonNamePosition = this.dimensions.width / 7;
-        let buttonDataPosition = this.dimensions.width / 2;
         this.canvas.clearRect(0, 0, this.dimensions.width, this.dimensions.height)
         // redraw
         this.canvas.fillStyle = this.backgroundColor;
         this.canvas.fillColor = this.backgroundColor;
         this.canvas.fillRect(100 / -2, 100 / -2, 100, 100);
         this.canvas.fillStyle = this.textColor;
-        this.canvas.font = buttonSize;
-        this.canvas.fillText(this.mainText, 200, 350);
-        this.canvas.fillText(this.mainText2, 200, 400);
+        this.canvas.font = this.textFontSize;
+        this.canvas.fillText(this.mainText, this.dimensions.width / 6.5, this.dimensions.width / 2);
+        this.canvas.fillText(this.mainText2, this.dimensions.width / 6.5, this.dimensions.width / 1.5);
         this.canvas.font = this.dimensions.width / 14 + "pt Courier";
         if (this.bWindowTooSmall === true) {
-            this.canvas.font = this.dimensions.width / 30 + "pt Courier";
-            this.canvas.fillText("Maximize Screen to Continue", this.dimensions.width / 7, this.dimensions.width / 7);
+            this.canvas.font = this.dimensions.width / 27 + "pt Courier";
+            this.canvas.fillText("Resize your screen!", this.dimensions.width / 8, this.dimensions.width / 8);
         }
         else {
-            this.canvas.font = this.dimensions.width / 14 + "pt Courier";
+            this.canvas.font = this.headlineFontSize;
             this.canvas.fillText("Pause Menu", this.dimensions.width / 5.5, this.dimensions.width / 7);
         }
 
-
-
-        /*
-        this.canvas.clearRect(0,0,this.dimensions.width,this.dimensions.height)
-        this.canvas.beginPath();
-        this.canvas.fillStyle = this.backgroundColor;
-        this.canvas.fillColor = this.backgroundColor;
-        this.canvas.fillRect(0,0,this.dimensions.width,this.dimensions.height);
-        this.canvas.fillStyle = this.textColor;
-        this.canvas.font = "24pt Courier";
-        this.canvas.fillText(this.mainText, 120, 100);
-        */
     };
     onPause() {
 
@@ -1369,8 +1378,11 @@ class AfterGameScreen {
                 let newlevelconfig = new LevelConfig("level" + (levelConfig.level + 1), stateData.levelConfig.playerName, levelConfig.level + 1, new LevelOption("level" + (levelConfig.level + 1), levelConfig.levelOption.movementAcc, levelConfig.levelOption.playGroundSize, levelConfig.levelOption.aiEnemys, levelConfig.levelOption.serpentSpriteColor, null, null, levelConfig.levelOption.winCondition));
                 newlevelconfig.StartLoading();
                 gameMode.push(new level("level" + (levelConfig.level + 1), newlevelconfig, stateData.menuconfig));
-                this.highScoreTable.clear();
-                this.highScoreTable.init();
+                highScoreTable.clear();
+                highScoreTable.init();
+                instruction.clear();
+                instruction.init();
+                console.log("newlevelpush",highScoreTable);
                 /** Note that this does not remove the current state
                  *  from the list. it just adds Level1State on top of it.
                  */
@@ -1385,7 +1397,11 @@ class AfterGameScreen {
                 let mainMenu = new MainMenu("MainMenu", new MenuConfig("MainMenu"));
                 mainMenu.menuconfig.StartLoading();
                 gameMode.push(mainMenu);
-                this.highScoreTable.clear();
+                highScoreTable.clear();
+                highScoreTable.init();
+                instruction.clear();
+                instruction.init();
+                console.log(highScoreTable);
             }
             stateData.menuconfig.scrollSound.pause();
             stateData.menuconfig.scrollSound.currentTime = 0;
@@ -1452,21 +1468,24 @@ class AfterGameScreen {
     };
     addToButtons() {
         let buttonSize = this.dimensions.width / 50 + "pt Courier";
-        let creditButtonSize = this.dimensions.width / 70 + "pt Courier";
         let creditNamePosition = this.dimensions.width / 2;
-        let buttonNamePosition = this.dimensions.width / 7;
-        let buttonDataPosition = this.dimensions.width / 2;
-        this.buttons.push(new MenuButton("Credit", "Copyright (c) 2020 KaBra, MaSiPi, MaZa", null, this.dimensions.width - 500, this.dimensions.height - 30, 100, 50, "14pt Courier", "blue"));
+        let buttonNamePosition = this.dimensions.width / 5;
+        let textPosition = this.dimensions.width / 7;
+        let buttonDataPositionX = this.dimensions.width / 2;
+        let deltaButtonPositionY = this.dimensions.width /1.5;
+        let creditButtonSize = this.dimensions.width / 70 + "pt Courier";
+        let padding = this.dimensions.width / 20;
+        this.buttons.push(new MenuButton("Credit", "Copyright (c) 2020 KaBra, MaSiPi, MaZa", null, creditNamePosition, this.dimensions.height - 30, 100, 50, creditButtonSize, "blue"));
 
-        this.buttons.push(new MenuButton("Your Score:", "Your Highscore", null, buttonNamePosition, this.dimensions.height - 400, 100, 50, buttonSize, "white"));
-        this.buttons.push(new MenuButton("Enemy's Highscore:", "Enemy's Highscore", null, buttonNamePosition, this.dimensions.height - 450, 100, 50, buttonSize, "white"));
+        this.buttons.push(new MenuButton("Your Score:", "Your Highscore", null, buttonNamePosition, this.dimensions.height - deltaButtonPositionY + padding, 100, 50, buttonSize, "white"));
+        this.buttons.push(new MenuButton("Enemy's Highscore:", "Enemy's Highscore", null, buttonNamePosition, this.dimensions.height - deltaButtonPositionY + padding*2, 100, 50, buttonSize, "white"));
 
-        this.buttons.push(new MenuButton("Continue", "Press Enter To Start Next Round", null, creditNamePosition - 300, this.dimensions.height - 300, 50, buttonSize, "white"));
-        this.buttons.push(new MenuButton("Leave", "Or Press Space To Return To Main Menu", null, creditNamePosition - 300, this.dimensions.height - 250, 100, 50, buttonSize, "white"));
+        this.buttons.push(new MenuButton("Continue", "Press Enter To Start Next Round", null, textPosition, this.dimensions.height - deltaButtonPositionY + padding*5, 50, buttonSize, "white"));
+        this.buttons.push(new MenuButton("Leave", "Or Press Space To Return To Main Menu", null, textPosition, this.dimensions.height - deltaButtonPositionY + padding*5.5, 100, 50, buttonSize, "white"));
 
-        this.buttons.push(new MenuButton("Food Eaten Player", this.levelConfig.serpentPlayer.foodEaten, null, buttonDataPosition, this.dimensions.height - 400, 100, 50, buttonSize, "white"));
+        this.buttons.push(new MenuButton("Food Eaten Player", this.levelConfig.serpentPlayer.foodEaten, null, buttonDataPositionX, this.dimensions.height - deltaButtonPositionY + padding, 100, 50, buttonSize, "white"));
         if (this.levelConfig.highestEnemy != undefined || this.levelConfig.highestEnemy != null)
-            this.buttons.push(new MenuButton("Food Eaten Player", this.levelConfig.highestEnemy, null, buttonDataPosition, this.dimensions.height - 450, 100, 50, buttonSize, "white"));
+            this.buttons.push(new MenuButton("Food Eaten Player", this.levelConfig.highestEnemy, null, buttonDataPositionX, this.dimensions.height - deltaButtonPositionY + padding*2, 100, 50, buttonSize, "white"));
     };
 }
 class CreditScreen {
@@ -1543,7 +1562,7 @@ class CreditScreen {
         this.canvas.fillStyle = this.menuconfig.textColor;
         this.canvas.drawImage(this.menuconfig.backgroundImage, 0, this.menuconfig.backgroundImageY);
         this.canvas.font = "64pt Courier";
-        this.canvas.fillText(this.menuconfig.mainText, this.dimensions.height / 4, 200);
+        this.canvas.fillText(this.menuconfig.mainText, this.dimensions.height / 7, this.dimensions.height / 8);
         this.canvas.beginPath();
         for (let i = 0; i < this.buttons.length; i++) {
             this.canvas.beginPath();
@@ -1558,18 +1577,26 @@ class CreditScreen {
         this.menuconfig.backgroundImageY = moveMenuBackground(this.menuconfig.backgroundImageY, this.menuconfig.scrollSpeedBackground);
     };
     addToButtons() {
-        this.buttons.push(new MenuButton("Credit", "Music: Eric Skiff - All Of Us - Resistor Anthems - Available at http://EricSkiff.com/music", null, 20, 380, 100, 50, "8pt Courier", "white"));
-        this.buttons.push(new MenuButton("Credit", "Music: Eric Skiff - Jumpshot - Resistor Anthems - Available at http://EricSkiff.com/music", null, 20, 400, 100, 50, "8pt Courier", "white"));
-        this.buttons.push(new MenuButton("Credit", "Music: Eric Skiff - HHavok-intro - Resistor Anthems - Available at http://EricSkiff.com/music", null, 20, 420, 100, 50, "8pt Courier", "white"));
-        this.buttons.push(new MenuButton("Credit", "Music: Eric Skiff - Underclocked - Resistor Anthems - Available at http://EricSkiff.com/music", null, 20, 440, 100, 50, "8pt Courier", "white"));
-        this.buttons.push(new MenuButton("Credit", "Music: Eric Skiff - Prologue - Resistor Anthems - Available at http://EricSkiff.com/music", null, 20, 460, 100, 50, "8pt Courier", "white"));
-        this.buttons.push(new MenuButton("Credit", "Music: Eric Skiff - Arpanauts - Resistor Anthems - Available at http://EricSkiff.com/music", null, 20, 480, 100, 50, "8pt Courier", "white"));
-        this.buttons.push(new MenuButton("Credit", "SubspaceAudio - https://opengameart.org/content/512-sound-effects-8-bit-style - CC by 0", null, 20, 500, 100, 50, "8pt Courier", "white"));
-        this.buttons.push(new MenuButton("Credit", "Ctskelgysth Inauaruat - Ctskelgysth: https://opengameart.org/content/8-bit-sound-effects-0", null, 20, 520, 100, 50, "8pt Courier", "white"));
-        this.buttons.push(new MenuButton("Credit", "Bonsaiheldin - https://opengameart.org/content/colorful-planets-0 - CC by 0", null, 20, 540, 100, 50, "8pt Courier", "white"));
-        this.buttons.push(new MenuButton("Credit", "Bonsaiheldin - https://opengameart.org/content/stars-parallax-backgrounds - CC by 0", null, 20, 560, 100, 50, "8pt Courier", "white"));
-        this.buttons.push(new MenuButton("Credit", "AhNinniah - https://opengameart.org/content/free-game-items-pack-2 - CC by 3.0", null, 20, 580, 100, 50, "8pt Courier", "white"));
-        this.buttons.push(new MenuButton("Credit", "Soluna Software - https://opengameart.org/content/space-backgrounds-with-stars-and-nubular - CC by 0", null, 20, 60, 100, 50, "8pt Courier", "white"));
+        let buttonSize = this.dimensions.width / 50 + "pt Courier";
+        let creditPosition = this.dimensions.width / 20;
+        let buttonNamePosition = this.dimensions.width / 5;
+        let textPosition = this.dimensions.width / 7;
+        let buttonDataPositionX = this.dimensions.width / 2;
+        let deltaButtonPositionY = this.dimensions.width /1.5;
+        let creditButtonSize = this.dimensions.width / 100 + "pt Courier";
+        let padding = this.dimensions.width / 30;
+        this.buttons.push(new MenuButton("Credit", "Music: Eric Skiff - All Of Us - Resistor Anthems - Available at http://EricSkiff.com/music", null, creditPosition, this.dimensions.height - deltaButtonPositionY + padding, 100, 50, creditButtonSize, "white"));
+        this.buttons.push(new MenuButton("Credit", "Music: Eric Skiff - Jumpshot - Resistor Anthems - Available at http://EricSkiff.com/music", null, creditPosition, this.dimensions.height - deltaButtonPositionY + padding*2, 100, 50, creditButtonSize, "white"));
+        this.buttons.push(new MenuButton("Credit", "Music: Eric Skiff - HHavok-intro - Resistor Anthems - Available at http://EricSkiff.com/music", null, creditPosition, this.dimensions.height - deltaButtonPositionY + padding*3, 100, 50, creditButtonSize, "white"));
+        this.buttons.push(new MenuButton("Credit", "Music: Eric Skiff - Underclocked - Resistor Anthems - Available at http://EricSkiff.com/music", null, creditPosition, this.dimensions.height - deltaButtonPositionY + padding*4, 100, 50, creditButtonSize, "white"));
+        this.buttons.push(new MenuButton("Credit", "Music: Eric Skiff - Prologue - Resistor Anthems - Available at http://EricSkiff.com/music", null, creditPosition, this.dimensions.height - deltaButtonPositionY + padding*5, 100, 50, creditButtonSize, "white"));
+        this.buttons.push(new MenuButton("Credit", "Music: Eric Skiff - Arpanauts - Resistor Anthems - Available at http://EricSkiff.com/music", null, creditPosition, this.dimensions.height - deltaButtonPositionY + padding*6, 100, 50, creditButtonSize, "white"));
+        this.buttons.push(new MenuButton("Credit", "SubspaceAudio - https://opengameart.org/content/512-sound-effects-8-bit-style - CC by 0", null, creditPosition, this.dimensions.height - deltaButtonPositionY + padding*7, 100, 50, creditButtonSize, "white"));
+        this.buttons.push(new MenuButton("Credit", "Ctskelgysth Inauaruat - Ctskelgysth: https://opengameart.org/content/8-bit-sound-effects-0", null, creditPosition, this.dimensions.height - deltaButtonPositionY + padding*8, 100, 50, creditButtonSize, "white"));
+        this.buttons.push(new MenuButton("Credit", "Bonsaiheldin - https://opengameart.org/content/colorful-planets-0 - CC by 0", null, creditPosition, this.dimensions.height - deltaButtonPositionY + padding*9, 100, 50, creditButtonSize, "white"));
+        this.buttons.push(new MenuButton("Credit", "Bonsaiheldin - https://opengameart.org/content/stars-parallax-backgrounds - CC by 0", null, creditPosition, this.dimensions.height - deltaButtonPositionY + padding*10, 100, 50, creditButtonSize, "white"));
+        this.buttons.push(new MenuButton("Credit", "AhNinniah - https://opengameart.org/content/free-game-items-pack-2 - CC by 3.0", null, creditPosition, this.dimensions.height - deltaButtonPositionY + padding*11, 100, 50, creditButtonSize, "white"));
+        this.buttons.push(new MenuButton("Credit", "Soluna Software - https://opengameart.org/content/space-backgrounds-with-stars-and-nubular - CC by 0", null, creditPosition, this.dimensions.height - deltaButtonPositionY + padding*12, 100, 50, creditButtonSize, "white"));
         this.buttons.push(new MenuButton("Credit", "Press Enter To Leave", null, 300, 900, 100, 50, "20pt Courier", "white"));
     };
 }
@@ -1721,16 +1748,21 @@ var highScoreTable = {
     serpentRanking: null,
     serpentRank: 0,
     sizeToSmall: false,
+    buttonHeadPositionX: null,
+    headlineFont: null,
+    buttonFontSize: null,
+    buttonPositionY: null,
+    creditNamePosition: null,
+    buttonNamePosition: null,
+    buttonDataPositionX: null,
+    headPositionSettings: null,
+    deltaButtonPositionY: null,
+    padding: null,
     stateData: null,
     timeButton: null,
     highScoreCanvasButtons: [],
     playerNameButtons: [],
     playerScoreButtons: [],
-    headButtonSize: null,
-    itemButtonSize: null,
-    creditNamePosition: null,
-    buttonNamePosition: null,
-    buttonDataPosition: null,
 
     clear: function () {
         //this.highScoreCanvasContext.clearRect(0,0, this.highScoreCanvasWidth, this.highScoreCanvasHeight);
@@ -1739,11 +1771,13 @@ var highScoreTable = {
             this.highScoreCanvas = null;
             this.playerNameButtons = [];
             this.playerScoreButtons = [];
+            this.highScoreCanvasButtons = [];
+            this.timeButton = null;
         }
     },
 
     update: function () {
-        if (window.innerWidth >= 1500) {
+        if (window.innerWidth >= gMaxWindowSize) {
             if (this.highScoreCanvas == null) {
                 this.init();
             }
@@ -1769,7 +1803,7 @@ var highScoreTable = {
             //HighScoreTable aktualisieren (machen)
             for (let i = 0; i < this.serpentRanking.length || i < this.playerNameButtons.length; i++) {
                 
-                if (this.playerNameButtons[i] != undefined) {
+                if (this.playerNameButtons[i] != undefined && this.serpentRanking[i] != undefined) {
                     this.playerNameButtons[i].text = this.serpentRanking[i].name;
                     this.playerScoreButtons[i].text = this.serpentRanking[i].foodEaten;
                 }
@@ -1831,52 +1865,70 @@ var highScoreTable = {
     },
 
     init: function () {
-        if (window.innerWidth >= 1500) {
+        if (window.innerWidth >= gMaxWindowSize) {
+
             //alle Schlangen in ein lokales Array packen, welches über die Update-Funktion sortiert wird
             this.sync();
             this.sizeToSmall = false;
             this.gamePosition = getGameDimensions();
-            this.highScoreCanvasWidth = 480; //Auch window.innerWidth verwendebar
-            this.highScoreCanvasHeight = 540;
-            // button sizes
-            this.headButtonSize = this.highScoreCanvasWidth / 17 + "pt Courier";
-            this.itemButtonSize = this.highScoreCanvasWidth / 30 + "pt Courier";
-            this.buttonHeadPosition = this.highScoreCanvasWidth / 5;
-            this.buttonNamePosition = this.highScoreCanvasWidth / 9;
-            this.buttonOtherPosition = this.highScoreCanvasWidth / 9;
-            this.buttonDataPosition =  this.highScoreCanvasWidth / 2;
-            this.buttonVerticalPosition = this.highScoreCanvasHeight;
-            this.buttonTime =  this.highScoreCanvasWidth / 3;
-            //Definition und Inititalisierung des Highscore-Canvas
+
+            //highscore definition and init
             this.highScoreCanvas = document.createElement("canvas");
             this.highScoreCanvas.id = "highScore";
-            this.highScoreCanvas.width = this.highScoreCanvasWidth;
-            this.highScoreCanvas.height = this.highScoreCanvasHeight;
-            //this.highScoreCanvas.position = this.highScoreCanvasPosition;
-            //this.highScoreCanvas.style.marginRight = this.highScoreCanvasRight;
-            //this.highScoreCanvas.style.marginTop = this.highScoreCanvasTop;
-            //this.highScoreCanvas.style.border = "2px solid white";
-            this.highScoreCanvasContext = this.highScoreCanvas.getContext("2d");
+             
+            
+            //resize canvas 
+            this.resizeCanvas();
+
+            //set button font sizes
+            this.headlineFont            = this.highScoreCanvasWidth / 17 + "pt Courier";
+            this.buttonFontSize          = this.highScoreCanvasWidth / 30 + "pt Courier";
+            
+            //button position
+            this.buttonHeadPositionX     = this.highScoreCanvasWidth / 5;
+            this.buttonNamePositionX     = this.highScoreCanvasWidth / 9;
+            this.buttonTimePositionX     = this.highScoreCanvasWidth / 9;
+            this.buttonDataPositionX     =  this.highScoreCanvasWidth / 2;
+            this.buttonPositionY         = this.highScoreCanvasHeight / 2;
+            this.buttonKeyPositionX      =  this.highScoreCanvasWidth / 3;
+            this.buttonTimeDataPositionX =  this.highScoreCanvasWidth / 3;
+
+            //set canvas context and put in html body section
+            this.highScoreCanvasContext  = this.highScoreCanvas.getContext("2d");
             document.body.insertBefore(this.highScoreCanvas, document.body.childNodes[2]);
 
-            //Einfügen der Buttons zur Darstellung der Highscore-Tabelle
-            this.highScoreCanvasButtons.push(new MenuButton("Time", "Time ", null, this.buttonOtherPosition, this.buttonVerticalPosition - 70, 100, 50, this.itemButtonSize, "white"));
-            this.highScoreCanvasButtons.push(new MenuButton("Head", "ScoreTable", null, this.buttonHeadPosition, this.buttonVerticalPosition - 490, 100, 50, this.headButtonSize, "white"));
-            this.highScoreCanvasButtons.push(new MenuButton("Player", "Player", null, this.buttonNamePosition, this.buttonVerticalPosition - 440, 100, 50, this.itemButtonSize, "white"));
-            this.highScoreCanvasButtons.push(new MenuButton("Score", "Score", null, this.buttonDataPosition, this.buttonVerticalPosition - 440, 100, 50, this.itemButtonSize, "white"));
+            //set buttons
+            this.highScoreCanvasButtons.push(new MenuButton("Head", "ScoreTable", null, this.buttonHeadPositionX, this.headPositionSettings, 100, 50, this.headlineFont, "white"));
+            this.highScoreCanvasButtons.push(new MenuButton("Player", "Player", null, this.buttonNamePositionX, this.buttonPositionY - this.deltaButtonPositionY + this.padding, 100, 50, this.buttonFontSize, "white"));
+            this.highScoreCanvasButtons.push(new MenuButton("Score", "Score", null, this.buttonDataPositionX, this.buttonPositionY - this.deltaButtonPositionY + this.padding, 100, 50, this.buttonFontSize, "white"));
+            this.highScoreCanvasButtons.push(new MenuButton("Time", "Time ", null, this.buttonTimePositionX, this.buttonPositionY - this.deltaButtonPositionY + this.padding*14, 100, 50, this.buttonFontSize, "white"));
+            this.timeButton = new MenuButton(1, "0", null, this.buttonTimeDataPositionX, this.buttonPositionY - this.deltaButtonPositionY + this.padding*14, 50, 30, this.buttonFontSize, "white");
 
             //Einfügen des Rankings
-            this.timeButton = new MenuButton(1, "0", null, this.buttonTime, this.buttonVerticalPosition - 70, 50, 30, this.itemButtonSize, "white");
             for (let i = 0; i < this.serpentRanking.length; i++) {
                 //console.log(this.highScoreCanvasButtons);
-                this.playerNameButtons.push(new MenuButton(i, this.serpentRanking[i].name, null, this.buttonDataPosition, this.buttonVerticalPosition - 390 + (i * 50), 50, 30, this.itemButtonSize, "white"));
-                this.playerScoreButtons.push(new MenuButton(i, this.serpentRanking[i].foodEaten, null, this.buttonNamePosition, this.buttonVerticalPosition - 390 + (i * 50), 50, 30, this.itemButtonSize, "white"));
+                this.playerNameButtons.push(new MenuButton(i, this.serpentRanking[i].name, null, this.buttonDataPositionX, this.buttonPositionY - this.deltaButtonPositionY + this.padding*3 + (i * this.padding), 50, 30, this.itemButtonSize, "white"));
+                this.playerScoreButtons.push(new MenuButton(i, this.serpentRanking[i].foodEaten, null, this.buttonNamePositionX, this.buttonPositionY - this.deltaButtonPositionY + this.padding*3 + (i * this.padding), 50, 30, this.itemButtonSize, "white"));
             }
             this.renderButtons();
         } else {
             this.sizeToSmall = true;
         }
     },
+    resizeCanvas: function () {
+
+        this.highScoreCanvasWidth = Math.ceil(window.innerWidth / 3.5);
+        this.highScoreCanvasHeight = Math.ceil(window.innerHeight / 1.5);
+        this.highScoreCanvas.width = Math.ceil(this.highScoreCanvasWidth - this.highScoreCanvasWidth / 4);
+        this.highScoreCanvas.height = Math.ceil(this.highScoreCanvasHeight - this.highScoreCanvasHeight / 3);
+        this.highScoreCanvasWidth = this.highScoreCanvas.width;
+        this.buttonPositionY = this.highScoreCanvasHeight/2;
+        this.highScoreCanvasHeight = this.highScoreCanvas.height;
+        this.headPositionSettings = this.highScoreCanvasHeight / 10;
+        this.deltaButtonPositionY = this.highScoreCanvasHeight - this.highScoreCanvasHeight / 1.5;
+        this.padding = this.highScoreCanvasWidth / 18;
+        this.highScoreCanvas.style.left = "70%";
+    }
 }
 
 var instruction = {
@@ -1889,18 +1941,23 @@ var instruction = {
     //instructionCanvasTop: "auto",
     //instructionCanvasPosition: "fixed",
     instructionButtons: [],
-    headButtonSize: null,
+    spriteSize: null,
+    headlineFont: null,
     itemButtonSize: null,
+    buttonPositionY: null,
     creditNamePosition: null,
     buttonNamePosition: null,
-    buttonDataPosition: null,
+    buttonDataPositionX: null,
+    headPositionSettings: null,
+    deltaButtonPositionY: null,
+    padding: null,
     feather: new Image(),
     bomb: new Image(),
     clover: new Image(),
     arrows: new Image(),
 
     update: function () {
-        if (window.innerWidth < 1500) {
+        if (window.innerWidth < gMaxWindowSize) {
             if (this.instructionCanvas != null) {
                 this.clear();
             }
@@ -1912,44 +1969,41 @@ var instruction = {
     },
 
     clear: function () {
-        for (let i = 0; i < this.instructionButtons.length; i++) {
-            this.instructionButtons.pop();
+        if (this.instructionCanvas != null) {
+            this.instructionButtons = [];
+            document.body.removeChild(this.instructionCanvas);
+            this.instructionCanvas = null;
         }
-        document.body.removeChild(this.instructionCanvas);
-        this.instructionCanvas = null;
     },
 
     init: function () {
-        if (window.innerWidth >= 1500) {
-            console.log(this.headButtonSize, this.itemButtonSize);
+        if (window.innerWidth >= gMaxWindowSize) {
             this.gamePosition = getGameDimensions();
-            this.instructionCanvasWidth = 400; //Auch window.innerWidth verwendebar
-            this.instructionCanvasHeight = 540;
-            this.headButtonSize = this.instructionCanvasWidth / 17 + "pt Courier";
-            this.itemButtonSize = this.instructionCanvasWidth / 30 + "pt Courier";
-            this.buttonHeadPosition = this.instructionCanvasWidth / 5;
-            this.buttonNamePosition = this.instructionCanvasWidth / 9;
-            this.buttonOtherPosition = this.instructionCanvasWidth / 6;
-            this.buttonDataPosition =  this.instructionCanvasWidth / 4;
-            this.buttonVerticalPosition = this.instructionCanvasHeight;
-            this.buttonKeysPosition =  this.instructionCanvasWidth / 3;
             this.instructionCanvas = document.createElement("canvas");
             this.instructionCanvas.id = "instruction";
-            this.instructionCanvas.width = this.instructionCanvasWidth;
-            this.instructionCanvas.height = this.instructionCanvasHeight;
-            //this.instructionCanvas.position = this.instructionCanvasPosition;
-            //this.instructionCanvas.style.marginLeft = this.instructionCanvasLeft;
-            //this.instructionCanvas.style.marginTop = this.instructionCanvasTop;
-            //this.instructionCanvas.style.border = "2px solid white";
+            this.resizeCanvas();
+            
+
+
+            this.headlineFont = this.instructionCanvasWidth / 17 + "pt Courier";
+            this.itemButtonSize = this.instructionCanvasWidth / 30 + "pt Courier";
+            this.buttonHeadPosition = this.instructionCanvasWidth / 7;
+            this.buttonNamePosition = this.instructionCanvasWidth / 20;
+            this.buttonTimePositionX = this.instructionCanvasWidth / 5;
+            this.buttonDataPositionX =  this.instructionCanvasWidth / 5;
+            this.buttonPositionY = this.instructionCanvasHeight / 2;
+            this.buttonKeyPositionX =  this.instructionCanvasWidth / 3;
+            this.spriteSize = this.instructionCanvasWidth / 10;
+
             this.instructionCanvasContext = this.instructionCanvas.getContext("2d");
             document.body.insertBefore(this.instructionCanvas, document.body.childNodes[0]);
 
-            this.instructionButtons.push(new MenuButton("head", "Instructions", null, this.buttonHeadPosition, this.buttonVerticalPosition - 510, 150, 20, this.headButtonSize, "yellow"));
-            this.instructionButtons.push(new MenuButton("feather", "fly through your own body", null, this.buttonDataPosition, this.buttonVerticalPosition - 450, 150, 20, this.itemButtonSize, "white"));
-            this.instructionButtons.push(new MenuButton("clover", "increases score", null, this.buttonDataPosition, this.buttonVerticalPosition - 380, 150, 20, this.itemButtonSize, "white"));
-            this.instructionButtons.push(new MenuButton("bomb", "do not touch it!", null, this.buttonDataPosition, this.buttonVerticalPosition - 305, 150, 20, this.itemButtonSize, "white"));
-            this.instructionButtons.push(new MenuButton("keyarrows", "keyarrows for movement", null, this.buttonOtherPosition, this.buttonVerticalPosition - 140, 150, 20, this.itemButtonSize, "white"));
-            this.instructionButtons.push(new MenuButton("Escape", "press Escape to pause", null, this.buttonOtherPosition, this.buttonVerticalPosition - 110, 150, 20, this.itemButtonSize, "white"));
+            this.instructionButtons.push(new MenuButton("head", "Instructions", null, this.buttonHeadPosition, this.headPositionSettings, 150, 20, this.headlineFont, "yellow"));
+            this.instructionButtons.push(new MenuButton("feather", "fly through your own body", null, this.buttonDataPositionX, this.buttonPositionY - this.deltaButtonPositionY + this.padding*2, 150, 20, this.itemButtonSize, "white"));
+            this.instructionButtons.push(new MenuButton("clover", "increases score", null, this.buttonDataPositionX, this.buttonPositionY - this.deltaButtonPositionY + this.padding*4, 150, 20, this.itemButtonSize, "white"));
+            this.instructionButtons.push(new MenuButton("bomb", "do not touch it!", null, this.buttonDataPositionX, this.buttonPositionY - this.deltaButtonPositionY + this.padding*6, 150, 20, this.itemButtonSize, "white"));
+            this.instructionButtons.push(new MenuButton("keyarrows", "keyarrows for movement", null, this.buttonTimePositionX, this.buttonPositionY - this.deltaButtonPositionY + this.padding*13.5, 150, 20, this.itemButtonSize, "white"));
+            this.instructionButtons.push(new MenuButton("Escape", "press Escape to pause", null, this.buttonTimePositionX, this.buttonPositionY - this.deltaButtonPositionY + this.padding*14.5, 150, 20, this.itemButtonSize, "white"));
 
             this.feather.src = 'sprites/feather.png';
             this.clover.src = 'sprites/clover.png';
@@ -1957,19 +2011,17 @@ var instruction = {
             this.arrows.src = 'sprites/keyarrows.png';
 
             this.render();
-        } else {
-            window.alert("Screen is too small - Please load the game on a bigger screen")
-        }
+        } 
     },
 
     render: function () {
         this.instructionCanvasContext.clearRect(0, 0, this.instructionCanvasWidth, this.instructionCanvasHeight);
         this.instructionCanvasContext.beginPath();
 
-        this.instructionCanvasContext.drawImage(this.feather, this.buttonNamePosition, this.buttonVerticalPosition - 480, 50, 50);
-        this.instructionCanvasContext.drawImage(this.clover, this.buttonNamePosition, this.buttonVerticalPosition - 410, 50, 50);
-        this.instructionCanvasContext.drawImage(this.bomb, this.buttonNamePosition, this.buttonVerticalPosition - 340, 50, 50);
-        this.instructionCanvasContext.drawImage(this.arrows, this.buttonKeysPosition, this.buttonVerticalPosition - 270, 100, 100);
+        this.instructionCanvasContext.drawImage(this.feather, this.buttonNamePosition, this.buttonPositionY - this.deltaButtonPositionY + this.padding*2 -this.spriteSize /2, this.spriteSize, this.spriteSize);
+        this.instructionCanvasContext.drawImage(this.clover, this.buttonNamePosition, this.buttonPositionY - this.deltaButtonPositionY + this.padding*4 -this.spriteSize/2, this.spriteSize, this.spriteSize);
+        this.instructionCanvasContext.drawImage(this.bomb, this.buttonNamePosition, this.buttonPositionY - this.deltaButtonPositionY + this.padding*6 -this.spriteSize/2, this.spriteSize, this.spriteSize);
+        this.instructionCanvasContext.drawImage(this.arrows, this.buttonKeyPositionX, this.buttonPositionY - this.deltaButtonPositionY + this.padding*8, this.spriteSize*3, this.spriteSize*2);
 
 
         this.instructionCanvasContext.fillStyle = "yellow";
@@ -1977,6 +2029,26 @@ var instruction = {
             this.instructionCanvasContext.font = this.instructionButtons[i].font;
             this.instructionCanvasContext.fillText(this.instructionButtons[i].text, this.instructionButtons[i].buttonX, this.instructionButtons[i].buttonY);
         }
+    },
+    resizeCanvas: function () {
+        this.instructionCanvasWidth = Math.ceil(window.innerWidth / 3.5);
+        this.instructionCanvasHeight = Math.ceil(window.innerHeight / 1.5);
+        this.instructionCanvas.width = Math.ceil(this.instructionCanvasWidth - this.instructionCanvasWidth / 4);
+        this.instructionCanvas.height = Math.ceil(this.instructionCanvasHeight - this.instructionCanvasHeight / 4);
+        this.instructionCanvasWidth = this.instructionCanvas.width;
+        this.buttonPositionY = this.instructionCanvasHeight/2;
+        this.instructionCanvasHeight = this.instructionCanvas.height;
+        this.headPositionSettings = this.instructionCanvasHeight / 10;
+        this.deltaButtonPositionY = this.instructionCanvasHeight - this.instructionCanvasHeight / 1.5;
+        this.padding = this.instructionCanvasHeight / 20;
+        this.instructionCanvas.style.right = "70%"; 
+        console.log("instructionwidht", this.instructionCanvasWidth, 
+        "instructionheight",this.instructionCanvasHeight,
+        "deltaButtonPositionY", this.deltaButtonPositionY, 
+        "padding",this.padding, 
+        "deltaButtonPositionY",this.deltaButtonPositionY, 
+        "headPositionSettings",this.headPositionSettings, 
+        "buttonPositionY",this.buttonPositionY);
     }
 }
 
@@ -2053,7 +2125,7 @@ window.onload = function () {
         return levelData.levelConfig;
     };
     /***** GAME STARTS HERE *****/
-    sleep(5000);
+    sleep(4000);
     gameField.init();
     instruction.init();
 
