@@ -4,14 +4,34 @@
     margin: 0;
     padding: 0;
     background-color: darkgrey;
+    overflow: hidden;
 
 }
 
-#img_gamingAutomat{
-    height: 100%;
-    
-}
 
 #div_gamingAutomat{
     text-align: center;
+    height: 100%;
+    
+    position: relative;
+}
+
+
+img{
+    position: absolute;
+    vertical-align: middle;
+}
+
+#Background{
+    height: 100%;
+    top: 0;
+    
+}
+
+#Animation{
+    height: 57.5vh;
+    width: 64vh;
+    left: 68vw;
+    top: 32vh;
+    z-index: 1;
 }
