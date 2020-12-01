@@ -6,24 +6,24 @@ PSP: https://lucid.app/invitations/accept/d683a7b4-9c19-4de9-8bde-1c2fd71712a9
 <br/>
 
 ## Browserkompatibilität:
+- empfohlen: Google Chrome Version 87.0.4280.66 (Offizieller Build) (64-Bit)
 - Firefox 83.0 (64-Bit)
-- Google Chrome Version 87.0.4280.66 (Offizieller Build) (64-Bit)
-- Edge V2 (ohne Highscore und Instruction)
+- Edge V2 (bei Edge muss um 10% herausgezoomt werden)
 
 
 
 ## Known Bugs:
 - Schlangen können manchmal übereinander laufen
+- Resizing der HTML-Seite wird nicht aus der CSS-Datei korrekt übernommen.
 
 
-
-
-## Termine:
+## Arbeitsrythmus:
 Weeklys: sonntags wird sich um 16 getroffen <br/>
 - Pair Programming <br/>
 - Parallel-Programmierung <br/>
 Zusätzliche Termine: <br/>
 - Unter der Woche wurden weitere Termine <br/>
+- eigenständiges programmieren <br/>
 
 
 ## Grobe Aufteilung der Aufgaben (nähere Informationen aus Github -> Projects -> Space Serpent und dem PSP entnehmen): 
