@@ -818,6 +818,7 @@ class MainMenu {
             this.canvas = getContext(),
             this.dimensions = getGameDimensions(),
             this.buttons = [],
+            this.buttonStartSize = this.dimensions.width / 40 + "pt Courier",
             this.buttonSize = this.dimensions.width / 50 + "pt Courier",
             this.creditButtonSize = this.dimensions.width / 70 + "pt Courier",
             this.creditNamePosition = this.dimensions.width / 2,
@@ -1184,7 +1185,7 @@ class MainMenu {
         this.buttons.push(new MenuButton("Food", "Food: ", null, this.buttonNamePosition, this.dimensions.height - 300, 100, 50, this.buttonSize, "white"));
         this.buttons.push(new MenuButton("Time", "Time: ", null, this.buttonNamePosition, this.dimensions.height - 300, 100, 50, this.buttonSize, "white"));
         this.buttons.push(new MenuButton("Volume", "Volume: ", null, this.buttonNamePosition, this.dimensions.height - 250, 100, 50, this.buttonSize, "white"));
-        this.buttons.push(new MenuButton("startText", "Start Game", null, this.buttonNamePosition, this.dimensions.height - 200, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("startText", "Start Game", null, this.buttonNamePosition, this.dimensions.height - 200, 100, 50, this.buttonStartSize, "white"));
         this.buttons.push(new MenuButton("Credits", "See Credits", null, this.buttonDataPosition, this.dimensions.height - 60, 100, 50, this.buttonSize, "white"));
 
         // 11+
