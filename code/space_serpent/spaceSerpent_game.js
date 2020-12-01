@@ -415,16 +415,16 @@ class MenuConfig {
         if (backgroundImage != null)
             this.backgroundImage = backgroundImage;
     }
-    setSoundVolume () {
+    setSoundVolume() {
         if (this.sound != undefined)
             this.sound.forEach(sound => {
                 sound.volume = gSoundVolume;
             });
-            this.scrollSound.volume = gSoundVolume;
-            this.selectSound.volume = gSoundVolume;
-            this.menuMusic.volume = gSoundVolume;
-            this.afterGameScreenMusic.volume = gSoundVolume;
-            this.creditsMusic.volume = gSoundVolume;
+        this.scrollSound.volume = gSoundVolume;
+        this.selectSound.volume = gSoundVolume;
+        this.menuMusic.volume = gSoundVolume;
+        this.afterGameScreenMusic.volume = gSoundVolume;
+        this.creditsMusic.volume = gSoundVolume;
     }
 }
 /* ----  state machine section  ---- */
@@ -582,12 +582,12 @@ class LevelConfig {
     StartLoading = function () {
         this.loadLevel(globalassets);
     }
-    setSoundVolume () {
+    setSoundVolume() {
         if (this.sound != undefined)
             this.sound.forEach(sound => {
                 sound.volume = gSoundVolume;
             });
-            this.playGroundLevel.bgsound.volume = gSoundVolume;
+        this.playGroundLevel.bgsound.volume = gSoundVolume;
     }
 }
 /* settings like difficulty the player can choose from */
@@ -710,7 +710,7 @@ class level {
     /* update section */
     update() {
         if (window.innerWidth <= 1500)
-        this.gameMode.pause();
+            this.gameMode.pause();
 
         this.gameTime = Date.now() - this.timeStart - this.timePauseSum;
         if (round10(getStateData().gameTime / 1000, -1) % 10 == 0)
@@ -833,7 +833,7 @@ class MainMenu {
             this.buttonDataPosition = this.dimensions.width / 2,
             this.startPositionSettings = 590,
             this.padding = 50,
-        this.selectedButton = 9,
+            this.selectedButton = 9,
             this.playType = 2, // 0 = Food, 1 = Time, 2 = Endless
             this.playerName = names[getRandomIntInclusive(0, names.length - 1)],
             this.currentOption = [],
@@ -956,8 +956,8 @@ class MainMenu {
                     gSoundVolume = round10(gSoundVolume - 0.01, -2);
                     if (gSoundVolume <= 0.0)
                         gSoundVolume = 0.0;
-                    
-                        stateData.menuconfig.setSoundVolume();
+
+                    stateData.menuconfig.setSoundVolume();
                     stateData.menuconfig.menuMusic.volume = gSoundVolume;
                     stateData.buttons[19].text = 1000 * gSoundVolume;
                 }
@@ -1016,7 +1016,7 @@ class MainMenu {
                     gSoundVolume = round10(gSoundVolume + 0.01, -2); // 0.05
                     if (gSoundVolume >= 0.1)
                         gSoundVolume = 0.1;
-                    
+
                     stateData.menuconfig.setSoundVolume();
                     stateData.menuconfig.menuMusic.volume = gSoundVolume;
                     stateData.buttons[19].text = 1000 * gSoundVolume;
@@ -1186,28 +1186,28 @@ class MainMenu {
 
 
         this.buttons.push(new MenuButton("playerName", "Player Name:", null, this.buttonNamePosition, this.dimensions.height - this.startPositionSettings + this.padding, 100, 50, this.buttonSize, "white"));
-        this.buttons.push(new MenuButton("ChoosePlayer", "Player:", null, this.buttonNamePosition, this.dimensions.height - this.startPositionSettings + this.padding*2, 100, 50, this.buttonSize, "white"));
-        this.buttons.push(new MenuButton("Enemies", "Enemies: ", null, this.buttonNamePosition, this.dimensions.height - this.startPositionSettings + this.padding*3, 100, 50, this.buttonSize, "white"));
-        this.buttons.push(new MenuButton("playfieldsize", "Field Size: ", null, this.buttonNamePosition, this.dimensions.height - this.startPositionSettings + this.padding*4, 100, 50, this.buttonSize, "white"));
-        this.buttons.push(new MenuButton("Speed", "Speed: ", null, this.buttonNamePosition, this.dimensions.height - this.startPositionSettings + this.padding*5, 100, 50, this.buttonSize, "white"));
-        this.buttons.push(new MenuButton("WinCondition", "Game Mode: ", null, this.buttonNamePosition, this.dimensions.height - this.startPositionSettings + this.padding*6, 100, 50, this.buttonSize, "white"));
-        this.buttons.push(new MenuButton("Food", "Food: ", null, this.buttonNamePosition, this.dimensions.height - this.startPositionSettings + this.padding*7, 100, 50, this.buttonSize, "white"));
-        this.buttons.push(new MenuButton("Time", "Time: ", null, this.buttonNamePosition, this.dimensions.height - this.startPositionSettings + this.padding*7, 100, 50, this.buttonSize, "white"));
-        this.buttons.push(new MenuButton("Volume", "Volume: ", null, this.buttonNamePosition, this.dimensions.height - this.startPositionSettings + this.padding*9, 100, 50, this.buttonSize, "white"));
-        this.buttons.push(new MenuButton("startText", "Start Game", null, this.buttonNamePosition, this.dimensions.height - this.startPositionSettings + this.padding*10, 100, 50, this.buttonStartSize, "white"));
-        this.buttons.push(new MenuButton("Credits", "See Credits", null, this.buttonDataPosition, this.dimensions.height - this.startPositionSettings + this.padding*11 - 20, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("ChoosePlayer", "Player:", null, this.buttonNamePosition, this.dimensions.height - this.startPositionSettings + this.padding * 2, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("Enemies", "Enemies: ", null, this.buttonNamePosition, this.dimensions.height - this.startPositionSettings + this.padding * 3, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("playfieldsize", "Field Size: ", null, this.buttonNamePosition, this.dimensions.height - this.startPositionSettings + this.padding * 4, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("Speed", "Speed: ", null, this.buttonNamePosition, this.dimensions.height - this.startPositionSettings + this.padding * 5, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("WinCondition", "Game Mode: ", null, this.buttonNamePosition, this.dimensions.height - this.startPositionSettings + this.padding * 6, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("Food", "Food: ", null, this.buttonNamePosition, this.dimensions.height - this.startPositionSettings + this.padding * 7, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("Time", "Time: ", null, this.buttonNamePosition, this.dimensions.height - this.startPositionSettings + this.padding * 7, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("Volume", "Volume: ", null, this.buttonNamePosition, this.dimensions.height - this.startPositionSettings + this.padding * 9, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("startText", "Start Game", null, this.buttonNamePosition, this.dimensions.height - this.startPositionSettings + this.padding * 10, 100, 50, this.buttonStartSize, "white"));
+        this.buttons.push(new MenuButton("Credits", "See Credits", null, this.buttonDataPosition, this.dimensions.height - this.startPositionSettings + this.padding * 11 - 20, 100, 50, this.buttonSize, "white"));
 
         // 11+
         console.log(this.playerName);
         this.buttons.push(new MenuButton("playerName", this.playerName, null, this.buttonDataPosition, this.dimensions.height - this.startPositionSettings + this.padding, 100, 50, this.buttonSize, "white"));
-        this.buttons.push(new MenuButton("Player", "Player:", this.menuconfig.serpentSprites, this.buttonDataPosition, this.dimensions.height - this.startPositionSettings + this.padding*2 - 25, 100, 50, this.buttonSize, "white"));
-        this.buttons.push(new MenuButton("Enemy", this.currentOption[1], null, this.buttonDataPosition, this.dimensions.height - this.startPositionSettings + this.padding*3, 100, 50, this.buttonSize, "white"));
-        this.buttons.push(new MenuButton("fieldSize", ["small", "normal", "big"], null, this.buttonDataPosition, this.dimensions.height - this.startPositionSettings + this.padding*4, 100, 50, this.buttonSize, "white"));
-        this.buttons.push(new MenuButton("Speed", ["slow", "normal", "fast"], null, this.buttonDataPosition, this.dimensions.height - this.startPositionSettings + this.padding*5, 100, 50, this.buttonSize, "white"));
-        this.buttons.push(new MenuButton("WinCondition", ["Highscore", "Time", "Endless"], null, this.buttonDataPosition, this.dimensions.height - this.startPositionSettings + this.padding*6, 100, 50, this.buttonSize, "yellow"));
-        this.buttons.push(new MenuButton("Food", 1, null, this.buttonDataPosition, this.dimensions.height - this.startPositionSettings + this.padding*7, 100, 50, this.buttonSize, "white"));
-        this.buttons.push(new MenuButton("Time", 1 + " minute(s)", null, this.buttonDataPosition, this.dimensions.height - this.startPositionSettings + this.padding*7, 100, 50, this.buttonSize, "white"));
-        this.buttons.push(new MenuButton("Volume", 1000 * gSoundVolume, null, this.buttonDataPosition, this.dimensions.height - this.startPositionSettings + this.padding*9, 100, 50, this.buttonSize, "yellow"));
+        this.buttons.push(new MenuButton("Player", "Player:", this.menuconfig.serpentSprites, this.buttonDataPosition, this.dimensions.height - this.startPositionSettings + this.padding * 2 - 25, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("Enemy", this.currentOption[1], null, this.buttonDataPosition, this.dimensions.height - this.startPositionSettings + this.padding * 3, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("fieldSize", ["small", "normal", "big"], null, this.buttonDataPosition, this.dimensions.height - this.startPositionSettings + this.padding * 4, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("Speed", ["slow", "normal", "fast"], null, this.buttonDataPosition, this.dimensions.height - this.startPositionSettings + this.padding * 5, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("WinCondition", ["Highscore", "Time", "Endless"], null, this.buttonDataPosition, this.dimensions.height - this.startPositionSettings + this.padding * 6, 100, 50, this.buttonSize, "yellow"));
+        this.buttons.push(new MenuButton("Food", 1, null, this.buttonDataPosition, this.dimensions.height - this.startPositionSettings + this.padding * 7, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("Time", 1 + " minute(s)", null, this.buttonDataPosition, this.dimensions.height - this.startPositionSettings + this.padding * 7, 100, 50, this.buttonSize, "white"));
+        this.buttons.push(new MenuButton("Volume", 1000 * gSoundVolume, null, this.buttonDataPosition, this.dimensions.height - this.startPositionSettings + this.padding * 9, 100, 50, this.buttonSize, "yellow"));
         this.buttons.push(new MenuButton("Credit", "Copyright (c) 2020 KaBra, MaSiPi, MaZa", null, this.creditNamePosition, this.dimensions.height - 30, 100, 50, this.creditButtonSize, "blue"));
 
     };
@@ -1225,7 +1225,7 @@ class PauseMenu {
     constructor(name, bWindowTooSmall) {
         this.name = name // Just to identify the State
         this.canvas = getContext(),
-        this.bWindowTooSmall = bWindowTooSmall,
+            this.bWindowTooSmall = bWindowTooSmall,
             this.dimensions = getGameDimensions(),
             this.backgroundColor = "#000",
             this.mainText = "Press Escape To Continue",
@@ -1768,7 +1768,7 @@ var highScoreTable = {
             }
             //HighScoreTable aktualisieren (machen)
             for (let i = 0; i < this.serpentRanking.length || i < this.playerNameButtons.length; i++) {
-                
+
                 if (this.playerNameButtons[i] != undefined) {
                     this.playerNameButtons[i].text = this.serpentRanking[i].name;
                     this.playerScoreButtons[i].text = this.serpentRanking[i].foodEaten;
@@ -1844,9 +1844,9 @@ var highScoreTable = {
             this.buttonHeadPosition = this.highScoreCanvasWidth / 5;
             this.buttonNamePosition = this.highScoreCanvasWidth / 9;
             this.buttonOtherPosition = this.highScoreCanvasWidth / 9;
-            this.buttonDataPosition =  this.highScoreCanvasWidth / 2;
+            this.buttonDataPosition = this.highScoreCanvasWidth / 2;
             this.buttonVerticalPosition = this.highScoreCanvasHeight;
-            this.buttonTime =  this.highScoreCanvasWidth / 3;
+            this.buttonTime = this.highScoreCanvasWidth / 3;
             //Definition und Inititalisierung des Highscore-Canvas
             this.highScoreCanvas = document.createElement("canvas");
             this.highScoreCanvas.id = "highScore";
@@ -1930,9 +1930,9 @@ var instruction = {
             this.buttonHeadPosition = this.instructionCanvasWidth / 5;
             this.buttonNamePosition = this.instructionCanvasWidth / 9;
             this.buttonOtherPosition = this.instructionCanvasWidth / 6;
-            this.buttonDataPosition =  this.instructionCanvasWidth / 4;
+            this.buttonDataPosition = this.instructionCanvasWidth / 4;
             this.buttonVerticalPosition = this.instructionCanvasHeight;
-            this.buttonKeysPosition =  this.instructionCanvasWidth / 3;
+            this.buttonKeysPosition = this.instructionCanvasWidth / 3;
             this.instructionCanvas = document.createElement("canvas");
             this.instructionCanvas.id = "instruction";
             this.instructionCanvas.width = this.instructionCanvasWidth;
@@ -2688,7 +2688,7 @@ function killSerpent(serpent, playField, itemlist, sound) {
     for (let serpentPartIndex = 0; serpentPartIndex < serpent.serpentParts.length; serpentPartIndex++) {
         playField.removeFromPlayground(serpent.serpentParts[serpentPartIndex].x, serpent.serpentParts[serpentPartIndex].y)
     }
-    
+
     for (let i = 0; i < 3; i++) {
         generateNewItem(3, itemlist, playField, generateRandomPosition(playField, serpent, true));
     }
@@ -2810,21 +2810,21 @@ function eatItem(serpent, itemIndex, items, playField, sound) {
         case "food":
             eatFoodSoundeffect(sound);
             serpent.foodEaten++;
-            break;
 
-        case "backpack":
-            eatBackpackSoundeffect(sound);
-            serpent.inventory.push(items[itemIndex]);
+            for (let i = 0; i < serpent.inventory.length; i++) {
+                if (serpent.inventory[i].name == "feather"){
+                    serpent.inventory.splice(i, 1);
+                    generateNewItem(5, items, playField, generateRandomPosition(playField, serpent, true));
+                }
+                break;
+            }
+
+            generateNewItem(items[itemIndex].id, items, playField, generateRandomPosition(playField, serpent, true));
             break;
 
         case "bomb":
             eatBombSoundeffect(sound);
             return;
-
-        case "book":
-            eatBookSoundeffect(sound);
-            serpent.inventory.push(items[itemIndex]);
-            break;
 
         case "feather":
             eatFeatherSoundeffect(sound);
@@ -2834,7 +2834,6 @@ function eatItem(serpent, itemIndex, items, playField, sound) {
         default:
             break;
     }
-    generateNewItem(items[itemIndex].id, items, playField, generateRandomPosition(playField, serpent, true));
     items.splice(itemIndex, 1);
 }
 
