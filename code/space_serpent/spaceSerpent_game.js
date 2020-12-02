@@ -1314,8 +1314,8 @@ class PauseMenu {
         this.bWindowTooSmall = bWindowTooSmall,
         this.dimensions = getGameDimensions(),
         this.backgroundColor = "#000",
-        this.mainText = "Press Escape To Continue",
-        this.mainText2 = "Or Press Space To Return To Main Menu",
+        this.mainText = "Press ESCAPE To Continue",
+        this.mainText2 = "Press SPACE To Return To Main Menu",
         this.textColor = "rgb(0,0,0)", // Starts with black
         this.colorsArray = [], // our fade values
         this.colorIndex = 0,
@@ -1881,7 +1881,7 @@ var highScoreTable = {
         }
         
         for (let i = 0; i < this.serpentRanking.length; i++) {
-            if (getStateData().levelConfig.aiSerpents[i].alive == false) {
+            if (getStateData().levelConfig.aiSerpents[i].alive == false || getStateData().levelConfig.aiSerpents != undefined) {
                 this.serpentRanking.splice(i, 1);
             }
         }
@@ -1972,8 +1972,8 @@ var highScoreTable = {
 
             //add buttons to ranking
             for (let i = 0; i < this.serpentRanking.length; i++) {
-                this.playerNameButtons.push(new MenuButton(i, this.serpentRanking[i].name, null, this.buttonDataPositionX, this.buttonPositionY - this.deltaButtonPositionY + this.padding * 3.5 + (i * this.padding), 50, 30, this.buttonFontSize, "white"));
-                this.playerScoreButtons.push(new MenuButton(i, this.serpentRanking[i].foodEaten, null, this.buttonNamePositionX, this.buttonPositionY - this.deltaButtonPositionY + this.padding * 3.5 + (i * this.padding), 50, 30, this.buttonFontSize, "white"));
+                this.playerNameButtons.push(new MenuButton(i, this.serpentRanking[i].name, null, this.buttonDataPositionX, this.buttonPositionY - this.deltaButtonPositionY + this.padding * 4 + (i * this.padding * 1.2), 50, 30, this.buttonFontSize, "white"));
+                this.playerScoreButtons.push(new MenuButton(i, this.serpentRanking[i].foodEaten, null, this.buttonNamePositionX, this.buttonPositionY - this.deltaButtonPositionY + this.padding * 4 + (i * this.padding * 1.2), 50, 30, this.buttonFontSize, "white"));
             }
             this.renderButtons();
         } else {
@@ -2710,10 +2710,10 @@ function aStar(obstaclesTable, goalPosition, startPosition) {
 /*
 This functions moves all serpents on the playfield
 */
-function moveSerpents(serpentPlayer, aiSerpents, playGroundLevel, items, sound) {
+function moveSerpents(serpentPlayer, aiSerpents, playgroundLevel, items, sound) {
     if (serpentPlayer.alive)
-        executeSerpentMovement(serpentPlayer, PlaygroundLevel, items, sound);
-    moveAiSerpents(aiSerpents, PlaygroundLevel, items, sound);
+        executeSerpentMovement(serpentPlayer, playgroundLevel, items, sound);
+    moveAiSerpents(aiSerpents, playgroundLevel, items, sound);
 }
 
 /*
