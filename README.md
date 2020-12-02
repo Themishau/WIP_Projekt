@@ -59,6 +59,8 @@ Zusätzliche Termine: <br/>
 - SubspaceAudio - https://opengameart.org/content/512-sound-effects-8-bit-style - CC by 0
 - Music: Eric Skiff - Song Name - Resistor Anthems - Available at http://EricSkiff.com/music - CC by 4.0
 - Soluna Software - https://opengameart.org/content/space-backgrounds-with-stars-and-nubular - CC by 0
+- SpaceBackground - https://pixabay.com/de/photos/milchstra%C3%9Fe-raum-universum-galaxien-67504/
+
 
 ## Referenzcode:
 - https://stackoverflow.com/questions/19764018/controlling-fps-with-requestanimationframe

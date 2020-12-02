@@ -3,248 +3,44 @@
     font-size: 14px;
     margin: 0;
     padding: 0;
-    background-image: url("../img_folder/bg_top.jpg");
-    background-size: 0%;
-    background-repeat: no-repeat;
-    background-position: center top;
-    background-attachment: scroll;
+    background-color: black;
+    background-image: url("space_serpent/sprites/bg_stars.png");
+    background-repeat: repeat;
+    overflow: hidden;
 
 }
-#umschliessen{
-    width: 960px;
-    overflow: auto;
-    margin: 0 auto;
+
+p{
+    color: white;
+    font: 20pt Courier bold white;
+}
+
+
+#div_gamingAutomat{
+    position: absolute;
+    top: 20;
+    left: 20;
+    text-align: center;
+    height: 100%;
+    position: relative;
+}
+
+
+img{
+    position: absolute;
+    vertical-align: middle;
+}
+
+#Background{
+    height: 100%;
+    top: 0;
     
 }
 
-
-/*----/kopf/----*/
-
-
-#header{
-    overflow: hidden;
-    height: auto;
-    width: auto;
-    margin: auto;
-    padding: inherit;
-}
-#header_oben{
-    width: 100%;
-    overflow: auto;
-    float: left;
-}
-
-img.logo{
-    width:100%;
-    max-width:400px;
-}
-
-#logo{
-    overflow: auto;
-    float: left;
-    padding: 7px 0;
-}
-#logo h1{
-    margin: 10px;
-    padding: 10px 10px;
-    font-size: 28px;
-    font-style: arial;
-    font-weight: 100;
-}
-
-
-/*----/suchleiste/----*/
-
-
-#suche{
-
-    overflow: auto;
-    float: right;
-    margin: auto;
-    padding: 30px 30px 10px 10px;
-}
-#suche form{
-    float: right;
-}
-
-
-/*----/menu/----*/
-
-
-#menu_oben{
-    overflow: hidden;
-    height: 75px;
-    margin: 0;
-
-
-}
-#menu{
-    padding: 0 0;
-    margin: 0;
-    overflow: auto;
-    color: teal;
-
-}
-#menu li{
-    list-style: none;
-    float: left;
-    padding: 0 20px;
-    color: teal;
-
-}
-#menu li a{
-    padding: 10px 30px;
-    margin: 10px;
-    display: block;
-    text-decoration: none;
-    color: teal;
-}
-#menu li a:hover, dropdown1:hover {
-    background-color:teal;
-    color: #e0e4fc;
-}
-#menu li a:hover:not(.active) {
-    background-color: #6c7aba;
-}
-.active {
-    background-color: #8595f5;
-}
-
-
-/*----/dropdown/----*/
-
-
-#menu li a, .drop1 {
-    display: inline-block;
-    color: black;
-    text-align: center;
-    padding: 10px 10px;
-    text-decoration: none;
-}
-.dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #f9f9f9;
-    min-width: 230px;
-    box-shadow: 0px 8px 10px 0px rgba(0,0,0,0.2);
+#Animation{
+    height: 57.5vh;
+    width: 64vh;
+    left: 68vw;
+    top: 32vh;
     z-index: 1;
 }
-.dropdown-content a {
-    padding: 8px 10px;
-    text-decoration: none;
-    display: block;
-    text-align: center;
-}
-.dropdown-content a:hover {
-    background-color: #e0e4fc;
-}
-.dropdown1:hover .dropdown-content {
-    display: block;
-}
-#header_unten{
-    width: 100%;
-    overflow: hidden;
-    background-image: url("../Grafiken/slider.jpg");
-    background-repeat: no-repeat;
-    background-position: center top;
-
-
-}
-#logo_img{
-  float: left;
-  padding: 30 px;
-
-}
-/*----/img/----*/
-
-
-img.main_foto{
-    overflow: hidden;
-    display:block;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 20px 0;
-    z-index: -1;
-}
-
-img.logo{
-    position: relative;
-    padding: 20px;
-
-}
-
-
-/*----/body/----*/
-
-
-#mitte{
-    width: 960px;
-    overflow: auto;
-    margin: 0 auto;
-    
-}
-#inhalt_content{
-    height:700px;
-    overflow: auto;
-    padding: 0 0;
-}
-.inhalt_links{
-    outline: 15px dotted green;
-    border: 25px solid navy;
-    width: 50%;
-    font-family: arial;
-    overflow: hidden;
-    float: left;
-    margin: 20px;
-}
-.inhalt_links a{
-  background:#e0e4fc;
-  text-decoration: none;
-  color: black;
-  display: block;
-  width: 130px;
-  margin: 10px;
-  text-align: center;
-  float:center;
-  padding: 0 0; 
-}
-.inhalt_mitte{
-    width: 30%;
-    font-family: arial;
-    overflow: hidden;
-    float: right;
-    margin: 10px;
-    padding: 0 0 30px 0px;
-    border-left: solid 1px black;
-    border-right: solid 1px black;
-
-}
-
-/*----/footer/----*/
-
-
-#footer_fuss{
-    width: auto;
-    overflow: auto;
-    float:center;
-    background-image: url("../Grafiken/bg_top.jpg");
-    background-repeat: no-repeat;
-    background-position: center;
-    text-align: center;
-
-
-    
-}
-#address{
-    
-    float: center;
-    overflow: auto;
-    display: block;
-}
-
-#copyright{
-    float: center;
-    
-    overflow: auto;
-}
-
