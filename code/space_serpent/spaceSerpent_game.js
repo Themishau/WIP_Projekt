@@ -2599,19 +2599,19 @@ function moveLevelBackground(image) {
 
 
 
-    if (image.bg_starCurrentX >= 1000 || image.bg_starCurrentX <= -1000 || image.bg_starCurrentY >= 1000 || image.bg_starCurrentY <= -1000) {
-        if (image.bg_starCurrentX >= 1050 || image.bg_starCurrentX <= -1050) {
+    if (image.bg_starCurrentX >= 1000 || image.bg_starCurrentX <= -1000) {
+        if (image.bg_starCurrentX >= 1000 || image.bg_starCurrentX <= -1000) {
             image.bg_starScrollSpeedBackgroundX = image.scrollDirection[getRandomIntInclusive(0, 1)] * image.bg_starScrollSpeedBackgroundX;
             image.bg_starScrollSpeedBackgroundY = image.scrollDirection[getRandomIntInclusive(0, 1)] * image.bg_starScrollSpeedBackgroundY;
-            image.changeCurrentbgStarX(999, 999);
+            image.changeCurrentbgStarX(980, 980);
             // console.log(image.bg_starCurrentX, image.bg_starCurrentX);
         }
         else {
             image.bg_starScrollSpeedBackgroundX = image.scrollDirection[getRandomIntInclusive(0, 1)] * image.bg_starScrollSpeedBackgroundX;
             image.bg_starScrollSpeedBackgroundY = image.scrollDirection[getRandomIntInclusive(0, 1)] * image.bg_starScrollSpeedBackgroundY;
             image.changeCurrentbgStarX(image.bg_starCurrentX * -1, image.bg_starCurrentX * -1);
-            //console.log(image.bg_starCurrentX, image.bg_starCurrentX); 
         }
+        console.log(image.bg_starCurrentX, image.bg_starCurrentX); 
     }
 }
 function draw(bg_stars, playGroundImage, serpentPlayer, itemlist, aiSerpents) {
