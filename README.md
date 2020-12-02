@@ -15,6 +15,7 @@ PSP: https://lucid.app/invitations/accept/d683a7b4-9c19-4de9-8bde-1c2fd71712a9 <
 
 ## Known Bugs:
 - Schlangen können manchmal übereinander laufen
+- Animation-Bug, bei "speed = slow"
 
 
 ## Grobe Aufteilung der Aufgaben (nähere Informationen aus Github -> Projects -> Space Serpent und dem PSP entnehmen): 
