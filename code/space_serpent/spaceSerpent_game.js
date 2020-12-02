@@ -1881,7 +1881,7 @@ var highScoreTable = {
         }
         
         for (let i = 0; i < this.serpentRanking.length; i++) {
-            if (getStateData().levelConfig.aiSerpents[i].alive == false || getStateData().levelConfig.aiSerpents != undefined) {
+            if (getStateData().levelConfig.aiSerpents[i].alive == false) {
                 this.serpentRanking.splice(i, 1);
             }
         }
