@@ -790,9 +790,6 @@ class level {
         }
         // Time Mode
         else if (this.playMode == 1) {
-            //console.log(this.timeStart - this.gameTime);
-            //console.log(this.gameTime, this.levelConfig.levelOption.winCondition.condition);
-
             if ((this.levelConfig.serpentPlayer.foodEaten > this.levelConfig.highestEnemy) && this.gameTime >= this.levelConfig.levelOption.winCondition.condition)
                 this.playerWin = true;
             else if (((this.levelConfig.serpentPlayer.foodEaten < this.levelConfig.highestEnemy) && this.gameTime >= this.levelConfig.levelOption.winCondition.condition) || this.levelConfig.serpentPlayer.alive == false)
@@ -1006,7 +1003,6 @@ class MainMenu {
                         stateData.currentOption[4] = 1;
 
                     stateData.buttons[17].text = stateData.currentOption[4];
-                    console.log(stateData.buttons[17].text);
                 }
                 //set time
                 else if (stateData.selectedButton == 7) {
@@ -1072,7 +1068,6 @@ class MainMenu {
                     stateData.currentOption[4] = stateData.currentOption[4] + 1;
                     if (stateData.currentOption[4] > 50)
                         stateData.currentOption[4] = 50;
-                    console.log(stateData.buttons[17].text);
                     stateData.buttons[17].text = stateData.currentOption[4];
                 }
                 //set time
@@ -1297,7 +1292,6 @@ class MainMenu {
 
 
         // right side button
-        console.log(this.playerName);
         this.buttons.push(new MenuButton("playerName", this.playerName, null, this.buttonDataPositionX, this.dimensions.height - this.deltaButtonPositionY + this.padding, 100, 50, this.buttonFontSize, "white"));
         this.buttons.push(new MenuButton("Player", "Player:", this.menuconfig.serpentSprites, this.buttonDataPositionX, this.dimensions.height - this.deltaButtonPositionY + this.padding * 2 - this.dimensions.height / 25, this.dimensions.height / 19, this.dimensions.height / 19, this.buttonFontSize, "white"));
         this.buttons.push(new MenuButton("Enemy", this.currentOption[1], null, this.buttonDataPositionX, this.dimensions.height - this.deltaButtonPositionY + this.padding * 3, 100, 50, this.buttonFontSize, "white"));
@@ -1355,8 +1349,6 @@ class PauseMenu {
             var gameMode = getGameInstance();
             if (keyCode === 27) {
                 // Go to next State
-
-                console.log("this state is: ", gameMode);
                 gameMode.pop();
                 gameMode.resume();
             }
@@ -1372,10 +1364,8 @@ class PauseMenu {
     onExit() {
         // clear the keydown event
         window.onkeydown = null;
-        console.log(" Pause Menu EVENT IS DELETED");
         highScoreTable.clear();
         instruction.clear();
-        console.log("pause menu leave", highScoreTable);
     };
 
     render() {
@@ -1982,7 +1972,6 @@ var highScoreTable = {
 
             //add buttons to ranking
             for (let i = 0; i < this.serpentRanking.length; i++) {
-                //console.log(this.highScoreCanvasButtons);
                 this.playerNameButtons.push(new MenuButton(i, this.serpentRanking[i].name, null, this.buttonDataPositionX, this.buttonPositionY - this.deltaButtonPositionY + this.padding * 3.5 + (i * this.padding), 50, 30, this.buttonFontSize, "white"));
                 this.playerScoreButtons.push(new MenuButton(i, this.serpentRanking[i].foodEaten, null, this.buttonNamePositionX, this.buttonPositionY - this.deltaButtonPositionY + this.padding * 3.5 + (i * this.padding), 50, 30, this.buttonFontSize, "white"));
             }
@@ -3003,7 +2992,6 @@ function generateNewItem(ObjectType, itemlist, playField, position) {
         var newBomb = new item(3, "bomb", position.x, position.y, globalAssets.bomb);
         itemlist.push(newBomb);
         playField.addToPlayground(newBomb.gridx, newBomb.gridy, 3);
-        console.log("BOMB EATEN");
     }
     else if (ObjectType == 4) {
         var newBook = new item(4, "book", position.x, position.y, globalAssets.book);
