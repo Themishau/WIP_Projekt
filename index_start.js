@@ -6,6 +6,7 @@ var gameAutomat = {
     gameAnimation: null,
     startButton: null,
     currentElement: null,
+    instructions: null,
     counter: 0,
 
     
@@ -15,6 +16,7 @@ var gameAutomat = {
         this.gameAutomatCanvasContext.beginPath();
         this.loadImage();
         this.loadAnimation();
+        this.instructions();
         this.loadButton();
     },
 
@@ -29,8 +31,17 @@ var gameAutomat = {
         this.currentElement.insertBefore(this.gameAutomatCanvas, this.currentElement.childNodes[0]);
     },
 
+    instructions: function(){
+        this.gameAutomatCanvasContext.beginPath();
+        this.gameAutomatCanvasContext.fillStyle = "aqua";
+        this.gameAutomatCanvasContext.font = this.gameAutomatCanvas.height / 50 + "pt Courier";
+        this.gameAutomatCanvasContext.fillText("Press SPACE or ENTER to start!", this.gameAutomatCanvas.height/3.75, this.gameAutomatCanvas.height/2.5);
+        this.gameAutomatCanvasContext.closePath();
+
+    },
+
+
     startGame: function(){
-        
         this.gameAutomatCanvasContext.clearRect(0,0,this.gameAutomatCanvas.width, this.gameAutomatCanvas.height);
         this.loadImage();
         this.loadAnimation();
@@ -58,23 +69,6 @@ var gameAutomat = {
         this.gameAutomatCanvasContext.drawImage(this.gameAutomatImage, 0, 0, this.gameAutomatCanvas.height, this.gameAutomatCanvas.height);
     },
 
-    animate: function(){
-        this.gameAutomatCanvasContext.clearRect(this.gameAnimation,125 ,this.gameAutomatCanvas.height/3.3, this.gameAutomatCanvas.height/1.41, this.gameAutomatCanvas.height/1.67);
-        switch(this.counter){
-            case 0: this.gameAnimation.src="img_folder/animation1.png";
-                    this.counter++;
-                    break;
-            case 1: this.gameAnimation.src ="img_folder/animation2.png";
-                    this.counter++;
-                    break;
-            case 2: this.gameAnimation.src = "img_folder/animation3.png";
-                    this.counter = 0;
-                    break;
-            default: this.counter = 0;
-        }
-        this.gameAutomatCanvasContext.drawImage(this.gameAnimation,125 ,this.gameAutomatCanvas.height/3.3, this.gameAutomatCanvas.height/1.41, this.gameAutomatCanvas.height/1.67);
-    },
-
     resize: function(){
         let currentElement = document.getElementById("div_gamingAutomat");
         this.currentElement.removeChild(this.gameAutomatCanvas);
@@ -96,8 +90,6 @@ window.onload = function(){
     
     
 }
-
-
 
 function resizeScreen(event){
     if(window.innerHeight != this.gameAutomat.gameAutomatCanvas.height){
