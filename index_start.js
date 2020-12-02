@@ -6,6 +6,7 @@ var gameAutomat = {
     gameAnimation: null,
     startButton: null,
     currentElement: null,
+    instructions: null,
     counter: 0,
 
     
@@ -15,6 +16,7 @@ var gameAutomat = {
         this.gameAutomatCanvasContext.beginPath();
         this.loadImage();
         this.loadAnimation();
+        this.instructions();
         this.loadButton();
     },
 
@@ -29,8 +31,17 @@ var gameAutomat = {
         this.currentElement.insertBefore(this.gameAutomatCanvas, this.currentElement.childNodes[0]);
     },
 
+    instructions: function(){
+        this.gameAutomatCanvasContext.beginPath();
+        this.gameAutomatCanvasContext.fillStyle = "aqua";
+        this.gameAutomatCanvasContext.font = this.gameAutomatCanvas.height / 50 + "pt Courier";
+        this.gameAutomatCanvasContext.fillText("Press SPACE or ENTER to start!", this.gameAutomatCanvas.height/3.75, this.gameAutomatCanvas.height/2);
+        this.gameAutomatCanvasContext.closePath();
+
+    },
+
+
     startGame: function(){
-        
         this.gameAutomatCanvasContext.clearRect(0,0,this.gameAutomatCanvas.width, this.gameAutomatCanvas.height);
         this.loadImage();
         this.loadAnimation();
