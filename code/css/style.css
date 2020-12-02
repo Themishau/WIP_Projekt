@@ -3,7 +3,9 @@
     font-size: 14px;
     margin: 0;
     padding: 0;
-    background-color: darkgrey;
+    background-color: black;
+    background-image: url("space_serpent/sprites/bg_stars.png");
+    background-repeat: repeat;
     overflow: hidden;
 
 }

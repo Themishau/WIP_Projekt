@@ -29,7 +29,13 @@ var gameAutomat = {
     },
 
     startGame: function(){
-        window.alert("clicked");
+        
+        this.gameAutomatCanvasContext.clearRect(0,0,this.gameAutomatCanvas.width, this.gameAutomatCanvas.height);
+        this.loadImage();
+        this.loadAnimation();
+        this.startButton.src= "img_folder/buttonPressed.png",
+        this.gameAutomatCanvasContext.drawImage(this.startButton,320 ,this.gameAutomatCanvas.height/1.19, this.gameAutomatCanvas.height/6, this.gameAutomatCanvas.height/6);
+        sleep(2000);
         window.location.href = "space_serpent/space_serpent_main.html";
     },
 
@@ -73,7 +79,8 @@ var gameAutomat = {
 
 window.onload = function(){
     gameAutomat.init();
-    window.addEventListener("keydown".window.alert("pressed"));
+    window.onkeydown = null;
+    window.addEventListener("keydown",KeyDown);
     //sleep(5000);
     /**while(this.startGame == false){
         this.gameAutomat.animate();
@@ -81,6 +88,13 @@ window.onload = function(){
     }**/
 
     
+}
+
+function KeyDown(event){
+    let characterCode = event.keyCode;
+    if(characterCode == 13 || characterCode == 32){
+        this.gameAutomat.startGame();
+    }
 }
 
 function sleep(milliseconds) {
