@@ -1,29 +1,21 @@
-# WIP_Projekt (Stand: 30.11.2020, Version: 0.95)
+# WIP_Projekt (Stand: 02.12.2020, Version: 1.0)
 Hauptprojekt: Space Serpent, <br/>
 Kleines Spiel in Javascript/HTML <br/>
-Organisation geschieht über Microsoft Teams und Github <br/>
-PSP: https://lucid.app/invitations/accept/d683a7b4-9c19-4de9-8bde-1c2fd71712a9
 <br/>
+Organisation geschieht über Microsoft Teams und Github <br/>
+PSP: https://lucid.app/invitations/accept/d683a7b4-9c19-4de9-8bde-1c2fd71712a9 <br/>
 
 ## Browserkompatibilität:
 - empfohlen: Google Chrome Version 87.0.4280.66 (Offizieller Build) (64-Bit)
 - Firefox 83.0 (64-Bit)
 - Edge V2 (bei Edge muss um 10% herausgezoomt werden)
-
+- Safari (nicht unterstützt)
+- Internet Explorer (nicht unterstützt)
 
 
 ## Known Bugs:
 - Schlangen können manchmal übereinander laufen
-- Resizing der HTML-Seite wird nicht aus der CSS-Datei korrekt übernommen.
-
-
-## Arbeitsrythmus:
-Weeklys: sonntags wird sich um 16 getroffen <br/>
-- Pair Programming <br/>
-- Parallel-Programmierung <br/>
-Zusätzliche Termine: <br/>
-- Unter der Woche wurden weitere Termine <br/>
-- eigenständiges programmieren <br/>
+- Animation-Bug, bei "speed = slow"
 
 
 ## Grobe Aufteilung der Aufgaben (nähere Informationen aus Github -> Projects -> Space Serpent und dem PSP entnehmen): 
@@ -48,6 +40,14 @@ Zusätzliche Termine: <br/>
 - Markus 
 - Kai
 
+## Arbeitsrythmus:
+Weeklys: sonntags wird sich um 16 getroffen <br/>
+- Pair Programming <br/>
+- Parallel-Programmierung <br/>
+Zusätzliche Termine: <br/>
+- Unter der Woche wurden weitere Termine genutzt <br/>
+eigenständiges Programmieren <br/>
+
 ## Quellen:
 ## genutzte Musik und Sprites:
 - AhNinniah - https://opengameart.org/content/free-game-items-pack-2 - CC by 3.0
@@ -57,16 +57,16 @@ Zusätzliche Termine: <br/>
 - "Ctskelgysth Inauaruat", "Ctskelgysth" - https://opengameart.org/content/8-bit-sound-effects-0 - CC by 0
 - Dizzy Crow - https://opengameart.org/content/8-bit-jupiter-the-bringer-of-jollity-456 - CC by 0
 - SubspaceAudio - https://opengameart.org/content/512-sound-effects-8-bit-style - CC by 0
-- Music: Eric Skiff - Song Name - Resistor Anthems - Available at http://EricSkiff.com/music - CC by 4.0
+- Music: Eric Skiff - Resistor Anthems - Available at http://EricSkiff.com/music - CC by 4.0
 - Soluna Software - https://opengameart.org/content/space-backgrounds-with-stars-and-nubular - CC by 0
+- SpaceBackground - https://pixabay.com/de/photos/milchstra%C3%9Fe-raum-universum-galaxien-67504/ Pixabay Lizenz
+
 
 ## Referenzcode:
-- https://stackoverflow.com/questions/19764018/controlling-fps-with-requestanimationframe
 - https://codeincomplete.com/articles/javascript-game-foundations-loading-assets/
 - https://codeincomplete.com/articles/javascript-game-foundations-state-management/
-- https://code.tutsplus.com/tutorials/animating-game-menus-and-screen-transitions-in-html5-a-guide-for-flash-developers--active-11183
-- https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Number/toPrecision
 - https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Math/floor
+- https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Math/ceil
 
 ## Lizenz (unter License nachzulesen): 
 
