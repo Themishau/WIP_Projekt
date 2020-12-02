@@ -3,8 +3,8 @@
     font-size: 14px;
     margin: 0;
     padding: 0;
-    background-color: white;
-    background-image: url("space_serpent/sprites/bg_stars.png");
+    background-color: black;
+    background-image: url("img_folder/bg_stars.png");
     background-repeat: repeat;
     overflow: hidden;
 
@@ -12,6 +12,7 @@
 
 
 #div_gamingAutomat{
+    
     text-align: center;
     height: 100%;
     position: relative;
