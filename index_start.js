@@ -70,7 +70,7 @@ var gameAutomat = {
     },
 
     resize: function(){
-        let currentElement = document.getElementById("div_gamingAutomat");
+        this.currentElement = document.getElementById("div_gamingAutomat");
         this.currentElement.removeChild(this.gameAutomatCanvas);
         this.gameAutomatCanvas = null;
         this.init();
