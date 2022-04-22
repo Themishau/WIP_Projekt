@@ -5,6 +5,7 @@ Kleines Spiel in Javascript/HTML <br/>
 Organisation geschieht über Microsoft Teams und Github <br/>
 PSP: https://lucid.app/invitations/accept/d683a7b4-9c19-4de9-8bde-1c2fd71712a9 <br/>
 
+Play the game: https://themishau.github.io/WIP_Projekt/
 ## Browserkompatibilität:
 - empfohlende Auflösung: 1920 x 1080 (Verhältnis 16:9) / minimale Auflösung 1600 x 900 (Verhältnis 16:9)
 - empfohlen: Google Chrome Version 87.0.4280.66 (Offizieller Build) (64-Bit)
